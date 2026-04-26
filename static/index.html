@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备检修知识助手</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; }
+        .container { max-width: 900px; margin: 30px auto; padding: 20px; }
+        h1 { text-align: center; color: #1a73e8; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .card { background: white; padding: 25px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .card h3 { margin-bottom: 15px; color: #555; }
+        input, textarea, select { padding: 12px; border: 1px solid #ddd; border-radius: 6px; width: 100%; font-size: 14px; margin-bottom: 10px; }
+        button { padding: 12px 24px; background: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; }
+        button:hover { background: #1557b0; }
+        .flex-row { display: flex; gap: 10px; align-items: center; }
+        .flex-row>* { flex: 1; }
+        .flex-row button { flex: 0 0 auto; width: auto; }
+        #chat-box { border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; max-height: 500px; overflow-y: auto; background: #fafafa; margin-bottom: 15px; min-height: 200px; }
+        .msg { margin-bottom: 20px; display: flex; flex-direction: column; }
+        .user-msg { align-items: flex-end; }
+        .assistant-msg { align-items: flex-start; }
+        .msg-content { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 15px; line-height: 1.6; }
+        .user-msg .msg-content { background: #1a73e8; color: white; }
+        .assistant-msg .msg-content { background: #e9ecef; color: #333; }
+        .references { font-size: 0.8em; color: #888; margin-top: 8px; display: block; }
+        .feedback-btn { color: #1a73e8; cursor: pointer; text-decoration: underline; margin-left: 10px; font-size: 0.85em; }
+        .status { font-weight: bold; margin-top: 8px; color: #28a745; }
+        .logout { color: #1a73e8; cursor: pointer; text-decoration: underline; }
+        /* 模态框 */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
+        .modal-content { background: white; margin: 10% auto; padding: 20px; width: 420px; border-radius: 10px; }
+        .step-item { background: #f8f9fa; padding: 12px; margin: 8px 0; border-radius: 8px; }
+        .compliance { color: #d32f2f; font-size: 0.85em; margin-top: 5px; }
+        @media (max-width: 600px) { .container { padding: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            🔧 设备检修知识检索与作业系统
+            <span class="logout" onclick="logout()">退出</span>
+        </h1>
+
+        <!-- 上传区 -->
+        <div class="card">
+            <h3>📄 上传检修手册（PDF）</h3>
+            <input type="file" id="pdfUpload" accept=".pdf">
+            <button onclick="uploadPDF()">上传并建立知识库</button>
+            <div id="uploadStatus" class="status"></div>
+        </div>
+
+        <!-- 标准化作业 -->
+        <div class="card">
+            <h3>📋 标准化作业指引</h3>
+            <div class="flex-row">
+                <input type="text" id="deviceType" placeholder="设备类型（如：发动机）">
+                <select id="levelSelect">
+                    <option value="日常检查">日常检查</option>
+                    <option value="小修">小修</option>
+                    <option value="中修">中修</option>
+                    <option value="大修">大修</option>
+                </select>
+                <button onclick="getProcedure()">获取指引</button>
+            </div>
+            <div id="procedureResult" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- 问答区 -->
+        <div class="card">
+            <h3>💬 智能问答（支持文本+故障图片）</h3>
+            <div id="chat-box"></div>
+            <textarea id="question" rows="3" placeholder="请输入问题..."></textarea>
+            <input type="file" id="imageUpload" accept="image/*" style="margin-bottom:10px;">
+            <button onclick="askQuestion()">发送提问</button>
+        </div>
+
+        <!-- 案例提交 -->
+        <div class="card">
+            <h3>📝 知识沉淀：分享检修经验</h3>
+            <input type="text" id="caseTitle" placeholder="案例标题">
+            <textarea id="caseContent" rows="3" placeholder="详细描述检修过程、故障现象、解决方法..."></textarea>
+            <button onclick="submitCase()">提交案例（待审核）</button>
+            <div id="caseStatus" class="status"></div>
+        </div>
+    </div>
+
+    <!-- 修正模态框 -->
+    <div id="correctionModal" class="modal">
+        <div class="modal-content">
+            <h3>✏️ 提交修正建议</h3>
+            <p><strong>问题：</strong><span id="corrQuestion"></span></p>
+            <p><strong>原答案：</strong><span id="corrOriginal"></span></p>
+            <textarea id="corrAnswer" rows="4" placeholder="请输入您认为正确的答案..."></textarea>
+            <div class="flex-row" style="margin-top:15px;">
+                <button onclick="submitCorrection()">提交修正</button>
+                <button onclick="closeModal()" style="background:#888;">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ---------- 认证 ----------
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = '/login';
+        const origFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            if (!options.headers) options.headers = {};
+            if (!url.startsWith('http') || url.startsWith(window.location.origin)) {
+                if (url !== '/api/login' && url !== '/api/reviewer/login') {
+                    options.headers['Authorization'] = 'Bearer ' + token;
+                }
+            }
+            return origFetch(url, options);
+        };
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            window.location.href = '/login';
+        }
+
+        // ---------- 上传 PDF ----------
+        async function uploadPDF() {
+            const file = document.getElementById('pdfUpload').files[0];
+            if (!file) return alert('请选择PDF文件');
+            const formData = new FormData(); formData.append('file', file);
+            document.getElementById('uploadStatus').innerText = '解析中...';
+            try {
+                const res = await fetch('/upload', { method: 'POST', body: formData });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                document.getElementById('uploadStatus').innerText = '✅ 上传成功！共 ' + data.chunk_count + ' 个知识片段';
+            } catch (e) { document.getElementById('uploadStatus').innerText = '❌ 上传失败：' + e.message; }
+        }
+
+        // ---------- 标准化作业 ----------
+        async function getProcedure() {
+            const device = document.getElementById('deviceType').value.trim();
+            const level = document.getElementById('levelSelect').value;
+            if (!device) return alert('请输入设备类型');
+            try {
+                const res = await fetch(`/api/procedure?device=${encodeURIComponent(device)}&level=${encodeURIComponent(level)}`);
+                const data = await res.json();
+                const div = document.getElementById('procedureResult');
+                div.innerHTML = '';
+                if (data.steps) {
+                    data.steps.forEach(s => {
+                        div.innerHTML += `<div class="step-item">
+                            <strong>${s.step}. ${s.desc}</strong> (工具: ${s.tool || '无'})
+                            <div class="compliance">⚠️ 合规要求: ${s.compliance}</div>
+                        </div>`;
+                    });
+                } else if (data.steps_text) {
+                    div.innerHTML = `<pre style="white-space: pre-wrap; background:#f8f9fa; padding:10px; border-radius:6px;">${data.steps_text}</pre>`;
+                }
+            } catch (e) { alert('获取失败：' + e.message); }
+        }
+
+        // ---------- 提问（含修正按钮） ----------
+        async function askQuestion() {
+            const question = document.getElementById('question').value.trim();
+            if (!question) return alert('请输入问题');
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += '<div class="msg user-msg"><div class="msg-content">' + question + '</div></div>';
+            const formData = new FormData(); formData.append('question', question);
+            const imgFile = document.getElementById('imageUpload').files[0];
+            if (imgFile) formData.append('image', imgFile);
+            const loadingId = 'loading_' + Date.now();
+            chatBox.innerHTML += '<div id="' + loadingId + '" class="msg assistant-msg"><div class="msg-content">⏳ 检索中...</div></div>';
+            chatBox.scrollTop = chatBox.scrollHeight;
+            try {
+                const res = await fetch('/ask', { method: 'POST', body: formData });
+                const data = await res.json();
+                document.getElementById(loadingId)?.remove();
+                let refHTML = '';
+                if (data.references?.length) {
+                    refHTML = '<span class="references">📚 参考：';
+                    data.references.forEach(r => refHTML += `【P${r.page}】${r.content}<br>`);
+                    refHTML += '</span>';
+                }
+                const escapedQuestion = question.replace(/`/g, '\\`').replace(/\\/g, '\\\\');
+                const escapedAnswer = data.answer.replace(/`/g, '\\`').replace(/\\/g, '\\\\');
+                chatBox.innerHTML += `<div class="msg assistant-msg">
+                    <div class="msg-content">${data.answer}${refHTML}
+                        <span class="feedback-btn" onclick="showCorrectionModal(\`${escapedQuestion}\`, \`${escapedAnswer}\`)">[修正]</span>
+                    </div></div>`;
+            } catch (e) {
+                document.getElementById(loadingId)?.remove();
+                chatBox.innerHTML += '<div class="msg assistant-msg"><div class="msg-content">❌ 请求失败：' + e.message + '</div></div>';
+            }
+            document.getElementById('question').value = '';
+            document.getElementById('imageUpload').value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // ---------- 案例提交 ----------
+        async function submitCase() {
+            const title = document.getElementById('caseTitle').value.trim();
+            const content = document.getElementById('caseContent').value.trim();
+            if (!title || !content) return alert('请填写标题和内容');
+            const formData = new FormData(); formData.append('title', title); formData.append('content', content);
+            try {
+                const res = await fetch('/api/submit-case', { method: 'POST', body: formData });
+                const data = await res.json();
+                document.getElementById('caseStatus').innerText = '✅ ' + data.message;
+                document.getElementById('caseTitle').value = '';
+                document.getElementById('caseContent').value = '';
+            } catch (e) { document.getElementById('caseStatus').innerText = '❌ 提交失败'; }
+        }
+
+        // ---------- 修正功能 ----------
+        let currentCorrection = {};
+        function showCorrectionModal(question, original) {
+            document.getElementById('corrQuestion').innerText = question;
+            document.getElementById('corrOriginal').innerText = original;
+            document.getElementById('correctionModal').style.display = 'block';
+            currentCorrection = { question, original };
+        }
+        function closeModal() {
+            document.getElementById('correctionModal').style.display = 'none';
+        }
+        async function submitCorrection() {
+            const correctAnswer = document.getElementById('corrAnswer').value.trim();
+            if (!correctAnswer) return alert('请填写修正后答案');
+            const formData = new FormData();
+            formData.append('question', currentCorrection.question);
+            formData.append('original_answer', currentCorrection.original);
+            formData.append('correct_answer', correctAnswer);
+            try {
+                const res = await fetch('/api/submit-correction', { method: 'POST', body: formData });
+                const data = await res.json();
+                alert(data.message);
+                closeModal();
+            } catch (e) { alert('提交失败'); }
+        }
+    </script>
+</body>
+</html>

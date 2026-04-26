@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>审核员登录</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Microsoft YaHei', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 360px; }
+        h2 { text-align: center; color: #f57c00; margin-bottom: 30px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        button { width: 100%; padding: 12px; background: #f57c00; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+        button:hover { background: #e65100; }
+        .error { color: red; font-size: 14px; margin-bottom: 10px; text-align: center; }
+        .back-link { text-align: center; margin-top: 15px; }
+        .back-link a { color: #888; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>🔍 审核员登录</h2>
+        <form onsubmit="reviewerLogin(event)">
+            <input type="text" id="username" placeholder="审核员账号" required autocomplete="off">
+            <input type="password" id="password" placeholder="密码" required>
+            <div class="error" id="error"></div>
+            <button type="submit">登 录</button>
+        </form>
+        <div class="back-link"><a href="/entry.html">← 返回角色选择</a></div>
+    </div>
+    <script>
+        async function reviewerLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('error');
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+            try {
+                const res = await fetch('/api/reviewer/login', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (!res.ok) {
+                    errorEl.textContent = data.detail || '登录失败';
+                    return;
+                }
+                localStorage.setItem('token', data.access_token);
+                localStorage.setItem('role', 'admin');
+                window.location.href = '/static/admin.html';
+            } catch (err) {
+                errorEl.textContent = '网络错误';
+            }
+        }
+    </script>
+</body>
+</html>
