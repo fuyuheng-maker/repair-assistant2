@@ -5,43 +5,309 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>审核管理 - 设备检修知识助手</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; }
-        .container { max-width: 1000px; margin: 30px auto; padding: 20px; }
-        h1 { text-align: center; color: #1a73e8; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
-        h1 span, h1 a { font-size: 0.7em; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { padding: 10px 20px; background: #e0e0e0; border: none; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 16px; }
-        .tab.active { background: #1a73e8; color: white; }
-        .card { background: white; padding: 25px; border-radius: 0 12px 12px 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .item { border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-        .item h4 { margin-bottom: 5px; }
-        .meta { font-size: 0.85em; color: #888; margin-bottom: 10px; }
-        .actions { display: flex; gap: 10px; justify-content: flex-end; }
-        .btn { padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        .btn-approve { background: #28a745; color: white; }
-        .btn-approve:hover { background: #218838; }
-        .btn-reject { background: #dc3545; color: white; }
-        .btn-reject:hover { background: #c82333; }
-        .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; margin-left: 8px; }
-        .status-approved { background: #d4edda; color: #155724; }
-        .status-rejected { background: #f8d7da; color: #721c24; }
-        .empty { text-align: center; color: #999; padding: 30px; }
-        .logout { color: #1a73e8; cursor: pointer; text-decoration: underline; }
-        .back-link a { color: #1a73e8; text-decoration: underline; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #1a1a2e;
+            min-height: 100vh;
+        }
+        
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+        
+        .navbar-brand-icon {
+            font-size: 28px;
+        }
+        
+        .navbar-brand-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .navbar-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .navbar-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .navbar-link:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .navbar-btn {
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .navbar-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* 主内容区 */
+        .container {
+            max-width: 1000px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+        
+        /* Tab 切换 */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 12px;
+            width: fit-content;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #1a1a2e;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .tab:hover:not(.active) {
+            color: #334155;
+        }
+        
+        /* 卡片 */
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        
+        /* 列表项 */
+        .item {
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+        }
+        
+        .item:last-child {
+            border-bottom: none;
+        }
+        
+        .item:hover {
+            background: #fafafa;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .item-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .status-approved {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .status-rejected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .item-meta {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+        }
+        
+        .item-content {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.6;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+        
+        /* 按钮 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-approve:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        
+        .empty-desc {
+            font-size: 14px;
+        }
+        
+        /* 修正项特殊样式 */
+        .correction-item {
+            padding-left: 24px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .correction-original {
+            background: #fef3c7;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .correction-correct {
+            background: #dcfce7;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+        
+        .correction-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+        
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="navbar-brand-icon">🔧</span>
+            <span class="navbar-brand-text">设备检修知识助手</span>
+        </div>
+        <div class="navbar-actions">
+            <a href="/" class="navbar-link">← 返回主界面</a>
+            <button class="navbar-btn" onclick="logout()">退出登录</button>
+        </div>
+    </nav>
+    
+    <!-- 主内容区 -->
     <div class="container">
-        <h1>
-            🔧 审核管理
-            <span class="back-link"><a href="/">← 返回主界面</a></span>
-            <span class="logout" onclick="logout()">退出</span>
-        </h1>
+        <!-- Tab 切换 -->
         <div class="tabs">
             <button class="tab active" onclick="switchTab('cases')">📝 待审核案例</button>
             <button class="tab" onclick="switchTab('corrections')">✏️ 待审核修正</button>
         </div>
+        
+        <!-- 内容卡片 -->
         <div class="card">
             <div id="content"></div>
         </div>
@@ -54,7 +320,7 @@
 
         if (!token || role !== 'admin') {
             alert('请使用审核员账号登录');
-            window.location.href = '/login';
+            window.location.href = '/static/reviewer_login.html';
         }
 
         const origFetch = window.fetch;
@@ -71,22 +337,22 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
-            window.location.href = '/login';
+            localStorage.removeItem('username');
+            window.location.href = '/static/reviewer_login.html';
         }
 
         let currentTab = 'cases';
 
         async function switchTab(tab) {
             currentTab = tab;
-            document.querySelectorAll('.tab').forEach((t, i) => {
-                t.classList.toggle('active', (tab === 'cases' && i === 0) || (tab === 'corrections' && i === 1));
-            });
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
             loadData();
         }
 
         async function loadData() {
             const contentDiv = document.getElementById('content');
-            contentDiv.innerHTML = '<div class="empty">加载中...</div>';
+            contentDiv.innerHTML = '<div class="loading">⏳ 加载中...</div>';
             try {
                 if (currentTab === 'cases') {
                     const res = await fetch('/api/pending-cases');
@@ -98,26 +364,40 @@
                     renderCorrections(data.corrections);
                 }
             } catch (e) {
-                contentDiv.innerHTML = '<div class="empty">加载失败：' + e.message + '</div>';
+                contentDiv.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><div class="empty-title">加载失败</div><div class="empty-desc">网络错误，请稍后重试</div></div>';
             }
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
         }
 
         function renderCases(cases) {
             const div = document.getElementById('content');
             if (!cases || cases.length === 0) {
-                div.innerHTML = '<div class="empty">暂无待审核案例</div>';
+                div.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">暂无待审核案例</div><div class="empty-desc">目前没有需要审核的案例提交</div></div>';
                 return;
             }
             let html = '';
             cases.forEach(c => {
                 html += `
-                <div class="item" id="case-${c.id}">
-                    <h4>${c.title} <span class="status-badge">待审</span></h4>
-                    <div class="meta">提交者：${c.submitter} | ${c.created_at?.slice(0,10)} | 类型：${c.type || '经验'}</div>
-                    <p>${c.content}</p>
-                    <div class="actions" id="actions-${c.id}">
-                        <button class="btn btn-approve" onclick="reviewCase('${c.id}', 'approve')">✅ 通过</button>
-                        <button class="btn btn-reject" onclick="reviewCase('${c.id}', 'reject')">❌ 拒绝</button>
+                <div class="item" id="case-${escapeHTML(c.id)}">
+                    <div class="item-header">
+                        <h3 class="item-title">${escapeHTML(c.title)}</h3>
+                        <span class="status-badge status-pending">待审核</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>👤 ${escapeHTML(c.submitter)}</span>
+                        <span>📅 ${escapeHTML(c.created_at?.slice(0,10))}</span>
+                        <span>🏷️ ${escapeHTML(c.type || '经验')}</span>
+                    </div>
+                    <div class="item-content">${escapeHTML(c.content)}</div>
+                    <div class="item-actions" id="actions-${escapeHTML(c.id)}">
+                        <button class="btn btn-approve" onclick="reviewCase('${escapeHTML(c.id)}', 'approve')">✅ 通过</button>
+                        <button class="btn btn-reject" onclick="reviewCase('${escapeHTML(c.id)}', 'reject')">❌ 拒绝</button>
                     </div>
                 </div>`;
             });
@@ -127,20 +407,32 @@
         function renderCorrections(corrections) {
             const div = document.getElementById('content');
             if (!corrections || corrections.length === 0) {
-                div.innerHTML = '<div class="empty">暂无待审核修正</div>';
+                div.innerHTML = '<div class="empty-state"><div class="empty-icon">✏️</div><div class="empty-title">暂无待审核修正</div><div class="empty-desc">目前没有需要审核的修正建议</div></div>';
                 return;
             }
             let html = '';
             corrections.forEach(c => {
                 html += `
-                <div class="item" id="correction-${c.id}">
-                    <h4>问题：${c.question}</h4>
-                    <p><strong>原答案：</strong>${c.original_answer}</p>
-                    <p><strong>正确答案：</strong>${c.correct_answer}</p>
-                    <div class="meta">提交者：${c.submitter} | ${c.created_at?.slice(0,10)}</div>
-                    <div class="actions" id="actions-${c.id}">
-                        <button class="btn btn-approve" onclick="reviewCorrection('${c.id}', 'approve')">✅ 通过</button>
-                        <button class="btn btn-reject" onclick="reviewCorrection('${c.id}', 'reject')">❌ 拒绝</button>
+                <div class="item correction-item" id="correction-${escapeHTML(c.id)}">
+                    <div class="item-header">
+                        <h3 class="item-title">问题：${escapeHTML(c.question)}</h3>
+                        <span class="status-badge status-pending">待审核</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>👤 ${escapeHTML(c.submitter)}</span>
+                        <span>📅 ${escapeHTML(c.created_at?.slice(0,10))}</span>
+                    </div>
+                    <div class="correction-original">
+                        <div class="correction-label">原答案</div>
+                        <div>${escapeHTML(c.original_answer)}</div>
+                    </div>
+                    <div class="correction-correct">
+                        <div class="correction-label">正确答案</div>
+                        <div>${escapeHTML(c.correct_answer)}</div>
+                    </div>
+                    <div class="item-actions" id="actions-${escapeHTML(c.id)}">
+                        <button class="btn btn-approve" onclick="reviewCorrection('${escapeHTML(c.id)}', 'approve')">✅ 通过</button>
+                        <button class="btn btn-reject" onclick="reviewCorrection('${escapeHTML(c.id)}', 'reject')">❌ 拒绝</button>
                     </div>
                 </div>`;
             });
@@ -178,6 +470,8 @@
         }
 
         loadData();
+        // 每 30 秒自动刷新待审核列表
+        setInterval(loadData, 30000);
     </script>
 </body>
 </html>

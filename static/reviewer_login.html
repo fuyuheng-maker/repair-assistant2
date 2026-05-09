@@ -2,52 +2,311 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>审核员登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>审核员登录 - 设备检修知识助手</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Microsoft YaHei', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 360px; }
-        h2 { text-align: center; color: #f57c00; margin-bottom: 30px; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-        button { width: 100%; padding: 12px; background: #f57c00; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
-        button:hover { background: #e65100; }
-        .error { color: red; font-size: 14px; margin-bottom: 10px; text-align: center; }
-        .back-link { text-align: center; margin-top: 15px; }
-        .back-link a { color: #888; text-decoration: underline; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+        }
+        
+        /* 左侧品牌区 */
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+        
+        .brand-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+        
+        .brand-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+            font-size: 60px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .brand-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        
+        .brand-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        .brand-features {
+            margin-top: 60px;
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+        }
+        
+        .feature-item {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 24px;
+        }
+        
+        .feature-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* 右侧表单区 */
+        .form-section {
+            width: 480px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            background: #ffffff;
+        }
+        
+        .form-header {
+            margin-bottom: 40px;
+        }
+        
+        .form-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        
+        .form-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+        }
+        
+        /* 表单 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px 0 rgba(102, 126, 234, 0.39);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #6b7280;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+        
+        .back-link a:hover {
+            color: #667eea;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .brand-section {
+                display: none;
+            }
+            .form-section {
+                width: 100%;
+                padding: 40px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <h2>🔍 审核员登录</h2>
-        <form onsubmit="reviewerLogin(event)">
-            <input type="text" id="username" placeholder="审核员账号" required autocomplete="off">
-            <input type="password" id="password" placeholder="密码" required>
-            <div class="error" id="error"></div>
-            <button type="submit">登 录</button>
-        </form>
-        <div class="back-link"><a href="/entry.html">← 返回角色选择</a></div>
+    <!-- 左侧品牌区 -->
+    <div class="brand-section">
+        <div class="brand-content">
+            <div class="brand-icon">🔧</div>
+            <h1 class="brand-title">设备检修知识助手</h1>
+            <p class="brand-subtitle">智能化检修知识检索与作业系统</p>
+            
+            <div class="brand-features">
+                <div class="feature-item">
+                    <div class="feature-icon">📚</div>
+                    <div class="feature-text">知识库管理</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-text">智能检索</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-text">经验沉淀</div>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <!-- 右侧表单区 -->
+    <div class="form-section">
+        <div class="form-header">
+            <h2 class="form-title">审核员登录</h2>
+            <p class="form-subtitle">请登录您的审核员账号以继续</p>
+        </div>
+        
+        <form onsubmit="reviewerLogin(event)">
+            <div class="form-group">
+                <label class="form-label">审核员账号</label>
+                <input type="text" id="username" class="form-input" placeholder="请输入审核员账号" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" id="password" class="form-input" placeholder="请输入密码" required>
+            </div>
+            <div class="error-message" id="error"></div>
+            <button type="submit" class="btn-primary">登 录</button>
+        </form>
+        <div class="back-link"><a href="/">← 返回主界面</a></div>
+    </div>
+    
     <script>
+        function showError(id, message) {
+            const el = document.getElementById(id);
+            el.textContent = message;
+            el.classList.add('show');
+        }
+        
+        function hideError(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('show');
+        }
+        
         async function reviewerLogin(e) {
             e.preventDefault();
+            hideError('error');
+            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const errorEl = document.getElementById('error');
+            
             const formData = new FormData();
             formData.append('username', username);
             formData.append('password', password);
+            
             try {
                 const res = await fetch('/api/reviewer/login', { method: 'POST', body: formData });
                 const data = await res.json();
+                
                 if (!res.ok) {
-                    errorEl.textContent = data.detail || '登录失败';
+                    showError('error', data.detail || '登录失败');
                     return;
                 }
+                
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('role', 'admin');
+                localStorage.setItem('username', username);
                 window.location.href = '/static/admin.html';
             } catch (err) {
-                errorEl.textContent = '网络错误';
+                showError('error', '网络错误，请稍后重试');
             }
         }
     </script>

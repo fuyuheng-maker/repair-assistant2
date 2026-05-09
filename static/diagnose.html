@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>诊断工具</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; background: #f0f2f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; margin-bottom: 20px; }
+        .section { margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 8px; }
+        .success { color: #2e7d32; }
+        .error { color: #c62828; }
+        .warning { color: #f57c00; }
+        pre { background: #fff; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 12px; border: 1px solid #ddd; }
+        button { padding: 10px 20px; background: #1a73e8; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1557b0; }
+        button.danger { background: #dc3545; }
+        button.danger:hover { background: #c82333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 诊断工具</h1>
+
+        <div class="section">
+            <h3>1. 认证状态</h3>
+            <div id="authStatus">检查中...</div>
+        </div>
+
+        <div class="section">
+            <h3>2. Token 信息</h3>
+            <div id="tokenInfo">检查中...</div>
+        </div>
+
+        <div class="section">
+            <h3>3. 文件访问测试</h3>
+            <button onclick="testFileList()">测试文件列表API</button>
+            <button onclick="testDownload()">测试下载API</button>
+            <button onclick="testDelete()" class="danger">测试删除API</button>
+            <div id="testResults" style="margin-top: 15px;"></div>
+        </div>
+
+        <div class="section">
+            <h3>4. 操作</h3>
+            <button onclick="clearAndLogin()">清除缓存并重新登录</button>
+            <button onclick="refreshPage()">刷新页面</button>
+        </div>
+
+        <div id="finalResult" class="section" style="display:none;">
+            <h3>诊断结论</h3>
+            <div id="conclusion"></div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const role = localStorage.getItem('role');
+
+        // 1. 检查认证状态
+        const authDiv = document.getElementById('authStatus');
+        if (!token) {
+            authDiv.innerHTML = '<span class="error">❌ 未登录 - 请先登录</span>';
+        } else {
+            authDiv.innerHTML = `<span class="success">✓ 已登录</span><br>
+                用户名: ${username}<br>
+                角色: ${role}`;
+        }
+
+        // 2. 解析Token
+        const tokenDiv = document.getElementById('tokenInfo');
+        if (token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const expDate = new Date(payload.exp * 1000);
+                const now = new Date();
+                const isExpired = now > expDate;
+
+                tokenDiv.innerHTML = `
+                    <strong>Payload:</strong><br>
+                    - sub (用户名): ${payload.sub}<br>
+                    - role (角色): ${payload.role}<br>
+                    - exp (过期时间): ${expDate.toLocaleString()}<br>
+                    - iat (签发时间): ${new Date(payload.iat * 1000).toLocaleString()}<br><br>
+                    <strong>状态:</strong> ${isExpired ? '<span class="error">❌ 已过期</span>' : '<span class="success">✓ 有效</span>'}
+                `;
+
+                if (isExpired) {
+                    tokenDiv.innerHTML += '<br><span class="warning">⚠️ Token已过期，请重新登录！</span>';
+                }
+            } catch (e) {
+                tokenDiv.innerHTML = `<span class="error">❌ Token解析失败: ${e.message}</span>`;
+            }
+        } else {
+            tokenDiv.innerHTML = '<span class="error">❌ 没有Token</span>';
+        }
+
+        // 3. 测试API
+        async function testFileList() {
+            const result = document.getElementById('testResults');
+            result.innerHTML = '正在测试...';
+
+            try {
+                const res = await fetch('/api/files', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                const data = await res.json();
+
+                result.innerHTML = `
+                    <strong>文件列表API测试:</strong><br>
+                    状态码: ${res.status}<br>
+                    结果: ${res.ok ? '<span class="success">✓ 成功</span>' : '<span class="error">✗ 失败</span>'}<br>
+                    文件数量: ${data.files ? data.files.length : 0}<br>
+                    ${data.files && data.files.length > 0 ? `
+                        <strong>第一个文件:</strong><br>
+                        - ID: ${data.files[0].file_id}<br>
+                        - 名称: ${data.files[0].filename}<br>
+                        - 所有者: ${data.files[0].username}
+                    ` : ''}
+                `;
+            } catch (e) {
+                result.innerHTML = `<span class="error">❌ 请求失败: ${e.message}</span>`;
+            }
+        }
+
+        async function testDownload() {
+            const result = document.getElementById('testResults');
+            result.innerHTML = '正在测试...';
+
+            try {
+                // 先获取文件列表
+                const listRes = await fetch('/api/files', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                const listData = await listRes.json();
+
+                if (!listData.files || listData.files.length === 0) {
+                    result.innerHTML = '<span class="warning">⚠️ 没有文件可以测试</span>';
+                    return;
+                }
+
+                const file = listData.files[0];
+
+                // 测试下载
+                const downloadRes = await fetch(`/api/files/${file.file_id}/download`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                result.innerHTML = `
+                    <strong>下载API测试:</strong><br>
+                    文件: ${file.filename}<br>
+                    文件ID: ${file.file_id}<br>
+                    状态码: ${downloadRes.status}<br>
+                    结果: ${downloadRes.ok ? '<span class="success">✓ 成功</span>' : '<span class="error">✗ 失败</span>'}<br>
+                    ${!downloadRes.ok ? `错误: ${(await downloadRes.json()).detail || '未知错误'}` : ''}
+                `;
+            } catch (e) {
+                result.innerHTML = `<span class="error">❌ 请求失败: ${e.message}</span>`;
+            }
+        }
+
+        async function testDelete() {
+            if (!confirm('⚠️ 警告：这会实际删除文件！\n\n确定要继续吗？')) {
+                return;
+            }
+
+            const result = document.getElementById('testResults');
+            result.innerHTML = '正在测试删除...';
+
+            try {
+                const listRes = await fetch('/api/files', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                const listData = await listRes.json();
+
+                if (!listData.files || listData.files.length === 0) {
+                    result.innerHTML = '<span class="warning">⚠️ 没有文件可以删除</span>';
+                    return;
+                }
+
+                const file = listData.files[0];
+
+                const deleteRes = await fetch(`/api/files/${file.file_id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                const deleteData = await deleteRes.json();
+
+                result.innerHTML = `
+                    <strong>删除API测试:</strong><br>
+                    文件: ${file.filename}<br>
+                    文件ID: ${file.file_id}<br>
+                    状态码: ${deleteRes.status}<br>
+                    结果: ${deleteRes.ok ? '<span class="success">✓ 成功</span>' : '<span class="error">✗ 失败</span>'}<br>
+                    消息: ${deleteData.message || deleteData.detail || '无'}
+                `;
+
+                if (deleteRes.ok) {
+                    alert('✓ 删除成功！');
+                    testFileList(); // 刷新列表
+                }
+            } catch (e) {
+                result.innerHTML = `<span class="error">❌ 请求失败: ${e.message}</span>`;
+            }
+        }
+
+        function clearAndLogin() {
+            if (confirm('确定要清除所有缓存并重新登录吗？')) {
+                localStorage.clear();
+                window.location.href = '/login';
+            }
+        }
+
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        // 页面加载时自动测试
+        window.onload = function() {
+            if (token) {
+                setTimeout(() => testFileList(), 500);
+            }
+        };
+    </script>
+</body>
+</html>

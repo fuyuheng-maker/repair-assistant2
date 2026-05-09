@@ -4,106 +4,1131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>设备检修知识助手</title>
+    <!-- Markdown 渲染库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; }
-        .container { max-width: 900px; margin: 30px auto; padding: 20px; }
-        h1 { text-align: center; color: #1a73e8; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .card { background: white; padding: 25px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .card h3 { margin-bottom: 15px; color: #555; }
-        input, textarea, select { padding: 12px; border: 1px solid #ddd; border-radius: 6px; width: 100%; font-size: 14px; margin-bottom: 10px; }
-        button { padding: 12px 24px; background: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; }
-        button:hover { background: #1557b0; }
-        .flex-row { display: flex; gap: 10px; align-items: center; }
-        .flex-row>* { flex: 1; }
-        .flex-row button { flex: 0 0 auto; width: auto; }
-        #chat-box { border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; max-height: 500px; overflow-y: auto; background: #fafafa; margin-bottom: 15px; min-height: 200px; }
-        .msg { margin-bottom: 20px; display: flex; flex-direction: column; }
-        .user-msg { align-items: flex-end; }
-        .assistant-msg { align-items: flex-start; }
-        .msg-content { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 15px; line-height: 1.6; }
-        .user-msg .msg-content { background: #1a73e8; color: white; }
-        .assistant-msg .msg-content { background: #e9ecef; color: #333; }
-        .references { font-size: 0.8em; color: #888; margin-top: 8px; display: block; }
-        .feedback-btn { color: #1a73e8; cursor: pointer; text-decoration: underline; margin-left: 10px; font-size: 0.85em; }
-        .status { font-weight: bold; margin-top: 8px; color: #28a745; }
-        .logout { color: #1a73e8; cursor: pointer; text-decoration: underline; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* 整体布局 */
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* 左侧菜单栏 */
+        .sidebar {
+            width: 260px;
+            background: #1e293b;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+        
+        .sidebar-brand-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .sidebar-brand-text {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .sidebar-user {
+            margin-top: 16px;
+            padding: 12px;
+            background: #334155;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .user-role {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+        
+        .sidebar-menu {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+        
+        .menu-section {
+            margin-bottom: 24px;
+        }
+        
+        .menu-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin: 4px 0;
+            border-radius: 10px;
+            color: #cbd5e1;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .menu-item:hover {
+            background: #334155;
+            color: white;
+        }
+        
+        .menu-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid #334155;
+        }
+        
+        .menu-item.logout {
+            color: #ef4444;
+        }
+        
+        .menu-item.logout:hover {
+            background: #ef4444;
+            color: white;
+        }
+        
+        /* 右侧内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* 顶部栏 */
+        .topbar {
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            flex-shrink: 0;
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .topbar-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+        
+        .btn-icon:hover {
+            background: #e2e8f0;
+        }
+        
+        /* 内容区域 */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        
+        /* 页面内容 */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        /* 表单元素 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        /* 按钮 */
+        .btn-primary {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            padding: 12px 24px;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        /* 聊天区域 */
+        .chat-container {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            height: calc(100vh - 320px);
+            min-height: 300px;
+            max-height: 800px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .chat-empty {
+            text-align: center;
+            color: #94a3b8;
+            padding: 80px 20px;
+        }
+        
+        .chat-empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .msg {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-msg {
+            align-items: flex-end;
+        }
+        
+        .assistant-msg {
+            align-items: flex-start;
+        }
+        
+        .msg-content {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .user-msg .msg-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .assistant-msg .msg-content {
+            background: white;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        /* 检索片段 */
+        .retrieved-snippets {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .retrieved-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .snippet-item {
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            margin: 6px 0;
+            font-size: 13px;
+            color: #475569;
+        }
+        
+        .snippet-meta {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+        
+        /* 参考来源 */
+        .references {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        .reference-item {
+            margin: 4px 0;
+            padding: 6px 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        
+        .feedback-btn {
+            color: #667eea;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            margin-left: 12px;
+        }
+        
+        /* 步骤卡片 */
+        .step-item {
+            background: #f8fafc;
+            padding: 16px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+        
+        .step-tool {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        
+        .step-compliance {
+            color: #dc2626;
+            font-size: 13px;
+            background: #fef2f2;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+        
+        /* 状态提示 */
+        .status {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .status.show {
+            display: block;
+        }
+        
+        .status-success {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .status-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        
+        .status-loading {
+            background: #eff6ff;
+            color: #667eea;
+            border: 1px solid #bfdbfe;
+        }
+        
+        /* 仪表盘统计 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+        }
+        
         /* 模态框 */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
-        .modal-content { background: white; margin: 10% auto; padding: 20px; width: 420px; border-radius: 10px; }
-        .step-item { background: #f8f9fa; padding: 12px; margin: 8px 0; border-radius: 8px; }
-        .compliance { color: #d32f2f; font-size: 0.85em; margin-top: 5px; }
-        @media (max-width: 600px) { .container { padding: 10px; } }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 28px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .modal-actions button {
+            flex: 1;
+        }
+        
+        /* 加载动画 */
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+        
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                height: 100vh;
+                z-index: 100;
+                transition: left 0.3s;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            /* 移动端侧边栏遮罩层 */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.4);
+                z-index: 99;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>
-            🔧 设备检修知识检索与作业系统
-            <span class="logout" onclick="logout()">退出</span>
-        </h1>
-
-        <!-- 上传区 -->
-        <div class="card">
-            <h3>📄 上传检修手册（PDF）</h3>
-            <input type="file" id="pdfUpload" accept=".pdf">
-            <button onclick="uploadPDF()">上传并建立知识库</button>
-            <div id="uploadStatus" class="status"></div>
-        </div>
-
-        <!-- 标准化作业 -->
-        <div class="card">
-            <h3>📋 标准化作业指引</h3>
-            <div class="flex-row">
-                <input type="text" id="deviceType" placeholder="设备类型（如：发动机）">
-                <select id="levelSelect">
-                    <option value="日常检查">日常检查</option>
-                    <option value="小修">小修</option>
-                    <option value="中修">中修</option>
-                    <option value="大修">大修</option>
-                </select>
-                <button onclick="getProcedure()">获取指引</button>
+    <div class="app-container">
+        <!-- 左侧菜单栏 -->
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <div class="sidebar-brand-icon">🔧</div>
+                    <div class="sidebar-brand-text">检修助手</div>
+                </div>
+                <div class="sidebar-user">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <div class="user-name" id="currentUser">操作员</div>
+                        <div class="user-role">Worker</div>
+                    </div>
+                </div>
             </div>
-            <div id="procedureResult" style="margin-top: 15px;"></div>
-        </div>
-
-        <!-- 问答区 -->
-        <div class="card">
-            <h3>💬 智能问答（支持文本+故障图片）</h3>
-            <div id="chat-box"></div>
-            <textarea id="question" rows="3" placeholder="请输入问题..."></textarea>
-            <input type="file" id="imageUpload" accept="image/*" style="margin-bottom:10px;">
-            <button onclick="askQuestion()">发送提问</button>
-        </div>
-
-        <!-- 案例提交 -->
-        <div class="card">
-            <h3>📝 知识沉淀：分享检修经验</h3>
-            <input type="text" id="caseTitle" placeholder="案例标题">
-            <textarea id="caseContent" rows="3" placeholder="详细描述检修过程、故障现象、解决方法..."></textarea>
-            <button onclick="submitCase()">提交案例（待审核）</button>
-            <div id="caseStatus" class="status"></div>
-        </div>
+            
+            <nav class="sidebar-menu">
+                <!-- 核心功能 -->
+                <div class="menu-section">
+                    <div class="menu-title">核心功能</div>
+                    <a class="menu-item active" onclick="switchPage('chat', this)">
+                        <span class="menu-icon">💬</span>
+                        <span>知识问答</span>
+                    </a>
+                    <a class="menu-item" onclick="switchPage('procedure', this)">
+                        <span class="menu-icon">📋</span>
+                        <span>作业指引</span>
+                    </a>
+                    <a class="menu-item" onclick="switchPage('case', this)">
+                        <span class="menu-icon">📝</span>
+                        <span>案例提交</span>
+                    </a>
+                </div>
+                
+                <!-- 知识管理 -->
+                <div class="menu-section">
+                    <div class="menu-title">知识管理</div>
+                    <a class="menu-item" onclick="switchPage('upload', this)">
+                        <span class="menu-icon">📄</span>
+                        <span>上传手册</span>
+                    </a>
+                    <a class="menu-item" onclick="switchPage('history', this)">
+                        <span class="menu-icon">📚</span>
+                        <span>查询历史</span>
+                    </a>
+                </div>
+                
+                <!-- 系统 -->
+                <div class="menu-section">
+                    <div class="menu-title">系统</div>
+                    <a class="menu-item" onclick="window.location.href='/static/reviewer_login.html'">
+                        <span class="menu-icon">🔍</span>
+                        <span>审核管理</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a class="menu-item logout" onclick="logout()">
+                    <span class="menu-icon">🚪</span>
+                    <span>退出登录</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- 右侧内容区 -->
+        <main class="main-content">
+            <!-- 顶部栏 -->
+            <header class="topbar">
+                <h1 class="page-title" id="pageTitle">知识问答</h1>
+                <div class="topbar-actions">
+                    <button class="btn-icon" onclick="toggleSidebar()">☰</button>
+                </div>
+            </header>
+            
+            <!-- 内容区域 -->
+            <div class="content-area">
+                <!-- 页面1: 知识问答 -->
+                <div id="page-chat" class="page active">
+                    <div class="card">
+                        <div id="chat-box" class="chat-container">
+                        <div class="chat-empty" id="chatWelcome">
+                            <div class="chat-empty-icon">🔧</div>
+                            <div style="font-size: 18px; font-weight: 600; color: #1e293b; margin-bottom: 12px;">设备检修知识助手</div>
+                            <div style="margin-bottom: 24px; color: #64748b;">我是您的检修知识助手，请先上传检修手册，然后向我提问。</div>
+                            <div style="text-align: left; max-width: 400px; margin: 0 auto;">
+                                <div style="padding: 12px 16px; background: #f0f7ff; border-radius: 8px; margin-bottom: 12px; font-size: 14px; color: #334155;">
+                                    <strong>📌 使用步骤：</strong>
+                                </div>
+                                <div style="padding: 8px 16px; font-size: 14px; color: #64748b; margin-bottom: 20px;">
+                                    1️⃣ 点击左侧「上传手册」上传 PDF 检修手册<br>
+                                    2️⃣ 系统自动解析并建立知识库<br>
+                                    3️⃣ 在此输入检修相关问题<br>
+                                    4️⃣ 支持上传故障图片辅助分析
+                                </div>
+                                <div style="padding: 12px 16px; background: #f0f7ff; border-radius: 8px; margin-bottom: 12px; font-size: 14px; color: #334155;">
+                                    <strong>💬 试试这样问：</strong>
+                                </div>
+                                <div id="suggestions" style="padding: 0 8px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="form-group">
+                            <textarea id="question" class="form-textarea" rows="3" placeholder="请输入您的问题..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📷 上传故障图片（可选）</label>
+                            <input type="file" id="imageUpload" class="form-input" accept="image/*" onchange="previewImage(this)">
+                            <!-- 图片预览区域 -->
+                            <div id="imagePreview" style="display:none; margin-top:12px; position:relative;">
+                                <img id="previewImg" style="max-width:200px; max-height:150px; border-radius:8px; border:2px solid #e2e8f0;">
+                                <button onclick="clearImage()" style="position:absolute; top:-8px; right:-8px; width:24px; height:24px; border-radius:50%; border:none; background:#ef4444; color:white; cursor:pointer; font-size:14px;">✕</button>
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="sendBtn" onclick="askQuestion()">📤 发送提问</button>
+                    </div>
+                </div>
+                
+                <!-- 页面2: 作业指引 -->
+                <div id="page-procedure" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">📋</div>
+                            <div class="card-title">标准化作业指引</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">设备类型</label>
+                            <input type="text" id="deviceType" class="form-input" placeholder="如：发动机">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">检修级别</label>
+                            <select id="levelSelect" class="form-select">
+                                <option value="日常检查">日常检查</option>
+                                <option value="小修">小修</option>
+                                <option value="中修">中修</option>
+                                <option value="大修">大修</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="getProcedure()">🔍 获取指引</button>
+                        <div id="procedureResult" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+                
+                <!-- 页面3: 案例提交 -->
+                <div id="page-case" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">📝</div>
+                            <div class="card-title">分享检修经验</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">案例标题</label>
+                            <input type="text" id="caseTitle" class="form-input" placeholder="简洁描述案例主题">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">详细描述</label>
+                            <textarea id="caseContent" class="form-textarea" rows="6" placeholder="描述检修过程、故障现象、解决方法..."></textarea>
+                        </div>
+                        <button class="btn-primary" onclick="submitCase()">📨 提交案例（待审核）</button>
+                        <div id="caseStatus" class="status"></div>
+                    </div>
+                </div>
+                
+                <!-- 页面4: 上传手册 -->
+                <div id="page-upload" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">📄</div>
+                            <div class="card-title">上传检修手册</div>
+                        </div>
+                        <p style="color: #64748b; margin-bottom: 20px;">支持 PDF 格式，可同时选择多个文件上传，系统将自动解析并建立知识库</p>
+                        
+                        <!-- 上传区域 -->
+                        <div class="form-group">
+                            <label class="form-label">选择 PDF 文件（可多选）</label>
+                            <input type="file" id="pdfUpload" class="form-input" accept=".pdf" multiple>
+                        </div>
+                        <div id="uploadFileList" style="margin-bottom:12px;"></div>
+                        <button class="btn-primary" id="uploadBtn" onclick="uploadPDFs()">📤 上传并建立知识库</button>
+                        <div id="uploadStatus" class="status"></div>
+                    </div>
+                    
+                    <!-- 已上传文件列表 -->
+                    <div class="card" style="margin-top:20px;">
+                        <div class="card-header">
+                            <div class="card-icon">📂</div>
+                            <div class="card-title">我的手册</div>
+                            <button class="btn-secondary" onclick="loadFileList()" style="margin-left:auto;">🔄 刷新</button>
+                        </div>
+                        <div id="fileListContainer" style="max-height:500px; overflow-y:auto;">
+                            <p style="color:#64748b; text-align:center; padding:40px;">加载中...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 页面5: 查询历史 -->
+                <div id="page-history" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">📚</div>
+                            <div class="card-title">查询历史</div>
+                            <button class="btn-secondary" onclick="clearChatHistory()" style="margin-left:auto;">🗑️ 清空历史</button>
+                        </div>
+                        <div id="historyList" style="max-height: 600px; overflow-y: auto;">
+                            <p style="color: #64748b; text-align: center; padding: 40px;">暂无查询记录</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-
+    
     <!-- 修正模态框 -->
     <div id="correctionModal" class="modal">
         <div class="modal-content">
-            <h3>✏️ 提交修正建议</h3>
-            <p><strong>问题：</strong><span id="corrQuestion"></span></p>
-            <p><strong>原答案：</strong><span id="corrOriginal"></span></p>
-            <textarea id="corrAnswer" rows="4" placeholder="请输入您认为正确的答案..."></textarea>
-            <div class="flex-row" style="margin-top:15px;">
-                <button onclick="submitCorrection()">提交修正</button>
-                <button onclick="closeModal()" style="background:#888;">取消</button>
+            <div class="modal-title">✏️ 提交修正建议</div>
+            <div class="form-group">
+                <label class="form-label">问题</label>
+                <div id="corrQuestion" style="padding: 12px; background: #f8fafc; border-radius: 8px;"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">原答案</label>
+                <div id="corrOriginal" style="padding: 12px; background: #f8fafc; border-radius: 8px; max-height: 100px; overflow-y: auto;"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">您的修正</label>
+                <textarea id="corrAnswer" class="form-textarea" rows="4" placeholder="请输入您认为正确的答案..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="submitCorrection()">提交修正</button>
+                <button class="btn-secondary" onclick="closeModal()">取消</button>
             </div>
         </div>
     </div>
 
+    <!-- PDF 预览模态框 -->
+    <div id="pdfPreviewModal" class="modal" style="z-index: 1001;">
+        <div class="modal-content" style="max-width: 900px; height: 90vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div class="modal-title" id="pdfPreviewTitle" style="margin-bottom: 0;">PDF 预览</div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button onclick="pdfZoomOut()" style="padding: 6px 12px; border: 1px solid #e2e8f0; background: white; border-radius: 6px; cursor: pointer;">🔍-</button>
+                    <span id="pdfZoomLevel" style="min-width: 50px; text-align: center;">100%</span>
+                    <button onclick="pdfZoomIn()" style="padding: 6px 12px; border: 1px solid #e2e8f0; background: white; border-radius: 6px; cursor: pointer;">🔍+</button>
+                    <button onclick="closePdfPreview()" style="padding: 6px 12px; border: none; background: #ef4444; color: white; border-radius: 6px; cursor: pointer;">✕ 关闭</button>
+                </div>
+            </div>
+            <div id="pdfToolbar" style="display: flex; gap: 8px; margin-bottom: 12px; padding: 8px; background: #f8fafc; border-radius: 8px;">
+                <button onclick="pdfPrevPage()" style="padding: 6px 12px; border: 1px solid #e2e8f0; background: white; border-radius: 6px; cursor: pointer;">◀ 上一页</button>
+                <span style="line-height: 32px;">第 <span id="pdfCurrentPage">1</span> / <span id="pdfTotalPages">1</span> 页</span>
+                <button onclick="pdfNextPage()" style="padding: 6px 12px; border: 1px solid #e2e8f0; background: white; border-radius: 6px; cursor: pointer;">下一页 ▶</button>
+                <input type="number" id="pdfPageInput" min="1" style="width: 60px; padding: 6px; border: 1px solid #e2e8f0; border-radius: 6px;" onchange="pdfGoToPage(this.value)">
+                <span style="line-height: 32px; margin-left: auto;">跳转到</span>
+            </div>
+            <div id="pdfContainer" style="flex: 1; overflow: auto; background: #525659; border-radius: 8px; display: flex; justify-content: center;">
+                <canvas id="pdfCanvas" style="box-shadow: 0 4px 20px rgba(0,0,0,0.3);"></canvas>
+            </div>
+            <div id="pdfLoading" style="display: none; text-align: center; padding: 40px; color: white;">
+                <div style="font-size: 18px;">⏳ 正在加载 PDF...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        // 等待 PDF.js 加载完成
+        let pdfJsReady = false;
+        if (pdfjsLib && pdfjsLib.GlobalWorkerOptions) {
+            pdfJsReady = true;
+        }
+    </script>
+
+    <script>
+        // ---------- 防抖和请求状态管理 ----------
+        let isAsking = false;
+        let isUploading = false;
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // ---------- 页面切换 ----------
+        const pageTitles = {
+            'chat': '知识问答',
+            'procedure': '作业指引',
+            'case': '案例提交',
+            'upload': '上传手册',
+            'history': '查询历史'
+        };
+        
+        // 引导词列表
+        const suggestions = [
+            '发动机大修的步骤是什么？',
+            '气门间隙如何调整？',
+            '活塞环的安装注意事项有哪些？',
+            '变速箱油需要多久更换一次？',
+            '制动系统日常检查包括哪些项目？'
+        ];
+        
+        // 渲染引导词
+        function renderSuggestions() {
+            const container = document.getElementById('suggestions');
+            if (!container) return;
+            container.innerHTML = suggestions.map(s => 
+                '<div onclick="useSuggestion(\'' + s.replace(/'/g, "\\'") + '\')" ' +
+                'style="padding: 10px 14px; margin: 6px 0; background: white; border-radius: 8px; ' +
+                'font-size: 14px; color: #475569; cursor: pointer; border: 1px solid #e2e8f0; ' +
+                'transition: all 0.2s;" ' +
+                'onmouseover="this.style.borderColor=\'#667eea\'; this.style.color=\'#667eea\'" ' +
+                'onmouseout="this.style.borderColor=\'#e2e8f0\'; this.style.color=\'#475569\'">' +
+                '💬 ' + s + '</div>'
+            ).join('');
+        }
+        
+        function useSuggestion(text) {
+            document.getElementById('question').value = text;
+            askQuestion();
+        }
+        
+        // ---------- 会话历史存储 ----------
+        const CHAT_HISTORY_KEY = 'chat_history_';
+        
+        function getChatHistoryKey() {
+            const username = localStorage.getItem('username') || 'default';
+            return CHAT_HISTORY_KEY + username;
+        }
+        
+        function saveChatHistory(role, content) {
+            const key = getChatHistoryKey();
+            let history = JSON.parse(localStorage.getItem(key) || '[]');
+            history.push({
+                role: role,
+                content: content,
+                timestamp: new Date().toISOString()
+            });
+            // 只保留最近 50 条
+            if (history.length > 50) {
+                history = history.slice(-50);
+            }
+            localStorage.setItem(key, JSON.stringify(history));
+        }
+        
+        function loadChatHistory() {
+            // 刷新页面时不自动恢复对话，只返回历史数据供查询历史页面使用
+            const key = getChatHistoryKey();
+            return JSON.parse(localStorage.getItem(key) || '[]');
+        }
+        
+        function clearChatHistory() {
+            if (confirm('确定要清空对话历史吗？')) {
+                const key = getChatHistoryKey();
+                localStorage.removeItem(key);
+                location.reload();
+            }
+        }
+        
+        // 渲染查询历史列表
+        function renderHistoryList() {
+            const key = getChatHistoryKey();
+            const history = JSON.parse(localStorage.getItem(key) || '[]');
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="color: #64748b; text-align: center; padding: 40px;">暂无查询记录</p>';
+                return;
+            }
+            
+            let html = '';
+            let currentPair = {};
+            
+            history.forEach((msg, index) => {
+                if (msg.role === 'user') {
+                    currentPair.question = msg.content;
+                    currentPair.time = new Date(msg.timestamp).toLocaleString('zh-CN');
+                } else if (msg.role === 'assistant' && currentPair.question) {
+                    currentPair.answer = msg.content.substring(0, 100) + (msg.content.length > 100 ? '...' : '');
+                    html += '<div style="padding: 16px; border-bottom: 1px solid #e2e8f0; cursor: pointer;" onclick="useSuggestion(\'' + currentPair.question.replace(/'/g, "\\'") + '\')" onmouseover="this.style.background=\'#f8fafc\'" onmouseout="this.style.background=\'transparent\'">';
+                    html += '<div style="font-weight: 600; color: #1e293b; margin-bottom: 8px;">💬 ' + escapeHTML(currentPair.question) + '</div>';
+                    html += '<div style="color: #64748b; font-size: 14px; margin-bottom: 4px;">' + escapeHTML(currentPair.answer) + '</div>';
+                    html += '<div style="color: #94a3b8; font-size: 12px;">' + currentPair.time + '</div>';
+                    html += '</div>';
+                    currentPair = {};
+                }
+            });
+            
+            historyList.innerHTML = html;
+        }
+        
+        // 页面加载时渲染引导词和查询历史列表（对话在刷新时清空）
+        renderSuggestions();
+        renderHistoryList();
+        
+        function switchPage(pageId, menuItem) {
+            // 更新菜单激活状态
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            if (menuItem) menuItem.classList.add('active');
+            
+            // 切换页面
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            
+            // 更新标题
+            document.getElementById('pageTitle').textContent = pageTitles[pageId];
+            
+            // 如果切换到历史页面，刷新历史列表
+            if (pageId === 'history') {
+                renderHistoryList();
+            }
+            if (pageId === 'upload') {
+                loadFileList();
+            }
+        }
+        
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        }
+        
+        // ---------- HTML 转义 ----------
+        function escapeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
+        // ---------- Markdown 安全渲染 ----------
+        function renderMarkdown(text) {
+            if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
+                // 使用 marked + DOMPurify 安全渲染 Markdown
+                return DOMPurify.sanitize(marked.parse(text));
+            }
+            // 如果库未加载，回退到纯文本
+            return escapeHTML(text);
+        }
+        
         // ---------- 认证 ----------
         const token = localStorage.getItem('token');
         if (!token) window.location.href = '/login';
+        
+        // 显示当前用户名
+        const username = localStorage.getItem('username') || '操作员';
+        document.getElementById('currentUser').textContent = username;
+        
         const origFetch = window.fetch;
         window.fetch = function(url, options = {}) {
             if (!options.headers) options.headers = {};
@@ -114,102 +1139,376 @@
             }
             return origFetch(url, options);
         };
-
+        
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
+            localStorage.removeItem('username');
             window.location.href = '/login';
         }
-
+        
+        function showStatus(id, message, type) {
+            const el = document.getElementById(id);
+            el.textContent = message;
+            el.className = 'status show status-' + type;
+            if (type === 'success') {
+                setTimeout(() => el.classList.remove('show'), 5000);
+            }
+        }
+        
         // ---------- 上传 PDF ----------
-        async function uploadPDF() {
-            const file = document.getElementById('pdfUpload').files[0];
-            if (!file) return alert('请选择PDF文件');
-            const formData = new FormData(); formData.append('file', file);
-            document.getElementById('uploadStatus').innerText = '解析中...';
+        // ---------- 多文件上传 ----------
+        // 显示待上传文件列表
+        document.getElementById('pdfUpload').addEventListener('change', function() {
+            const files = this.files;
+            const container = document.getElementById('uploadFileList');
+            if (files.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            let html = '<div style="font-size:13px; color:#64748b; margin-bottom:8px;">已选择 ' + files.length + ' 个文件：</div>';
+            for (let i = 0; i < files.length; i++) {
+                const sizeMB = (files[i].size / 1024 / 1024).toFixed(1);
+                html += '<div style="padding:6px 10px; background:#f0f7ff; border-radius:6px; margin:4px 0; font-size:13px; color:#475569; display:flex; justify-content:space-between;">';
+                html += '<span>📄 ' + escapeHTML(files[i].name) + '</span>';
+                html += '<span style="color:#94a3b8;">' + sizeMB + ' MB</span>';
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        });
+        
+        async function uploadPDFs() {
+            // 防抖：防止重复提交
+            if (isUploading) {
+                return;
+            }
+            isUploading = true;
+
+            const files = document.getElementById('pdfUpload').files;
+            if (files.length === 0) {
+                isUploading = false;
+                return alert('请选择PDF文件');
+            }
+            
+            const uploadBtn = document.getElementById('uploadBtn');
+            const originalText = uploadBtn.innerHTML;
+            uploadBtn.innerHTML = '⏳ 上传中...';
+            uploadBtn.classList.add('btn-loading');
+            
+            let successCount = 0;
+            let failCount = 0;
+            let results = [];
+            
+            for (let i = 0; i < files.length; i++) {
+                showStatus('uploadStatus', `⏳ 正在处理第 ${i+1}/${files.length} 个文件：${files[i].name}...`, 'loading');
+                const formData = new FormData();
+                formData.append('file', files[i]);
+                try {
+                    const res = await fetch('/upload', { method: 'POST', body: formData });
+                    const errData = await res.json().catch(() => ({}));
+                    if (!res.ok) {
+                        throw new Error(errData.detail || `上传失败 (${res.status})`);
+                    }
+                    const data = errData;
+                    successCount++;
+                    results.push({ name: files[i].name, chunks: data.chunk_count, ok: true });
+                } catch (e) {
+                    failCount++;
+                    results.push({ name: files[i].name, error: e.message, ok: false });
+                } finally {
+                    // 确保上传状态总是被重置
+                    uploadBtn.innerHTML = originalText;
+                    uploadBtn.classList.remove('btn-loading');
+                    isUploading = false;
+                }
+            }
+            
+            let msg = `✅ 上传完成！成功 ${successCount} 个`;
+            if (failCount > 0) msg += `，失败 ${failCount} 个`;
+            showStatus('uploadStatus', msg, failCount > 0 ? 'error' : 'success');
+            
+            uploadBtn.innerHTML = originalText;
+            uploadBtn.classList.remove('btn-loading');
+            isUploading = false;
+            document.getElementById('pdfUpload').value = '';
+            document.getElementById('uploadFileList').innerHTML = '';
+            
+            // 刷新文件列表（延迟一点避免视觉冲突）
+            setTimeout(loadFileList, 300);
+        }
+        
+        // ---------- 文件列表管理 ----------
+        async function loadFileList() {
+            const container = document.getElementById('fileListContainer');
+            container.innerHTML = '<p style="color:#64748b; text-align:center; padding:40px;">加载中...</p>';
             try {
-                const res = await fetch('/upload', { method: 'POST', body: formData });
+                const res = await fetch('/api/files');
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
-                document.getElementById('uploadStatus').innerText = '✅ 上传成功！共 ' + data.chunk_count + ' 个知识片段';
-            } catch (e) { document.getElementById('uploadStatus').innerText = '❌ 上传失败：' + e.message; }
+                
+                // 清空容器
+                container.innerHTML = '';
+                
+                if (!data.files || data.files.length === 0) {
+                    container.innerHTML = '<p style="color:#64748b; text-align:center; padding:40px;">暂无上传记录，请先上传检修手册</p>';
+                    return;
+                }
+                
+                // 统计行
+                let totalChunks = 0;
+                data.files.forEach(function(f) { totalChunks += (f.chunk_count || 0); });
+                
+                var summaryDiv = document.createElement('div');
+                summaryDiv.style.cssText = 'padding:12px 16px; background:linear-gradient(135deg,#667eea22,#764ba222); border-radius:10px; margin-bottom:16px; font-size:14px; color:#475569; border:1px solid #667eea33;';
+                summaryDiv.textContent = '📊 知识库概览：共 ' + data.files.length + ' 个手册，' + totalChunks + ' 个知识片段';
+                container.appendChild(summaryDiv);
+                
+                // 文件列表
+                data.files.forEach(function(f) {
+                    var row = document.createElement('div');
+                    row.style.cssText = 'padding:14px 16px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; gap:12px;';
+                    row.id = 'file-' + f.file_id;
+                    
+                    var info = document.createElement('div');
+                    info.style.cssText = 'flex:1; min-width:0;';
+                    
+                    var nameDiv = document.createElement('div');
+                    nameDiv.style.cssText = 'font-weight:600; color:#1e293b; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;';
+                    nameDiv.textContent = '📄 ' + f.filename;
+                    
+                    var metaDiv = document.createElement('div');
+                    metaDiv.style.cssText = 'font-size:12px; color:#94a3b8;';
+                    var dateStr = new Date(f.uploaded_at).toLocaleString('zh-CN');
+                    metaDiv.textContent = f.chunk_count + ' 个知识片段 | ' + dateStr;
+                    
+                    info.appendChild(nameDiv);
+                    info.appendChild(metaDiv);
+                    
+                    var previewBtn = document.createElement('button');
+                    previewBtn.className = 'btn-secondary';
+                    previewBtn.style.cssText = 'padding:6px 14px; font-size:12px; white-space:nowrap; flex-shrink:0; color:#667eea; border-color:#667eea;';
+                    previewBtn.textContent = '👁️ 预览';
+                    previewBtn.addEventListener('click', function() {
+                        openPdfPreview(f.file_id, f.filename);
+                    });
+                    
+                    var delBtn = document.createElement('button');
+                    delBtn.className = 'btn-secondary';
+                    delBtn.style.cssText = 'padding:6px 14px; font-size:12px; white-space:nowrap; flex-shrink:0; color:#ef4444; border-color:#fca5a5;';
+                    delBtn.textContent = '🗑️ 删除';
+                    delBtn.addEventListener('click', function() {
+                        deleteFile(f.file_id, f.filename);
+                    });
+                    
+                    row.appendChild(info);
+                    row.appendChild(previewBtn);
+                    row.appendChild(delBtn);
+                    container.appendChild(row);
+                });
+                
+            } catch (e) {
+                container.innerHTML = '<p style="color:#ef4444; text-align:center; padding:40px;">加载失败，请点击刷新重试</p>';
+            }
         }
-
+        
+        async function deleteFile(fileId, filename) {
+            if (!confirm('确定要删除「' + filename + '」吗？删除后相关知识片段将无法检索。')) return;
+            
+            try {
+                const res = await fetch('/api/files/' + fileId, { method: 'DELETE' });
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.detail || '删除失败');
+                }
+                const data = await res.json();
+                // 移除 DOM 元素
+                const el = document.getElementById('file-' + fileId);
+                if (el) el.remove();
+                // 刷新列表
+                loadFileList();
+                alert(data.message);
+            } catch (e) {
+                alert('删除失败：' + e.message);
+            }
+        }
+        
+        // 页面加载时刷新文件列表（如果当前在 upload 页面）
+        // 注意：不要在这里无条件调用，避免重复请求
+        
         // ---------- 标准化作业 ----------
         async function getProcedure() {
             const device = document.getElementById('deviceType').value.trim();
             const level = document.getElementById('levelSelect').value;
             if (!device) return alert('请输入设备类型');
+            const div = document.getElementById('procedureResult');
+            div.innerHTML = '<div style="color:#667eea;">⏳ 正在查询...</div>';
             try {
                 const res = await fetch(`/api/procedure?device=${encodeURIComponent(device)}&level=${encodeURIComponent(level)}`);
                 const data = await res.json();
-                const div = document.getElementById('procedureResult');
                 div.innerHTML = '';
                 if (data.steps) {
                     data.steps.forEach(s => {
-                        div.innerHTML += `<div class="step-item">
-                            <strong>${s.step}. ${s.desc}</strong> (工具: ${s.tool || '无'})
-                            <div class="compliance">⚠️ 合规要求: ${s.compliance}</div>
-                        </div>`;
+                        div.innerHTML += '<div class="step-item">' +
+                            '<div class="step-title">' + escapeHTML(String(s.step)) + '. ' + escapeHTML(s.desc) + '</div>' +
+                            '<div class="step-tool">🔧 工具: ' + escapeHTML(s.tool || '无') + '</div>' +
+                            '<div class="step-compliance">⚠️ 合规要求: ' + escapeHTML(s.compliance) + '</div>' +
+                            '</div>';
                     });
                 } else if (data.steps_text) {
-                    div.innerHTML = `<pre style="white-space: pre-wrap; background:#f8f9fa; padding:10px; border-radius:6px;">${data.steps_text}</pre>`;
+                    div.innerHTML = '<pre style="white-space: pre-wrap; background:#f8fafc; padding:16px; border-radius:10px; border:1px solid #e2e8f0;">' + escapeHTML(data.steps_text) + '</pre>';
                 }
-            } catch (e) { alert('获取失败：' + e.message); }
+            } catch (e) { 
+                div.innerHTML = '<div style="color:#dc2626;">❌ 获取失败：' + escapeHTML(e.message) + '</div>'; 
+            }
         }
-
-        // ---------- 提问（含修正按钮） ----------
+        
+        // ---------- 图片预览 ----------
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+        
+        function clearImage() {
+            document.getElementById('imageUpload').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+        }
+        
+        // ---------- 提问 ----------
         async function askQuestion() {
+            // 防抖：防止重复提交
+            if (isAsking) {
+                return;
+            }
+            isAsking = true;
+
             const question = document.getElementById('question').value.trim();
-            if (!question) return alert('请输入问题');
+            if (!question) {
+                isAsking = false;
+                return alert('请输入问题');
+            }
+            
+            // 显示按钮加载状态
+            const sendBtn = document.getElementById('sendBtn');
+            const originalText = sendBtn.innerHTML;
+            sendBtn.innerHTML = '⏳ 发送中...';
+            sendBtn.classList.add('btn-loading');
+            
             const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML += '<div class="msg user-msg"><div class="msg-content">' + question + '</div></div>';
-            const formData = new FormData(); formData.append('question', question);
+            if (chatBox.querySelector('.chat-empty')) {
+                chatBox.innerHTML = '';
+            }
+            
+            chatBox.innerHTML += '<div class="msg user-msg"><div class="msg-content">' + escapeHTML(question) + '</div></div>';
+            
+            // 保存用户消息到历史
+            saveChatHistory('user', question);
+            
+            const formData = new FormData(); 
+            formData.append('question', question);
             const imgFile = document.getElementById('imageUpload').files[0];
             if (imgFile) formData.append('image', imgFile);
+            
             const loadingId = 'loading_' + Date.now();
-            chatBox.innerHTML += '<div id="' + loadingId + '" class="msg assistant-msg"><div class="msg-content">⏳ 检索中...</div></div>';
+            chatBox.innerHTML += '<div id="' + loadingId + '" class="msg assistant-msg"><div class="msg-content">⏳ 正在检索知识库...</div></div>';
             chatBox.scrollTop = chatBox.scrollHeight;
+            
             try {
                 const res = await fetch('/ask', { method: 'POST', body: formData });
                 const data = await res.json();
                 document.getElementById(loadingId)?.remove();
+                
+                let snippetsHTML = '';
+                if (data.retrieved_snippets?.length) {
+                    snippetsHTML = '<div class="retrieved-snippets">';
+                    snippetsHTML += '<div class="retrieved-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\';">🔍 检索到的相关片段（点击展开）</div>';
+                    snippetsHTML += '<div style="display:none;">';
+                    data.retrieved_snippets.forEach(s => {
+                        snippetsHTML += '<div class="snippet-item">';
+                        snippetsHTML += '<span class="snippet-meta">[' + s.index + '] P' + s.page + '</span>';
+                        snippetsHTML += escapeHTML(s.snippet);
+                        snippetsHTML += '</div>';
+                    });
+                    snippetsHTML += '</div></div>';
+                }
+                
                 let refHTML = '';
                 if (data.references?.length) {
-                    refHTML = '<span class="references">📚 参考：';
-                    data.references.forEach(r => refHTML += `【P${r.page}】${r.content}<br>`);
-                    refHTML += '</span>';
+                    refHTML = '<div class="references">📚 参考来源：<br>';
+                    data.references.forEach(r => {
+                        refHTML += '<div class="reference-item">【P' + escapeHTML(String(r.page)) + '】' + escapeHTML(r.content) + '</div>';
+                    });
+                    refHTML += '</div>';
                 }
-                const escapedQuestion = question.replace(/`/g, '\\`').replace(/\\/g, '\\\\');
-                const escapedAnswer = data.answer.replace(/`/g, '\\`').replace(/\\/g, '\\\\');
-                chatBox.innerHTML += `<div class="msg assistant-msg">
-                    <div class="msg-content">${data.answer}${refHTML}
-                        <span class="feedback-btn" onclick="showCorrectionModal(\`${escapedQuestion}\`, \`${escapedAnswer}\`)">[修正]</span>
-                    </div></div>`;
+                
+                const assistantMsg = snippetsHTML + renderMarkdown(data.answer) + refHTML +
+                    '<span class="feedback-btn" data-q="' + escapeHTML(question) + '" data-a="' + escapeHTML(data.answer) + '">[修正]</span>';
+                
+                // 添加 AI 生成的引导问题
+                let suggestedHTML = '';
+                if (data.suggested_questions && data.suggested_questions.length > 0) {
+                    suggestedHTML = '<div style="margin-top:16px; padding-top:12px; border-top:1px solid #e2e8f0;">';
+                    suggestedHTML += '<div style="font-size:13px; color:#64748b; margin-bottom:8px;">💡 您可能还想问：</div>';
+                    data.suggested_questions.forEach((q, i) => {
+                        suggestedHTML += '<div onclick="useSuggestion(\'' + q.replace(/'/g, "\\'") + '\')" ' +
+                            'style="padding:8px 12px; margin:4px 0; background:#f0f7ff; border-radius:6px; font-size:13px; color:#475569; cursor:pointer; border:1px solid #e2e8f0;" ' +
+                            'onmouseover="this.style.background=\'#e0efff\'" onmouseout="this.style.background=\'#f0f7ff\'">' +
+                            (i+1) + '. ' + escapeHTML(q) + '</div>';
+                    });
+                    suggestedHTML += '</div>';
+                }
+                
+                chatBox.innerHTML += '<div class="msg assistant-msg"><div class="msg-content">' + assistantMsg + suggestedHTML + '</div></div>';
+                
+                // 保存 AI 回复到历史（不包含 HTML 标签）
+                saveChatHistory('assistant', data.answer);
             } catch (e) {
                 document.getElementById(loadingId)?.remove();
-                chatBox.innerHTML += '<div class="msg assistant-msg"><div class="msg-content">❌ 请求失败：' + e.message + '</div></div>';
+                chatBox.innerHTML += '<div class="msg assistant-msg"><div class="msg-content">❌ 请求失败：' + escapeHTML(e.message) + '</div></div>';
             }
+            
+            // 恢复按钮状态
+            sendBtn.innerHTML = originalText;
+            sendBtn.classList.remove('btn-loading');
+            isAsking = false;
+            
             document.getElementById('question').value = '';
             document.getElementById('imageUpload').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
+        
         // ---------- 案例提交 ----------
         async function submitCase() {
             const title = document.getElementById('caseTitle').value.trim();
             const content = document.getElementById('caseContent').value.trim();
             if (!title || !content) return alert('请填写标题和内容');
-            const formData = new FormData(); formData.append('title', title); formData.append('content', content);
+            
+            const formData = new FormData(); 
+            formData.append('title', title); 
+            formData.append('content', content);
+            
             try {
                 const res = await fetch('/api/submit-case', { method: 'POST', body: formData });
                 const data = await res.json();
-                document.getElementById('caseStatus').innerText = '✅ ' + data.message;
+                showStatus('caseStatus', '✅ ' + data.message, 'success');
                 document.getElementById('caseTitle').value = '';
                 document.getElementById('caseContent').value = '';
-            } catch (e) { document.getElementById('caseStatus').innerText = '❌ 提交失败'; }
+            } catch (e) { 
+                showStatus('caseStatus', '❌ 提交失败', 'error'); 
+            }
         }
-
+        
         // ---------- 修正功能 ----------
         let currentCorrection = {};
         function showCorrectionModal(question, original) {
@@ -218,23 +1517,201 @@
             document.getElementById('correctionModal').style.display = 'block';
             currentCorrection = { question, original };
         }
+        
+        // 使用事件委托处理修正按钮点击（避免 onclick 注入）
+        document.getElementById('chat-box').addEventListener('click', function(e) {
+            if (e.target.classList.contains('feedback-btn')) {
+                const q = e.target.getAttribute('data-q');
+                const a = e.target.getAttribute('data-a');
+                if (q && a) showCorrectionModal(q, a);
+            }
+        });
+        
         function closeModal() {
             document.getElementById('correctionModal').style.display = 'none';
         }
+        
         async function submitCorrection() {
             const correctAnswer = document.getElementById('corrAnswer').value.trim();
             if (!correctAnswer) return alert('请填写修正后答案');
+            
             const formData = new FormData();
             formData.append('question', currentCorrection.question);
             formData.append('original_answer', currentCorrection.original);
             formData.append('correct_answer', correctAnswer);
+            
             try {
                 const res = await fetch('/api/submit-correction', { method: 'POST', body: formData });
                 const data = await res.json();
                 alert(data.message);
                 closeModal();
-            } catch (e) { alert('提交失败'); }
+                document.getElementById('corrAnswer').value = '';
+            } catch (e) { 
+                alert('提交失败'); 
+            }
         }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('correctionModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // ========== PDF 预览功能 ==========
+        let currentPdf = null;
+        let currentPageNumber = 1;
+        let totalPages = 0;
+        let currentScale = 1.0;
+        let currentFileId = null;
+
+        async function openPdfPreview(fileId, filename) {
+            currentFileId = fileId;
+            currentPageNumber = 1;
+            currentScale = 1.0;
+            
+            document.getElementById('pdfPreviewTitle').textContent = filename;
+            document.getElementById('pdfCurrentPage').textContent = '1';
+            document.getElementById('pdfTotalPages').textContent = '1';
+            document.getElementById('pdfZoomLevel').textContent = '100%';
+            document.getElementById('pdfContainer').style.display = 'flex';
+            document.getElementById('pdfLoading').style.display = 'block';
+            document.getElementById('pdfLoading').innerHTML = '<div style="font-size: 18px;">⏳ 正在加载 PDF...</div>';
+            
+            const canvas = document.getElementById('pdfCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            document.getElementById('pdfPreviewModal').style.display = 'block';
+            
+            try {
+                // 检查 PDF.js 是否加载
+                if (typeof pdfjsLib === 'undefined') {
+                    throw new Error('PDF.js 库未加载，正在尝试备用方案...');
+                }
+                
+                const res = await fetch('/api/files/' + fileId + '/download');
+                if (!res.ok) {
+                    throw new Error(`获取文件失败 (${res.status})`);
+                }
+                
+                const blob = await res.blob();
+                if (blob.size === 0) {
+                    throw new Error('PDF 文件为空');
+                }
+                
+                const arrayBuffer = await blob.arrayBuffer();
+                currentPdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                totalPages = currentPdf.numPages;
+                document.getElementById('pdfTotalPages').textContent = totalPages;
+                document.getElementById('pdfLoading').style.display = 'none';
+                
+                renderPdfPage(currentPageNumber);
+            } catch (e) {
+                console.error('PDF预览错误:', e);
+                document.getElementById('pdfContainer').style.display = 'none';
+                document.getElementById('pdfLoading').style.display = 'block';
+                
+                // 提供备用方案：在新窗口打开 PDF
+                const fallbackUrl = '/api/files/' + fileId + '/download';
+                document.getElementById('pdfLoading').innerHTML = 
+                    '<div style="font-size: 16px; color: #f87171; margin-bottom: 20px;">❌ ' + escapeHTML(e.message) + '</div>' +
+                    '<div style="font-size: 14px; color: white; margin-bottom: 20px;">正在尝试在新窗口打开...</div>' +
+                    '<button onclick="window.open(\'' + fallbackUrl + '\', \'_blank\')" ' +
+                    'style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">' +
+                    '🔗 在新窗口打开 PDF</button>';
+                
+                // 自动尝试新窗口打开
+                setTimeout(() => {
+                    window.open(fallbackUrl, '_blank');
+                }, 1000);
+            }
+        }
+
+        async function renderPdfPage(pageNum) {
+            if (!currentPdf) return;
+            
+            const canvas = document.getElementById('pdfCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            try {
+                const page = await currentPdf.getPage(pageNum);
+                const viewport = page.getViewport({ scale: currentScale });
+                
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                await page.render({
+                    canvasContext: ctx,
+                    viewport: viewport
+                }).promise;
+                
+                document.getElementById('pdfCurrentPage').textContent = pageNum;
+                document.getElementById('pdfPageInput').value = pageNum;
+                currentPageNumber = pageNum;
+            } catch (e) {
+                console.error('渲染页面失败:', e);
+            }
+        }
+
+        function pdfPrevPage() {
+            if (currentPageNumber > 1) {
+                renderPdfPage(currentPageNumber - 1);
+            }
+        }
+
+        function pdfNextPage() {
+            if (currentPageNumber < totalPages) {
+                renderPdfPage(currentPageNumber + 1);
+            }
+        }
+
+        function pdfGoToPage(pageNum) {
+            const num = parseInt(pageNum);
+            if (num >= 1 && num <= totalPages) {
+                renderPdfPage(num);
+            }
+        }
+
+        function pdfZoomIn() {
+            if (currentScale < 3.0) {
+                currentScale += 0.25;
+                document.getElementById('pdfZoomLevel').textContent = Math.round(currentScale * 100) + '%';
+                renderPdfPage(currentPageNumber);
+            }
+        }
+
+        function pdfZoomOut() {
+            if (currentScale > 0.5) {
+                currentScale -= 0.25;
+                document.getElementById('pdfZoomLevel').textContent = Math.round(currentScale * 100) + '%';
+                renderPdfPage(currentPageNumber);
+            }
+        }
+
+        function closePdfPreview() {
+            document.getElementById('pdfPreviewModal').style.display = 'none';
+            if (currentPdf) {
+                currentPdf.destroy();
+                currentPdf = null;
+            }
+        }
+
+        document.getElementById('pdfPreviewModal').onclick = function(e) {
+            if (e.target === this) {
+                closePdfPreview();
+            }
+        };
+
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('pdfPreviewModal').style.display === 'block') {
+                if (e.key === 'ArrowLeft') pdfPrevPage();
+                if (e.key === 'ArrowRight') pdfNextPage();
+                if (e.key === 'Escape') closePdfPreview();
+                if (e.key === '+' || e.key === '=') pdfZoomIn();
+                if (e.key === '-') pdfZoomOut();
+            }
+        });
     </script>
 </body>
 </html>

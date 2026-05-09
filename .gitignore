@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# 环境变量
+.env
+
+# 数据库
+chroma_db/
+
+# 上传的文件
+uploads/
+
+# 临时测试文件
+test_*.py
+diagnose.py
+check_user_kb.py
+clean_*.py
+clear_*.py
+list_all_*.py
+
+# 其他
+*.tar.gz
+*.log

@@ -2,6 +2,7 @@ import json
 import os
 import uuid
 import re
+import threading
 from datetime import datetime
 from typing import Dict
 
@@ -11,7 +12,7 @@ router = APIRouter()
 
 # 全局变量占位，由 init_features 注入
 _embed_model = None
-_collection = None
+_get_user_collection = None  # 函数，用于获取用户 collection
 _client = None
 _TEXT_MODEL = None
 _get_current_user = None
@@ -37,38 +38,58 @@ PROCEDURE_TEMPLATES = {
 
 PENDING_CASES_FILE = "pending_cases.json"
 CORRECTIONS_FILE = "corrections.json"
+_json_locks = {PENDING_CASES_FILE: threading.Lock(), CORRECTIONS_FILE: threading.Lock()}
+
 for f in [PENDING_CASES_FILE, CORRECTIONS_FILE]:
     if not os.path.exists(f):
         with open(f, "w") as fp:
             json.dump([], fp)
 
 def load_json(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    lock = _json_locks.get(path, threading.Lock())
+    with lock:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
 
 def save_json(path, data):
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    lock = _json_locks.get(path, threading.Lock())
+    with lock:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
 
 # ---------- 功能函数（无依赖） ----------
 def get_procedure_handler(device, level, username):
+    # 输入长度限制，防止 Prompt 注入
+    device = device[:50].strip()
+    level = level[:20].strip()
+    
     template = PROCEDURE_TEMPLATES.get((device, level))
     if template:
         return {"device": device, "level": level, "steps": template, "source": "template"}
     try:
-        prompt = f"请为设备“{device}”的“{level}”检修生成详细步骤清单（JSON数组，每项含step、desc、compliance、tool）。"
+        prompt = f"请为设备“{device}”的“{level}”检修生成详细步骤清单（JSON数组，每项含step、desc、compliance、tool）。只输出JSON，不要输出其他内容。"
         resp = _client.chat.completions.create(
             model=_TEXT_MODEL,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2
         )
         raw = resp.choices[0].message.content
-        match = re.search(r'\[.*\]', raw, re.DOTALL)
+        # 尝试直接解析整个响应为 JSON
+        try:
+            steps = json.loads(raw)
+            if isinstance(steps, list):
+                return {"device": device, "level": level, "steps": steps, "source": "ai_generated"}
+        except json.JSONDecodeError:
+            pass
+        # 如果直接解析失败，尝试提取第一个完整的 JSON 数组
+        match = re.search(r'\[\s*\{.*?\}\s*\]', raw, re.DOTALL)
         if match:
-            steps = json.loads(match.group())
-            return {"device": device, "level": level, "steps": steps, "source": "ai_generated"}
-        else:
-            return {"device": device, "level": level, "steps_text": raw, "source": "ai_generated_raw"}
+            try:
+                steps = json.loads(match.group())
+                return {"device": device, "level": level, "steps": steps, "source": "ai_generated"}
+            except json.JSONDecodeError:
+                pass
+        return {"device": device, "level": level, "steps_text": raw, "source": "ai_generated_raw"}
     except Exception as e:
         raise HTTPException(500, f"生成指引失败：{e}")
 
@@ -95,10 +116,20 @@ def review_case_logic(case_id, action):
             if action == "approve":
                 texts = [case["content"]]
                 emb = _embed_model.encode(texts).tolist()
-                _collection.add(
+                # 审核通过的案例同时加入提交者知识库和全局知识库
+                user_col = _get_user_collection(case["submitter"])
+                user_col.add(
                     ids=[f"case_{case_id}"],
                     embeddings=emb,
                     metadatas=[{"source": "user_case", "title": case["title"], "type": case["type"]}],
+                    documents=texts
+                )
+                # 加入全局知识库供所有用户检索
+                global_col = _get_user_collection("global")
+                global_col.add(
+                    ids=[f"global_case_{case_id}"],
+                    embeddings=emb,
+                    metadatas=[{"source": "global_case", "title": case["title"], "type": case["type"], "submitter": case["submitter"]}],
                     documents=texts
                 )
                 case["status"] = "approved"
@@ -131,7 +162,9 @@ def review_correction_logic(correction_id, action):
             if action == "approve":
                 texts = [f"问题：{corr['question']}\n正确答案：{corr['correct_answer']}"]
                 emb = _embed_model.encode(texts).tolist()
-                _collection.add(
+                # 审核通过的修正加入提交者的个人知识库
+                user_col = _get_user_collection(corr["submitter"])
+                user_col.add(
                     ids=[f"correction_{correction_id}"],
                     embeddings=emb,
                     metadatas=[{"source": "user_correction"}],
@@ -145,10 +178,10 @@ def review_correction_logic(correction_id, action):
     raise HTTPException(404, "修正记录不存在")
 
 # ---------- 动态注册路由 ----------
-def init_features(embed_model, collection, client, text_model, get_current_user, require_admin):
-    global _embed_model, _collection, _client, _TEXT_MODEL, _get_current_user, _require_admin
+def init_features(embed_model, get_user_collection, client, text_model, get_current_user, require_admin):
+    global _embed_model, _get_user_collection, _client, _TEXT_MODEL, _get_current_user, _require_admin
     _embed_model = embed_model
-    _collection = collection
+    _get_user_collection = get_user_collection
     _client = client
     _TEXT_MODEL = text_model
     _get_current_user = get_current_user
@@ -168,7 +201,7 @@ def init_features(embed_model, collection, client, text_model, get_current_user,
         return {"cases": get_pending_cases_logic()}
 
     @router.post("/review-case/{case_id}")
-    async def review_case(case_id: str, action: str = Query(..., regex="^(approve|reject)$"), admin: Dict = Depends(_require_admin)):
+    async def review_case(case_id: str, action: str = Query(..., pattern="^(approve|reject)$"), admin: Dict = Depends(_require_admin)):
         msg = review_case_logic(case_id, action)
         return {"message": msg}
 
@@ -182,6 +215,6 @@ def init_features(embed_model, collection, client, text_model, get_current_user,
         return {"corrections": get_pending_corrections_logic()}
 
     @router.post("/review-correction/{correction_id}")
-    async def review_correction(correction_id: str, action: str = Query(..., regex="^(approve|reject)$"), admin: Dict = Depends(_require_admin)):
+    async def review_correction(correction_id: str, action: str = Query(..., pattern="^(approve|reject)$"), admin: Dict = Depends(_require_admin)):
         msg = review_correction_logic(correction_id, action)
         return {"message": msg}

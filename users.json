@@ -1,0 +1,12 @@
+[
+  {
+    "username": "admin",
+    "password_hash": "$2b$12$Qp3jVy4sm8lDDHuDHduZ/uVW9CrlirczMj5R83JMgeajIoyT6/RP6",
+    "role": "admin"
+  },
+  {
+    "username": "傅昱衡",
+    "password_hash": "$2b$12$Gtgyf7lCbSOLKowe1MbGkuL/TiCt4Vl2dXwZYvy5f2RzAypDHPJBK",
+    "role": "worker"
+  }
+]

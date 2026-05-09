@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "6ee5d186-2f02-4b81-9114-29673d3c0868",
+    "title": "test",
+    "content": "test123",
+    "type": "经验",
+    "submitter": "admin",
+    "status": "approved",
+    "created_at": "2026-04-26T21:58:29.012588"
+  },
+  {
+    "id": "3c90c987-a9d8-4b22-80f6-00c96ca5e13e",
+    "title": "1",
+    "content": "1",
+    "type": "经验",
+    "submitter": "傅昱衡",
+    "status": "approved",
+    "created_at": "2026-05-09T17:15:52.520232"
+  }
+]

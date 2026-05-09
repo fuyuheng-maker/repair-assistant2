@@ -2,120 +2,606 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>设备检修知识助手 - 登录</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Microsoft YaHei', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 420px; }
-        h2 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
-        .tab-buttons { display: flex; margin-bottom: 25px; border-radius: 8px; overflow: hidden; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #e0e0e0; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .tab-btn.active { color: white; }
-        .tab-btn:first-child.active { background: #1a73e8; }
-        .tab-btn:last-child.active { background: #f57c00; }
-        .form-panel { display: none; }
-        .form-panel.active { display: block; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-        .btn-submit { width: 100%; padding: 12px; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 5px; }
-        .btn-worker { background: #1a73e8; }
-        .btn-worker:hover { background: #1557b0; }
-        .btn-reviewer { background: #f57c00; }
-        .btn-reviewer:hover { background: #e65100; }
-        .error { color: red; font-size: 14px; margin-bottom: 10px; text-align: center; }
-        .note { font-size: 0.8em; color: #888; margin-top: 15px; text-align: center; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #ffffff;
+            height: 100vh;
+            display: flex;
+        }
+        
+        /* 左侧品牌区 */
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+        
+        .brand-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+        
+        .brand-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+            font-size: 60px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .brand-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        
+        .brand-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        .brand-features {
+            margin-top: 60px;
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+        }
+        
+        .feature-item {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 24px;
+        }
+        
+        .feature-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* 右侧表单区 */
+        .form-section {
+            width: 480px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            background: #ffffff;
+        }
+        
+        .form-header {
+            margin-bottom: 40px;
+        }
+        
+        .form-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        
+        .form-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+        }
+        
+        /* Tab 切换 */
+        .tab-container {
+            display: flex;
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 32px;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn.active {
+            background: #ffffff;
+            color: #1a1a2e;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            color: #374151;
+        }
+        
+        /* 表单 */
+        .form-panel {
+            display: none;
+        }
+        
+        .form-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+        
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+        
+        .forgot-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: #1a1a2e;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: #2d2d44;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(26, 26, 46, 0.3);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+        
+        .divider span {
+            padding: 0 16px;
+        }
+        
+        .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            background: #ffffff;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .form-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .success-message {
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .brand-section {
+                display: none;
+            }
+            .form-section {
+                width: 100%;
+                padding: 40px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>🔧 设备检修知识助手</h2>
-        <div class="tab-buttons">
-            <button class="tab-btn active" onclick="switchTab('worker')">🔩 操作员登录</button>
-            <button class="tab-btn" onclick="switchTab('reviewer')">🔍 审核员登录</button>
-        </div>
-
-        <!-- 操作员登录表单 -->
-        <div id="worker-panel" class="form-panel active">
-            <form onsubmit="workerLogin(event)">
-                <input type="text" id="worker-username" placeholder="用户名" required autocomplete="off">
-                <input type="password" id="worker-password" placeholder="密码" required>
-                <div class="error" id="worker-error"></div>
-                <button type="submit" class="btn-submit btn-worker">登 录</button>
-            </form>
-            <div class="note">操作员可进行检修知识查询与经验提交</div>
-        </div>
-
-        <!-- 审核员登录表单 -->
-        <div id="reviewer-panel" class="form-panel">
-            <form onsubmit="reviewerLogin(event)">
-                <input type="text" id="reviewer-username" placeholder="审核员账号（admin）" required autocomplete="off">
-                <input type="password" id="reviewer-password" placeholder="密码" required>
-                <div class="error" id="reviewer-error"></div>
-                <button type="submit" class="btn-submit btn-reviewer">登 录</button>
-            </form>
-            <div class="note">仅限审核员账号登录，进行案例与修正审核</div>
+    <!-- 左侧品牌区 -->
+    <div class="brand-section">
+        <div class="brand-content">
+            <div class="brand-icon">🔧</div>
+            <h1 class="brand-title">设备检修知识助手</h1>
+            <p class="brand-subtitle">智能化检修知识检索与作业系统</p>
+            
+            <div class="brand-features">
+                <div class="feature-item">
+                    <div class="feature-icon">📚</div>
+                    <div class="feature-text">知识库管理</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-text">智能检索</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-text">经验沉淀</div>
+                </div>
+            </div>
         </div>
     </div>
-
+    
+    <!-- 右侧表单区 -->
+    <div class="form-section">
+        <div class="form-header">
+            <h2 class="form-title">欢迎回来！</h2>
+            <p class="form-subtitle">请登录您的账号以继续</p>
+        </div>
+        
+        <!-- Tab 切换 -->
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('login')">登录</button>
+            <button class="tab-btn" onclick="switchTab('register')">注册账号</button>
+            <button class="tab-btn" onclick="switchTab('reviewer')">审核员</button>
+        </div>
+        
+        <!-- 操作员登录 -->
+        <div id="login-panel" class="form-panel active">
+            <div class="error-message" id="login-error"></div>
+            <form onsubmit="workerLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" id="login-username" class="form-input" placeholder="请输入用户名" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="请输入密码" required>
+                </div>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember-me" checked>
+                        <span>记住我</span>
+                    </label>
+                </div>
+                <button type="submit" class="btn-primary">登 录</button>
+            </form>
+        </div>
+        
+        <!-- 注册 -->
+        <div id="register-panel" class="form-panel">
+            <div class="error-message" id="register-error"></div>
+            <div class="success-message" id="register-success"></div>
+            <form onsubmit="register(event)">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" id="reg-username" class="form-input" placeholder="至少3个字符" required autocomplete="off" minlength="3">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" id="reg-password" class="form-input" placeholder="至少6个字符" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">确认密码</label>
+                    <input type="password" id="reg-confirm" class="form-input" placeholder="再次输入密码" required>
+                </div>
+                <button type="submit" class="btn-primary">注 册</button>
+            </form>
+            <div class="form-footer">
+                注册后角色为操作员，如需管理员权限请联系系统管理员
+            </div>
+        </div>
+        
+        <!-- 审核员登录 -->
+        <div id="reviewer-panel" class="form-panel">
+            <div class="error-message" id="reviewer-error"></div>
+            <form onsubmit="reviewerLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">审核员账号</label>
+                    <input type="text" id="reviewer-username" class="form-input" placeholder="请输入审核员账号" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" id="reviewer-password" class="form-input" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn-primary">登 录</button>
+            </form>
+        </div>
+    </div>
+    
     <script>
         function switchTab(role) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
-            if (role === 'worker') {
-                document.querySelector('.tab-btn:first-child').classList.add('active');
-                document.getElementById('worker-panel').classList.add('active');
-            } else {
-                document.querySelector('.tab-btn:last-child').classList.add('active');
-                document.getElementById('reviewer-panel').classList.add('active');
-            }
+            
+            const tabIndex = { login: 0, register: 1, reviewer: 2 };
+            document.querySelectorAll('.tab-btn')[tabIndex[role]].classList.add('active');
+            document.getElementById(role + '-panel').classList.add('active');
+            
+            // 清除错误提示
+            document.querySelectorAll('.error-message').forEach(e => e.classList.remove('show'));
+            document.querySelectorAll('.success-message').forEach(e => e.classList.remove('show'));
         }
-
+        
+        function showError(id, message) {
+            const el = document.getElementById(id);
+            el.textContent = message;
+            el.classList.add('show');
+        }
+        
+        function hideError(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+        
         async function workerLogin(e) {
             e.preventDefault();
-            const username = document.getElementById('worker-username').value;
-            const password = document.getElementById('worker-password').value;
-            const errorEl = document.getElementById('worker-error');
-            errorEl.textContent = '';
+            hideError('login-error');
+            
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            
             const formData = new FormData();
             formData.append('username', username);
             formData.append('password', password);
+            
             try {
                 const res = await fetch('/api/login', { method: 'POST', body: formData });
                 const data = await res.json();
+                
                 if (!res.ok) {
-                    errorEl.textContent = data.detail || '登录失败';
+                    showError('login-error', data.detail || '登录失败');
                     return;
                 }
+                
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('role', data.role);
+                localStorage.setItem('username', username);
+                
+                if (rememberMe) {
+                    localStorage.setItem('remembered_username', username);
+                } else {
+                    localStorage.removeItem('remembered_username');
+                }
+                
                 window.location.href = '/';
             } catch (err) {
-                errorEl.textContent = '网络错误';
+                showError('login-error', '网络错误，请稍后重试');
             }
         }
-
-        async function reviewerLogin(e) {
+        
+        async function register(e) {
             e.preventDefault();
-            const username = document.getElementById('reviewer-username').value;
-            const password = document.getElementById('reviewer-password').value;
-            const errorEl = document.getElementById('reviewer-error');
-            errorEl.textContent = '';
+            hideError('register-error');
+            document.getElementById('register-success').classList.remove('show');
+            
+            const username = document.getElementById('reg-username').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            
+            if (password !== confirm) {
+                showError('register-error', '两次输入的密码不一致');
+                return;
+            }
+            
             const formData = new FormData();
             formData.append('username', username);
             formData.append('password', password);
+            
+            try {
+                const res = await fetch('/api/register', { method: 'POST', body: formData });
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    showError('register-error', data.detail || '注册失败');
+                    return;
+                }
+                
+                document.getElementById('register-success').textContent = data.message;
+                document.getElementById('register-success').classList.add('show');
+                
+                setTimeout(() => {
+                    switchTab('login');
+                    document.getElementById('login-username').value = username;
+                }, 1500);
+            } catch (err) {
+                showError('register-error', '网络错误，请稍后重试');
+            }
+        }
+        
+        async function reviewerLogin(e) {
+            e.preventDefault();
+            hideError('reviewer-error');
+            
+            const username = document.getElementById('reviewer-username').value;
+            const password = document.getElementById('reviewer-password').value;
+            
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+            
             try {
                 const res = await fetch('/api/reviewer/login', { method: 'POST', body: formData });
                 const data = await res.json();
+                
                 if (!res.ok) {
-                    errorEl.textContent = data.detail || '登录失败';
+                    showError('reviewer-error', data.detail || '登录失败');
                     return;
                 }
+                
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('role', 'admin');
+                localStorage.setItem('username', document.getElementById('reviewer-username').value);
                 window.location.href = '/static/admin.html';
             } catch (err) {
-                errorEl.textContent = '网络错误';
+                showError('reviewer-error', '网络错误，请稍后重试');
             }
         }
+        
+        // 页面加载时自动填充记住的用户名
+        document.addEventListener('DOMContentLoaded', function() {
+            const rememberedUsername = localStorage.getItem('remembered_username');
+            if (rememberedUsername) {
+                document.getElementById('login-username').value = rememberedUsername;
+                document.getElementById('remember-me').checked = true;
+            }
+        });
     </script>
 </body>
 </html>
