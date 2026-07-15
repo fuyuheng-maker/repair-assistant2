@@ -1,12 +1,27 @@
 [
   {
     "username": "admin",
-    "password_hash": "$2b$12$Qp3jVy4sm8lDDHuDHduZ/uVW9CrlirczMj5R83JMgeajIoyT6/RP6",
+    "password_hash": "$2b$12$z3NttrBxdwyCYU7n7jEl1uOvkVkY8lm/bi.gUEvll1BpnCyJ.5zRq",
     "role": "admin"
+  },
+  {
+    "username": "operator",
+    "password_hash": "$2b$12$jpo1ZKyvcZ1KDB6pAFrDA.GwpfuIUkRRp83vINZIJvUTnKRNXKBjW",
+    "role": "worker"
   },
   {
     "username": "傅昱衡",
     "password_hash": "$2b$12$Gtgyf7lCbSOLKowe1MbGkuL/TiCt4Vl2dXwZYvy5f2RzAypDHPJBK",
+    "role": "worker"
+  },
+  {
+    "username": "testuser",
+    "password_hash": "$2b$12$NArE1BIjjm/lQzwjSs9ore5qHuvWVkAggP4tBR7AaN8XnaorJaj.C",
+    "role": "worker"
+  },
+  {
+    "username": "123",
+    "password_hash": "$2b$12$pjtCum4ebw2DXwTT9iStnejFr4oC/LQmSLkRcwP7QnWyuFNYHFiMC",
     "role": "worker"
   }
 ]

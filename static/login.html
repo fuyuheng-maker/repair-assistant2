@@ -497,6 +497,11 @@
             const password = document.getElementById('login-password').value;
             const rememberMe = document.getElementById('remember-me').checked;
             
+            // 清除旧数据
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            localStorage.removeItem('username');
+            
             const formData = new FormData();
             formData.append('username', username);
             formData.append('password', password);
@@ -513,6 +518,8 @@
                 localStorage.setItem('token', data.access_token);
                 localStorage.setItem('role', data.role);
                 localStorage.setItem('username', username);
+                
+                console.log('登录成功，token:', data.access_token.substring(0, 50));
                 
                 if (rememberMe) {
                     localStorage.setItem('remembered_username', username);
