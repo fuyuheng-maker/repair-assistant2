@@ -599,6 +599,92 @@
             opacity: 0.7;
         }
         
+        .btn-loading::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .upload-progress {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .upload-progress-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        
+        .upload-progress-item:last-child {
+            border-bottom: none;
+        }
+        
+        .upload-progress-name {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .upload-progress-status {
+            margin-left: 12px;
+            font-size: 14px;
+        }
+        
+        .upload-progress-status.processing {
+            color: #58a6ff;
+        }
+        
+        .upload-progress-status.success {
+            color: #3fb950;
+        }
+        
+        .upload-progress-status.error {
+            color: #f85149;
+        }
+        
+        .upload-progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        
+        .upload-progress-bar-fill {
+            height: 100%;
+            background: #58a6ff;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            animation: progress-shine 1.5s infinite;
+        }
+        
+        @keyframes progress-shine {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
         /* 右侧侧边视图 */
         .right-sidebar {
             width: 300px;
@@ -887,9 +973,14 @@
             border-radius: 8px;
             padding: 24px;
             border: 1px solid #e0e0e0;
-            cursor: pointer;
             transition: all 0.15s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: grab;
+            position: relative;
+            user-select: none;
         }
         
         .project-card:hover {
@@ -897,11 +988,33 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         
+        .project-card.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            opacity: 0.9;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            transform: scale(1.02);
+            transition: none;
+            pointer-events: none;
+        }
+        
+        .project-card.drag-over {
+            border-color: #166534;
+            background-color: #f0fdf4;
+        }
+        
         .project-title {
             font-size: 19px;
             font-weight: 600;
             color: #1a1a1a;
             margin-bottom: 12px;
+        }
+        
+        .project-desc {
+            font-size: 16px;
+            color: #666666;
+            margin-bottom: 12px;
+            line-height: 1.5;
         }
         
         .project-meta {
@@ -1067,7 +1180,7 @@
                 </div>
             </div>
             
-            <div class="search-box" onclick="openCommandPalette()">
+            <div class="search-box" onclick="event.stopPropagation(); openCommandPalette();">
                 <span class="search-text">搜索或输入命令...</span>
             </div>
             
@@ -1075,9 +1188,9 @@
                 <div class="menu-section">
                     <div class="menu-title">会话</div>
                     <div class="conversation-list">
-                        <div class="conv-item new-chat-btn active" onclick="createNewSession(); renderChatHistory(); switchPage('chat', null);">
-                            <span>+ 新对话</span>
-                        </div>
+                        <div class="conv-item new-chat-btn active" onclick="switchToLastSession();">
+                        <span>+ 新对话</span>
+                    </div>
                     </div>
                 </div>
                 
@@ -1112,6 +1225,9 @@
                     </div>
                     <div class="menu-item" onclick="switchPage('case', this)">
                         <span>提交案例</span>
+                    </div>
+                    <div class="menu-item" onclick="switchPage('approved', this)">
+                        <span>已通过案例</span>
                     </div>
                     <div class="menu-item" onclick="switchPage('history', this)">
                         <span>查询历史</span>
@@ -1163,6 +1279,13 @@
                                 <div class="chat-empty-icon" style="font-size: 48px; font-weight: 700; color: #1a1a1a;">RA</div>
                                 <div style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">设备检修知识助手</div>
                                 <div style="margin-bottom: 20px; color: #666666; font-size: 16px;">我是您的检修知识助手，请先上传检修手册，然后向我提问。</div>
+                                <div id="uploadedFilesInfo" style="text-align: left; max-width: 400px; margin: 0 auto; margin-bottom: 20px; display: none;">
+                                    <div style="padding: 10px 12px; background: #e8f5e9; border-radius: 6px; margin-bottom: 10px; font-size: 16px; color: #2e7d32; font-weight: 500;">
+                                        已上传的检修手册：
+                                    </div>
+                                    <div id="uploadedFilesList" style="padding: 6px 12px; font-size: 16px; color: #666666;">
+                                    </div>
+                                </div>
                                 <div style="text-align: left; max-width: 400px; margin: 0 auto;">
                                     <div style="padding: 10px 12px; background: #e0e0e0; border-radius: 6px; margin-bottom: 10px; font-size: 16px; color: #1a1a1a; font-weight: 500;">
                                         使用步骤：
@@ -1183,16 +1306,21 @@
                         
                         <div style="padding: 16px; border-top: 1px solid #e0e0e0; background: #fafafa;">
                             <div class="form-group" style="margin-bottom: 12px;">
-                                <textarea id="question" class="form-textarea" rows="3" placeholder="输入检修相关问题..." style="font-size: 17px;" onkeydown="handleQuestionKeydown(event)"></textarea>
+                                <textarea id="question" class="form-textarea" rows="3" placeholder="输入检修相关问题，支持粘贴截图..." style="font-size: 17px;" onkeydown="handleQuestionKeydown(event)" onpaste="handlePaste(event)"></textarea>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                                 <div style="position: relative;">
-                                    <input type="file" id="imageUpload" class="form-input" accept="image/*" onchange="previewImage(this)" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer;">
+                                    <input type="file" id="imageUpload" class="form-input" accept="image/*" onchange="previewMedia(this, 'image')" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer;">
                                     <button class="btn-secondary" style="padding: 10px 16px;">上传图片</button>
                                 </div>
-                                <div id="imagePreview" style="display:none; position:relative;">
-                                    <img id="previewImg" style="max-width:60px; max-height:40px; border-radius:4px; border:1px solid #e0e0e0;">
-                                    <button onclick="clearImage()" style="position:absolute; top:-6px; right:-6px; width:18px; height:18px; border-radius:50%; border:none; background:#991b1b; color:white; cursor:pointer; font-size:10px;">✕</button>
+                                <div style="position: relative;">
+                                    <input type="file" id="videoUpload" class="form-input" accept="video/*" onchange="previewMedia(this, 'video')" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer;">
+                                    <button class="btn-secondary" style="padding: 10px 16px;">上传视频</button>
+                                </div>
+                                <div id="mediaPreview" style="display:none; position:relative;">
+                                    <img id="previewImg" style="max-width:60px; max-height:40px; border-radius:4px; border:1px solid #e0e0e0; display:none;">
+                                    <video id="previewVideo" style="max-width:60px; max-height:40px; border-radius:4px; border:1px solid #e0e0e0; display:none;"></video>
+                                    <button onclick="clearMedia()" style="position:absolute; top:-6px; right:-6px; width:18px; height:18px; border-radius:50%; border:none; background:#991b1b; color:white; cursor:pointer; font-size:10px;">✕</button>
                                 </div>
                                 <button class="btn-primary" id="sendBtn" onclick="askQuestion()" style="margin-left: auto;">发送</button>
                             </div>
@@ -1212,20 +1340,20 @@
                     
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-value">12</div>
+                            <div class="stat-value">0</div>
                             <div class="stat-label">进行中项目</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">5</div>
-                            <div class="stat-label">待审批</div>
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">待开始</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">28</div>
+                            <div class="stat-value">0</div>
                             <div class="stat-label">已完成</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value">3</div>
-                            <div class="stat-label">紧急任务</div>
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">过期未完成</div>
                         </div>
                     </div>
                     
@@ -1367,8 +1495,27 @@
 5. 经验总结和注意事项"></textarea>
                         </div>
                         
+                        <div class="form-group">
+                            <label class="form-label">附件（照片/视频）</label>
+                            <input type="file" id="caseFiles" class="form-input" accept="image/*,video/*" multiple>
+                            <div style="font-size: 14px; color: #999999; margin-top: 8px;">支持 JPG、PNG、GIF、MP4、MOV、AVI 格式，可多选</div>
+                            <div id="uploadedFilesList" style="margin-top: 12px;"></div>
+                        </div>
+                        
                         <button class="btn-primary" id="submitCaseBtn" onclick="submitCase()">提交审核</button>
                         <div id="caseStatus" class="status"></div>
+                    </div>
+                </div>
+                
+                <!-- 页面8.5: 已通过案例 -->
+                <div id="page-approved" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">已通过案例</div>
+                            <div style="font-size: 14px; color: #666666;">查看审核通过的案例，这些案例已加入知识库供检索</div>
+                        </div>
+                        
+                        <div id="approvedCasesList"></div>
                     </div>
                 </div>
                 
@@ -1467,6 +1614,46 @@
         </div>
     </div>
     
+    <!-- 项目管理模态框 -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="projectModalTitle">新建项目</div>
+            <input type="hidden" id="projectId">
+            <div class="form-group">
+                <label class="form-label">项目名称 *</label>
+                <input type="text" id="projectName" class="form-input" placeholder="请输入项目名称" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">项目描述</label>
+                <textarea id="projectDesc" class="form-input" placeholder="请输入项目描述" style="height: 80px;"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">负责人</label>
+                <input type="text" id="projectAssignee" class="form-input" placeholder="请输入负责人姓名" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">项目状态</label>
+                <select id="projectStatus" class="form-input">
+                    <option value="pending">待开始</option>
+                    <option value="in_progress">进行中</option>
+                    <option value="completed">已完成</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">开始日期</label>
+                <input type="date" id="projectStartDate" class="form-input" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">截止日期</label>
+                <input type="date" id="projectEndDate" class="form-input" />
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button class="btn-secondary" onclick="document.getElementById('projectModal').style.display='none'">取消</button>
+                <button class="btn-primary" onclick="saveProject()">保存</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- 修正模态框 -->
     <div id="correctionModal" class="modal">
         <div class="modal-content">
@@ -1501,6 +1688,8 @@
             'plugins': '插件市场',
             'installed': '已安装',
             'upload': '上传手册',
+            'case': '提交案例',
+            'approved': '已通过案例',
             'history': '查询历史',
             'settings': '设置'
         };
@@ -1571,6 +1760,29 @@
             switchPage('chat', null);
         }
         
+        function switchToLastSession() {
+            const sessions = getSessions();
+            const currentId = getCurrentSessionId();
+            
+            if (currentId && sessions[currentId]) {
+                switchPage('chat', null);
+                renderConversationList();
+                renderChatHistory();
+                return;
+            }
+            
+            if (Object.keys(sessions).length > 0) {
+                const sessionIds = Object.keys(sessions);
+                sessionIds.sort((a, b) => new Date(sessions[b].updatedAt) - new Date(sessions[a].updatedAt));
+                switchToSession(sessionIds[0]);
+            } else {
+                createNewSession();
+                renderConversationList();
+                renderChatHistory();
+                switchPage('chat', null);
+            }
+        }
+        
         function getSessions() {
             return JSON.parse(localStorage.getItem(getSessionsKey()) || '{}');
         }
@@ -1585,7 +1797,7 @@
             return sessions[sessionId] || null;
         }
         
-        function saveChatMessage(role, content) {
+        function saveChatMessage(role, content, media_files) {
             let sessions = getSessions();
             let sessionId = getCurrentSessionId();
             
@@ -1597,6 +1809,7 @@
             sessions[sessionId].messages.push({
                 role: role,
                 content: content,
+                media_files: media_files || [],
                 timestamp: new Date().toISOString()
             });
             
@@ -1657,6 +1870,15 @@
                 return;
             }
             
+            const sessions = getSessions();
+            const currentId = getCurrentSessionId();
+            
+            if (!currentId && Object.keys(sessions).length > 0) {
+                const sessionIds = Object.keys(sessions);
+                sessionIds.sort((a, b) => new Date(sessions[b].updatedAt) - new Date(sessions[a].updatedAt));
+                localStorage.setItem(getCurrentSessionKey(), sessionIds[0]);
+            }
+            
             renderConversationList();
             renderChatHistory();
             
@@ -1664,6 +1886,37 @@
             if (!currentActivePage || currentActivePage.id !== 'page-chat') {
                 switchPage('chat', null);
             }
+            
+            loadUploadedFilesInfo();
+        }
+        
+        function loadUploadedFilesInfo() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            fetch('/api/files', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const files = data.files || data;
+                const infoDiv = document.getElementById('uploadedFilesInfo');
+                const listDiv = document.getElementById('uploadedFilesList');
+                
+                if (files && files.length > 0) {
+                    infoDiv.style.display = 'block';
+                    let html = '';
+                    for (let f of files) {
+                        html += `- ${f.filename}（${f.chunk_count}个内容块）<br>`;
+                    }
+                    listDiv.innerHTML = html;
+                } else {
+                    infoDiv.style.display = 'none';
+                }
+            })
+            .catch(err => {
+                console.error('加载文件信息失败:', err);
+            });
         }
         
         function renderConversationList() {
@@ -1741,8 +1994,20 @@
             let html = '';
             session.messages.forEach(msg => {
                 const isUser = msg.role === 'user';
+                let mediaHtml = '';
+                if (msg.media_files && msg.media_files.length > 0) {
+                    mediaHtml = '<div class="msg-media">';
+                    msg.media_files.forEach(file => {
+                        if (file.type === 'image') {
+                            mediaHtml += `<img src="/media/${file.path}" style="max-width: 300px; max-height: 200px; border-radius: 6px; border: 1px solid #e0e0e0; margin-top: 8px;">`;
+                        } else if (file.type === 'video') {
+                            mediaHtml += `<video src="/media/${file.path}" controls style="max-width: 300px; max-height: 200px; border-radius: 6px; border: 1px solid #e0e0e0; margin-top: 8px;"></video>`;
+                        }
+                    });
+                    mediaHtml += '</div>';
+                }
                 html += '<div class="msg' + (isUser ? ' user-msg' : ' assistant-msg') + '">';
-                html += '<div class="msg-content">' + (isUser ? escapeHTML(msg.content) : marked.parse(escapeHTML(msg.content))) + '</div>';
+                html += '<div class="msg-content">' + (isUser ? `<div class="msg-text">${escapeHTML(msg.content)}</div>` : marked.parse(escapeHTML(msg.content))) + mediaHtml + '</div>';
                 html += '</div>';
             });
             
@@ -1821,6 +2086,9 @@
             if (pageId === 'history') {
                 renderHistoryList();
             }
+            if (pageId === 'approved') {
+                loadApprovedCases();
+            }
             if (pageId === 'upload') {
                 loadFileList();
             }
@@ -1851,47 +2119,389 @@
         
         // 项目管理
         function renderProjects() {
-            const projects = [
-                { id: 1, name: '发动机检修项目', status: '进行中', priority: '高', lastUpdate: '2024-01-15' },
-                { id: 2, name: '变速箱维护计划', status: '待审批', priority: '中', lastUpdate: '2024-01-14' },
-                { id: 3, name: '制动系统检测', status: '已完成', priority: '低', lastUpdate: '2024-01-13' },
-                { id: 4, name: '电气系统升级', status: '进行中', priority: '紧急', lastUpdate: '2024-01-15' },
-                { id: 5, name: '液压系统保养', status: '待审批', priority: '中', lastUpdate: '2024-01-14' },
-                { id: 6, name: '冷却系统检修', status: '进行中', priority: '高', lastUpdate: '2024-01-15' }
-            ];
+            const token = localStorage.getItem('token');
+            fetch('/api/projects', {
+                headers: { 'Authorization': `Bearer ${token || ''}` }
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    alert('登录已过期，请重新登录');
+                    window.location.href = '/static/login.html';
+                    throw new Error('Unauthorized');
+                }
+                if (!response.ok) {
+                    throw new Error('请求失败: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const projects = data.projects || [];
+                currentProjects = projects;
+                updateProjectStats(projects);
+                const container = document.getElementById('projectList');
+                
+                if (projects.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: #999999;">
+                            <div style="font-size: 18px; margin-bottom: 8px;">暂无项目</div>
+                            <div style="font-size: 14px;">点击"新建项目"按钮创建第一个运维项目</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = projects.map(p => `
+                    <div class="project-card" data-project-id="${p.id}">
+                        <div style="flex: 1;">
+                            <div class="project-title">${escapeHTML(p.name)}</div>
+                            ${p.description ? `<div class="project-desc">${escapeHTML(p.description)}</div>` : ''}
+                            <div class="project-meta">状态: <span style="color: ${getStatusColor(p.status)};">${escapeHTML(getStatusText(p.status))}</span></div>
+                            ${p.assignee ? `<div class="project-meta">负责人: ${escapeHTML(p.assignee)}</div>` : ''}
+                            ${p.start_date ? `<div class="project-meta">开始日期: ${escapeHTML(p.start_date)}</div>` : ''}
+                            ${p.end_date ? `<div class="project-meta">截止日期: ${escapeHTML(p.end_date)}</div>` : ''}
+                            <div class="project-meta">创建时间: ${formatDate(p.created_at)}</div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <button class="btn-secondary" style="padding: 6px 12px; font-size: 14px;" onclick="editProject('${p.id}')">编辑</button>
+                            ${p.status !== 'completed' ? `<button class="btn-secondary" style="padding: 6px 12px; font-size: 14px; color: #166534; border-color: #166534;" onclick="completeProject('${p.id}', '${escapeHTML(p.name)}')">完成</button>` : ''}
+                            <button class="btn-secondary" style="padding: 6px 12px; font-size: 14px; color: #d9534f;" onclick="deleteProject('${p.id}', '${escapeHTML(p.name)}')">删除</button>
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(error => {
+                if (error.message !== 'Unauthorized') {
+                    console.error('加载项目列表失败:', error);
+                    document.getElementById('projectList').innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: #d9534f;">
+                            <div style="font-size: 18px; margin-bottom: 8px;">加载项目列表失败</div>
+                            <div style="font-size: 14px;">${error.message}</div>
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        function updateProjectStats(projects) {
+            const inProgress = projects.filter(p => p.status === 'in_progress' || p.status === '进行中').length;
+            const pending = projects.filter(p => p.status === 'pending' || p.status === '待开始').length;
+            const completed = projects.filter(p => p.status === 'completed' || p.status === '已完成').length;
+            const expired = projects.filter(p => p.status === 'expired' || p.status === '过期未完成').length;
             
-            const container = document.getElementById('projectList');
-            container.innerHTML = projects.map(p => `
-                <div class="project-card">
-                    <div class="project-title">${p.name}</div>
-                    <div class="project-meta">状态: <span style="color: ${getStatusColor(p.status)};">${p.status}</span></div>
-                    <div class="project-meta">优先级: <span style="color: ${getPriorityColor(p.priority)};">${p.priority}</span></div>
-                    <div class="project-meta">更新时间: ${p.lastUpdate}</div>
-                </div>
-            `).join('');
+            document.querySelector('#page-projects .stats-grid .stat-card:nth-child(1) .stat-value').textContent = inProgress;
+            document.querySelector('#page-projects .stats-grid .stat-card:nth-child(2) .stat-value').textContent = pending;
+            document.querySelector('#page-projects .stats-grid .stat-card:nth-child(3) .stat-value').textContent = completed;
+            document.querySelector('#page-projects .stats-grid .stat-card:nth-child(4) .stat-value').textContent = expired;
+        }
+        
+        function getStatusText(status) {
+            const texts = {
+                'in_progress': '进行中',
+                'pending': '待开始',
+                'completed': '已完成',
+                'expired': '过期未完成'
+            };
+            return texts[status] || (status || '待开始');
         }
         
         function getStatusColor(status) {
             const colors = {
-                '进行中': '#1a1a1a',
-                '待审批': '#666666',
-                '已完成': '#999999'
+                'in_progress': '#166534',
+                'pending': '#b45309',
+                'completed': '#65a30d',
+                'expired': '#991b1b',
+                '进行中': '#166534',
+                '待开始': '#b45309',
+                '已完成': '#65a30d',
+                '过期未完成': '#991b1b'
             };
             return colors[status] || '#999999';
         }
         
-        function getPriorityColor(priority) {
-            const colors = {
-                '紧急': '#991b1b',
-                '高': '#666666',
-                '中': '#888888',
-                '低': '#aaaaaa'
-            };
-            return colors[priority] || '#999999';
+        function createProject() {
+            document.getElementById('projectModalTitle').textContent = '新建项目';
+            document.getElementById('projectId').value = '';
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectDesc').value = '';
+            document.getElementById('projectAssignee').value = '';
+            document.getElementById('projectStatus').value = 'pending';
+            document.getElementById('projectStartDate').value = '';
+            document.getElementById('projectEndDate').value = '';
+            document.getElementById('projectModal').style.display = 'block';
         }
         
-        function createProject() {
-            alert('新建项目功能开发中...');
+        function editProject(projectId) {
+            const token = localStorage.getItem('token');
+            fetch(`/api/projects/${projectId}`, {
+                headers: { 'Authorization': `Bearer ${token || ''}` }
+            })
+            .then(response => response.json())
+            .then(project => {
+                document.getElementById('projectModalTitle').textContent = '编辑项目';
+                document.getElementById('projectId').value = project.id;
+                document.getElementById('projectName').value = project.name || '';
+                document.getElementById('projectDesc').value = project.description || '';
+                document.getElementById('projectAssignee').value = project.assignee || '';
+                document.getElementById('projectStatus').value = project.status || 'pending';
+                document.getElementById('projectStartDate').value = project.start_date || '';
+                document.getElementById('projectEndDate').value = project.end_date || '';
+                document.getElementById('projectModal').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('获取项目详情失败:', error);
+                alert('获取项目详情失败：' + error.message);
+            });
+        }
+        
+        function deleteProject(projectId, projectName) {
+            if (!confirm(`确定要删除项目「${projectName}」吗？`)) return;
+            
+            const token = localStorage.getItem('token');
+            fetch(`/api/projects/${projectId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token || ''}` }
+            })
+            .then(response => response.json())
+            .then(() => {
+                renderProjects();
+            })
+            .catch(error => {
+                console.error('删除项目失败:', error);
+                alert('删除项目失败：' + error.message);
+            });
+        }
+        
+        function completeProject(projectId, projectName) {
+            if (!confirm(`确定要标记项目「${projectName}」为已完成吗？`)) return;
+            
+            const token = localStorage.getItem('token');
+            fetch(`/api/projects/${projectId}`, {
+                method: 'PUT',
+                headers: { 
+                    'Authorization': `Bearer ${token || ''}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: 'completed' })
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    alert('登录已过期，请重新登录');
+                    window.location.href = '/static/login.html';
+                    throw new Error('Unauthorized');
+                }
+                if (!response.ok) {
+                    throw new Error('请求失败');
+                }
+                return response.json();
+            })
+            .then(() => {
+                renderProjects();
+            })
+            .catch(error => {
+                if (error.message !== 'Unauthorized') {
+                    console.error('标记完成失败:', error);
+                    alert('标记完成失败：' + error.message);
+                }
+            });
+        }
+        
+        function saveProject() {
+            const token = localStorage.getItem('token');
+            const projectId = document.getElementById('projectId').value;
+            const name = document.getElementById('projectName').value.trim();
+            const description = document.getElementById('projectDesc').value.trim();
+            const assignee = document.getElementById('projectAssignee').value.trim();
+            const status = document.getElementById('projectStatus').value;
+            const startDate = document.getElementById('projectStartDate').value;
+            const endDate = document.getElementById('projectEndDate').value;
+            
+            if (!name) {
+                alert('项目名称不能为空');
+                return;
+            }
+            
+            const data = {
+                name,
+                description,
+                assignee,
+                status,
+                start_date: startDate,
+                end_date: endDate
+            };
+            
+            const url = projectId ? `/api/projects/${projectId}` : '/api/projects';
+            const method = projectId ? 'PUT' : 'POST';
+            
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${token || ''}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(() => {
+                document.getElementById('projectModal').style.display = 'none';
+                renderProjects();
+            })
+            .catch(error => {
+                console.error('保存项目失败:', error);
+                alert('保存项目失败：' + error.message);
+            });
+        }
+        
+        let currentProjects = [];
+        let dragState = {
+            isDragging: false,
+            offsetX: 0,
+            offsetY: 0,
+            originalCard: null,
+            dragGhost: null,
+            draggedId: null
+        };
+        
+        document.getElementById('projectList').addEventListener('mousedown', function(e) {
+            const card = e.target.closest('.project-card');
+            if (!card) return;
+            
+            const dragBtn = e.target.closest('button');
+            if (dragBtn) return;
+            
+            const rect = card.getBoundingClientRect();
+            
+            dragState.isDragging = true;
+            dragState.offsetX = e.clientX - rect.left;
+            dragState.offsetY = e.clientY - rect.top;
+            dragState.originalCard = card;
+            dragState.draggedId = card.getAttribute('data-project-id');
+            
+            const ghost = card.cloneNode(true);
+            ghost.classList.add('dragging');
+            ghost.style.position = 'fixed';
+            ghost.style.left = rect.left + 'px';
+            ghost.style.top = rect.top + 'px';
+            ghost.style.width = rect.width + 'px';
+            ghost.style.height = rect.height + 'px';
+            ghost.style.margin = '0';
+            ghost.style.zIndex = '1000';
+            ghost.style.pointerEvents = 'none';
+            ghost.style.transition = 'none';
+            document.body.appendChild(ghost);
+            dragState.dragGhost = ghost;
+            
+            card.style.opacity = '0.3';
+            
+            document.addEventListener('mousemove', onDragMove);
+            document.addEventListener('mouseup', onDragEnd);
+        });
+        
+        function onDragMove(e) {
+            if (!dragState.isDragging || !dragState.dragGhost) return;
+            
+            const newLeft = e.clientX - dragState.offsetX;
+            const newTop = e.clientY - dragState.offsetY;
+            
+            dragState.dragGhost.style.left = newLeft + 'px';
+            dragState.dragGhost.style.top = newTop + 'px';
+            
+            const container = document.getElementById('projectList');
+            const cards = Array.from(container.querySelectorAll('.project-card'));
+            
+            cards.forEach(card => {
+                card.classList.remove('drag-over');
+            });
+            
+            let closestCard = null;
+            let minDist = Infinity;
+            
+            cards.forEach(card => {
+                if (card === dragState.originalCard) return;
+                
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const dist = Math.sqrt(Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2));
+                
+                if (dist < minDist && dist < 150) {
+                    minDist = dist;
+                    closestCard = card;
+                }
+            });
+            
+            if (closestCard) {
+                closestCard.classList.add('drag-over');
+            }
+        }
+        
+        function onDragEnd(e) {
+            if (!dragState.isDragging) return;
+            
+            const container = document.getElementById('projectList');
+            const cards = Array.from(container.querySelectorAll('.project-card'));
+            let targetCard = null;
+            
+            cards.forEach(card => {
+                if (card === dragState.originalCard) return;
+                
+                const rect = card.getBoundingClientRect();
+                const isOver = e.clientX >= rect.left && e.clientX <= rect.right &&
+                               e.clientY >= rect.top && e.clientY <= rect.bottom;
+                
+                if (isOver) {
+                    targetCard = card;
+                }
+                card.classList.remove('drag-over');
+            });
+            
+            if (targetCard && dragState.originalCard) {
+                const targetId = targetCard.getAttribute('data-project-id');
+                const draggedIndex = currentProjects.findIndex(p => p.id === dragState.draggedId);
+                const targetIndex = currentProjects.findIndex(p => p.id === targetId);
+                
+                if (draggedIndex !== -1 && targetIndex !== -1) {
+                    const temp = currentProjects[draggedIndex];
+                    currentProjects[draggedIndex] = currentProjects[targetIndex];
+                    currentProjects[targetIndex] = temp;
+                    
+                    updateProjectStats(currentProjects);
+                    
+                    const tempHtml = dragState.originalCard.innerHTML;
+                    const tempId = dragState.originalCard.getAttribute('data-project-id');
+                    
+                    dragState.originalCard.innerHTML = targetCard.innerHTML;
+                    dragState.originalCard.setAttribute('data-project-id', targetCard.getAttribute('data-project-id'));
+                    
+                    targetCard.innerHTML = tempHtml;
+                    targetCard.setAttribute('data-project-id', tempId);
+                }
+            }
+            
+            if (dragState.originalCard) {
+                dragState.originalCard.style.opacity = '';
+            }
+            
+            if (dragState.dragGhost) {
+                dragState.dragGhost.remove();
+            }
+            
+            dragState = {
+                isDragging: false,
+                offsetX: 0,
+                offsetY: 0,
+                originalCard: null,
+                dragGhost: null,
+                draggedId: null
+            };
+            
+            document.removeEventListener('mousemove', onDragMove);
+            document.removeEventListener('mouseup', onDragEnd);
         }
         
         // 定时任务
@@ -2030,23 +2640,46 @@
         
         // 命令面板
         const commands = [
-            { name: '新对话', action: 'switchPage("chat", null)', shortcut: 'Ctrl+N', icon: 'N' },
-            { name: '上传手册', action: 'switchPage("upload", null)', shortcut: 'Ctrl+U', icon: 'U' },
-            { name: '提交案例', action: 'switchPage("case", null)', shortcut: 'Ctrl+C', icon: 'C' },
-            { name: '查询历史', action: 'switchPage("history", null)', shortcut: 'Ctrl+H', icon: 'H' },
-            { name: '运维项目', action: 'switchPage("projects", null)', shortcut: 'Ctrl+P', icon: 'P' },
-            { name: '定时任务', action: 'switchPage("schedule", null)', shortcut: 'Ctrl+T', icon: 'T' },
-            { name: '插件市场', action: 'switchPage("plugins", null)', shortcut: 'Ctrl+I', icon: 'I' },
-            { name: '设置', action: 'switchPage("settings", null)', shortcut: 'Ctrl+,', icon: 'S' },
-            { name: '打开终端', action: 'toggleTerminal()', shortcut: 'Ctrl+`', icon: '>' },
-            { name: '打开预览', action: 'toggleRightSidebar()', shortcut: 'Ctrl+Shift+P', icon: 'V' },
-            { name: '清空历史', action: 'clearChatHistory()', shortcut: 'Ctrl+Shift+Del', icon: 'D' }
+            { name: '新对话', action: 'switchPage("chat", null)', shortcut: 'Ctrl+N', icon: 'N', type: 'command' },
+            { name: '上传手册', action: 'switchPage("upload", null)', shortcut: 'Ctrl+U', icon: 'U', type: 'command' },
+            { name: '提交案例', action: 'switchPage("case", null)', shortcut: 'Ctrl+C', icon: 'C', type: 'command' },
+            { name: '查询历史', action: 'switchPage("history", null)', shortcut: 'Ctrl+H', icon: 'H', type: 'command' },
+            { name: '运维项目', action: 'switchPage("projects", null)', shortcut: 'Ctrl+P', icon: 'P', type: 'command' },
+            { name: '定时任务', action: 'switchPage("schedule", null)', shortcut: 'Ctrl+T', icon: 'T', type: 'command' },
+            { name: '插件市场', action: 'switchPage("plugins", null)', shortcut: 'Ctrl+I', icon: 'I', type: 'command' },
+            { name: '设置', action: 'switchPage("settings", null)', shortcut: 'Ctrl+,', icon: 'S', type: 'command' },
+            { name: '打开终端', action: 'toggleTerminal()', shortcut: 'Ctrl+`', icon: '>', type: 'command' },
+            { name: '打开预览', action: 'toggleRightSidebar()', shortcut: 'Ctrl+Shift+P', icon: 'V', type: 'command' },
+            { name: '清空历史', action: 'clearChatHistory()', shortcut: 'Ctrl+Shift+Del', icon: 'D', type: 'command' }
         ];
+        
+        let searchableProjects = [];
+        
+        function loadProjectsForSearch() {
+            const token = localStorage.getItem('token');
+            fetch('/api/projects', {
+                headers: { 'Authorization': `Bearer ${token || ''}` }
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.projects) {
+                    searchableProjects = data.projects;
+                }
+            })
+            .catch(() => {});
+        }
         
         function openCommandPalette() {
             const palette = document.getElementById('commandPalette');
             palette.classList.add('active');
+            document.getElementById('commandInput').value = '';
             document.getElementById('commandInput').focus();
+            loadProjectsForSearch();
             renderCommands();
         }
         
@@ -2054,17 +2687,81 @@
             document.getElementById('commandPalette').classList.remove('active');
         }
         
+        function navigateToProject(projectId) {
+            switchPage('projects', null);
+            closeCommandPalette();
+            setTimeout(() => {
+                const card = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.style.borderColor = '#1a1a1a';
+                    card.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                    setTimeout(() => {
+                        card.style.borderColor = '';
+                        card.style.boxShadow = '';
+                    }, 2000);
+                }
+            }, 300);
+        }
+        
         function renderCommands(filterText = '') {
             const list = document.getElementById('commandList');
-            const filtered = commands.filter(c => c.name.toLowerCase().includes(filterText.toLowerCase()));
+            const results = [];
             
-            list.innerHTML = filtered.map((c, index) => `
-                <div class="command-item ${index === 0 ? 'selected' : ''}" onclick="${c.action}; closeCommandPalette();">
-                    <span class="command-icon">${c.icon}</span>
-                    <span class="command-text">${c.name}</span>
-                    <span class="command-shortcut">${c.shortcut}</span>
-                </div>
-            `).join('');
+            const cmdFiltered = commands.filter(c => 
+                c.name.toLowerCase().includes(filterText.toLowerCase())
+            );
+            
+            cmdFiltered.forEach(c => {
+                results.push({
+                    type: 'command',
+                    html: `
+                        <div class="command-item" onclick="${c.action}; closeCommandPalette();">
+                            <span class="command-icon">${c.icon}</span>
+                            <span class="command-text">${c.name}</span>
+                            <span class="command-shortcut">${c.shortcut}</span>
+                        </div>
+                    `
+                });
+            });
+            
+            if (filterText.length >= 1) {
+                const projectFiltered = searchableProjects.filter(p => {
+                    const searchText = filterText.toLowerCase();
+                    return (p.name || '').toLowerCase().includes(searchText) ||
+                           (p.description || '').toLowerCase().includes(searchText) ||
+                           (p.assignee || '').toLowerCase().includes(searchText) ||
+                           (p.status || '').toLowerCase().includes(searchText) ||
+                           (p.start_date || '').includes(searchText) ||
+                           (p.end_date || '').includes(searchText);
+                });
+                
+                projectFiltered.forEach(p => {
+                    const statusText = getStatusText(p.status);
+                    results.push({
+                        type: 'project',
+                        html: `
+                            <div class="command-item" onclick="navigateToProject('${p.id}');">
+                                <span class="command-icon" style="color: #166534;">P</span>
+                                <span class="command-text" style="flex: 1;">${escapeHTML(p.name)}</span>
+                                <span style="font-size: 14px; color: #666666; margin-right: 8px;">${escapeHTML(statusText)}</span>
+                                <span class="command-shortcut" style="color: #999999;">项目</span>
+                            </div>
+                        `
+                    });
+                });
+            }
+            
+            if (results.length === 0) {
+                list.innerHTML = `
+                    <div class="command-item" style="color: #999999; cursor: default;">
+                        <span class="command-icon">?</span>
+                        <span class="command-text">未找到匹配结果</span>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = results.map(r => r.html).join('');
+            }
         }
         
         function filterCommands() {
@@ -2166,9 +2863,91 @@
             }
         }
         
+        function handlePaste(event) {
+            const items = event.clipboardData?.items;
+            if (!items) return;
+            
+            for (const item of items) {
+                if (item.type.indexOf('image') !== -1) {
+                    const file = item.getAsFile();
+                    if (file) {
+                        event.preventDefault();
+                        const imageInput = document.getElementById('imageUpload');
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        imageInput.files = dataTransfer.files;
+                        previewMedia(imageInput, 'image');
+                    }
+                }
+            }
+        }
+        
+        function previewMedia(input, type) {
+            const previewDiv = document.getElementById('mediaPreview');
+            const imgPreview = document.getElementById('previewImg');
+            const videoPreview = document.getElementById('previewVideo');
+            
+            if (!input.files || input.files.length === 0) {
+                previewDiv.style.display = 'none';
+                return;
+            }
+            
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            if (type === 'image') {
+                imgPreview.style.display = 'block';
+                videoPreview.style.display = 'none';
+                reader.onload = function(e) {
+                    imgPreview.src = e.target.result;
+                    previewDiv.style.display = 'inline-block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                videoPreview.style.display = 'block';
+                imgPreview.style.display = 'none';
+                reader.onload = function(e) {
+                    videoPreview.src = e.target.result;
+                    videoPreview.preload = 'metadata';
+                    previewDiv.style.display = 'inline-block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function clearMedia() {
+            const imageInput = document.getElementById('imageUpload');
+            const videoInput = document.getElementById('videoUpload');
+            const previewDiv = document.getElementById('mediaPreview');
+            
+            imageInput.value = '';
+            videoInput.value = '';
+            previewDiv.style.display = 'none';
+        }
+        
+        function renderMediaFiles(mediaFiles) {
+            if (!mediaFiles || mediaFiles.length === 0) return '';
+            
+            let html = '<div class="msg-media">';
+            mediaFiles.forEach(file => {
+                if (file.type === 'image') {
+                    html += `<img src="/media/${file.path}" style="max-width: 300px; max-height: 200px; border-radius: 6px; border: 1px solid #e0e0e0; margin-top: 8px;">`;
+                } else if (file.type === 'video') {
+                    html += `<video src="/media/${file.path}" controls style="max-width: 300px; max-height: 200px; border-radius: 6px; border: 1px solid #e0e0e0; margin-top: 8px;"></video>`;
+                }
+            });
+            html += '</div>';
+            return html;
+        }
+        
         function askQuestion() {
             const question = document.getElementById('question').value.trim();
-            if (!question) return;
+            const imageInput = document.getElementById('imageUpload');
+            const videoInput = document.getElementById('videoUpload');
+            
+            if (!question && (!imageInput.files || imageInput.files.length === 0) && (!videoInput.files || videoInput.files.length === 0)) {
+                return;
+            }
             
             const sendBtn = document.getElementById('sendBtn');
             if (isAsking) return;
@@ -2183,10 +2962,24 @@
             
             const userMsg = document.createElement('div');
             userMsg.className = 'msg user-msg';
-            userMsg.innerHTML = `<div class="msg-content">${escapeHTML(question)}</div>`;
+            let userContent = question ? `<div class="msg-text">${escapeHTML(question)}</div>` : '';
+            
+            const previewDiv = document.getElementById('mediaPreview');
+            const imgPreview = document.getElementById('previewImg');
+            const videoPreview = document.getElementById('previewVideo');
+            
+            if (previewDiv.style.display !== 'none') {
+                if (imgPreview.style.display === 'block') {
+                    userContent += `<div class="msg-media"><img src="${imgPreview.src}" style="max-width: 300px; max-height: 200px; border-radius: 6px; border: 1px solid #e0e0e0; margin-top: 8px;"></div>`;
+                } else if (videoPreview.style.display === 'block') {
+                    userContent += `<div class="msg-media"><video src="${videoPreview.src}" controls style="max-width: 300px; max-height: 200px; border-radius: 6px; border: 1px solid #e0e0e0; margin-top: 8px;"></video></div>`;
+                }
+            }
+            
+            userMsg.innerHTML = `<div class="msg-content">${userContent}</div>`;
             chatBox.appendChild(userMsg);
             
-            saveChatMessage('user', question);
+            saveChatMessage('user', question, []);
             
             const assistantMsg = document.createElement('div');
             assistantMsg.className = 'msg assistant-msg';
@@ -2199,9 +2992,22 @@
             formData.append('question', question);
             formData.append('username', localStorage.getItem('username') || 'default');
             
-            const imageInput = document.getElementById('imageUpload');
             if (imageInput.files && imageInput.files[0]) {
                 formData.append('image', imageInput.files[0]);
+            }
+            
+            if (videoInput.files && videoInput.files[0]) {
+                formData.append('video', videoInput.files[0]);
+            }
+            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+            }, 300000);
+            
+            const hasVideo = videoInput.files && videoInput.files[0];
+            if (hasVideo) {
+                assistantMsg.innerHTML = `<div class="msg-content"><div class="loading-dots"><span></span><span></span><span></span></div><div style="font-size: 14px; color: #999; margin-top: 8px;">正在分析视频画面，请稍候...</div></div>`;
             }
             
             fetch('/ask', {
@@ -2209,9 +3015,11 @@
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
                 },
-                body: formData
+                body: formData,
+                signal: controller.signal
             })
             .then(response => {
+                clearTimeout(timeoutId);
                 if (response.status === 401) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('username');
@@ -2227,8 +3035,9 @@
                 sendBtn.classList.remove('btn-loading');
                 
                 let answer = data.answer || '抱歉，我无法回答这个问题。';
+                let mediaHtml = renderMediaFiles(data.media_files);
                 
-                assistantMsg.innerHTML = `<div class="msg-content">${marked.parse(escapeHTML(answer))}</div>`;
+                assistantMsg.innerHTML = `<div class="msg-content">${marked.parse(escapeHTML(answer))}${mediaHtml}</div>`;
                 
                 if (data.references && data.references.length > 0) {
                     let refsHtml = '<div class="references">参考来源：';
@@ -2241,13 +3050,20 @@
                     assistantMsg.querySelector('.msg-content').innerHTML += refsHtml;
                 }
                 
-                saveChatMessage('assistant', answer);
+                saveChatMessage('assistant', answer, data.media_files || []);
+                clearMedia();
+                document.getElementById('question').value = '';
                 chatBox.scrollTop = chatBox.scrollHeight;
             })
             .catch(error => {
+                clearTimeout(timeoutId);
                 isAsking = false;
                 sendBtn.classList.remove('btn-loading');
-                assistantMsg.innerHTML = `<div class="msg-content">请求失败：${error.message}</div>`;
+                if (error.name === 'AbortError') {
+                    assistantMsg.innerHTML = `<div class="msg-content">请求超时，请稍后重试。视频分析可能需要较长时间，请耐心等待。</div>`;
+                } else {
+                    assistantMsg.innerHTML = `<div class="msg-content">请求失败：${error.message}</div>`;
+                }
             });
         }
         
@@ -2261,13 +3077,53 @@
             }
             
             isUploading = true;
-            document.getElementById('uploadBtn').classList.add('btn-loading');
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.classList.add('btn-loading');
+            
+            const progressContainer = document.getElementById('uploadProgress');
+            if (!progressContainer) {
+                const div = document.createElement('div');
+                div.id = 'uploadProgress';
+                div.className = 'upload-progress';
+                document.getElementById('uploadStatus').parentNode.insertBefore(div, document.getElementById('uploadStatus').nextSibling);
+            }
+            
+            const progressDiv = document.getElementById('uploadProgress');
+            let progressHtml = '';
+            for (let i = 0; i < files.length; i++) {
+                progressHtml += `
+                    <div class="upload-progress-item">
+                        <span class="upload-progress-name">${escapeHTML(files[i].name)}</span>
+                        <span class="upload-progress-status processing">处理中...</span>
+                        <div class="upload-progress-bar"><div class="upload-progress-bar-fill" style="width: 0%"></div></div>
+                    </div>
+                `;
+            }
+            progressDiv.innerHTML = `<div style="font-size: 14px; color: #666; margin-bottom: 8px;">正在上传并建立知识库...</div>${progressHtml}`;
             
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append('pdfs', files[i]);
             }
             formData.append('username', localStorage.getItem('username') || 'default');
+            
+            const progressFills = progressDiv.querySelectorAll('.upload-progress-bar-fill');
+            const statusSpans = progressDiv.querySelectorAll('.upload-progress-status');
+            
+            const progressValues = new Array(files.length).fill(0);
+            const updateProgress = () => {
+                for (let i = 0; i < files.length; i++) {
+                    if (progressValues[i] < 90) {
+                        progressValues[i] += Math.random() * 8 + 2;
+                        if (progressValues[i] > 90) {
+                            progressValues[i] = 90;
+                        }
+                        progressFills[i].style.width = `${progressValues[i]}%`;
+                    }
+                }
+            };
+            
+            const progressInterval = setInterval(updateProgress, 300);
             
             fetch('/upload', {
                 method: 'POST',
@@ -2278,21 +3134,54 @@
             })
             .then(response => response.json())
             .then(data => {
+                clearInterval(progressInterval);
                 isUploading = false;
-                document.getElementById('uploadBtn').classList.remove('btn-loading');
+                uploadBtn.classList.remove('btn-loading');
                 
                 if (data.success) {
+                    for (let i = 0; i < files.length; i++) {
+                        progressFills[i].style.width = '100%';
+                        statusSpans[i].textContent = '成功';
+                        statusSpans[i].classList.remove('processing');
+                        statusSpans[i].classList.add('success');
+                    }
+                    
+                    setTimeout(() => {
+                        progressDiv.innerHTML = '';
+                        progressDiv.style.display = 'none';
+                    }, 2000);
+                    
                     showStatus(`成功上传并解析 ${data.count} 个文件`, 'success');
                     input.value = '';
                     document.getElementById('uploadFileList').innerHTML = '';
                     loadFileList();
+                    loadUploadedFilesInfo();
+                    
+                    if (data.errors && data.errors.length > 0) {
+                        setTimeout(() => {
+                            showStatus('部分文件上传失败：' + data.errors.join(', '), 'error');
+                        }, 1000);
+                    }
                 } else {
+                    for (let i = 0; i < statusSpans.length; i++) {
+                        statusSpans[i].textContent = '失败';
+                        statusSpans[i].classList.remove('processing');
+                        statusSpans[i].classList.add('error');
+                    }
                     showStatus(data.error || '上传失败', 'error');
                 }
             })
             .catch(error => {
+                clearInterval(progressInterval);
                 isUploading = false;
-                document.getElementById('uploadBtn').classList.remove('btn-loading');
+                uploadBtn.classList.remove('btn-loading');
+                
+                for (let i = 0; i < statusSpans.length; i++) {
+                    statusSpans[i].textContent = '失败';
+                    statusSpans[i].classList.remove('processing');
+                    statusSpans[i].classList.add('error');
+                }
+                
                 showStatus('上传失败：' + error.message, 'error');
             });
         }
@@ -2460,13 +3349,35 @@
                     'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    alert('登录已过期，请重新登录');
+                    window.location.href = '/static/login.html';
+                    throw new Error('Unauthorized');
+                }
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.detail || '删除失败');
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.message) {
                     alert(data.message);
                     loadFileList();
+                    loadUploadedFilesInfo();
                 } else {
                     alert('删除失败');
+                }
+            })
+            .catch(error => {
+                if (error.message !== 'Unauthorized') {
+                    console.error('删除文件失败:', error);
+                    alert('删除失败：' + error.message);
                 }
             });
         }
@@ -2475,6 +3386,7 @@
             const title = document.getElementById('caseTitle').value.trim();
             const type = document.getElementById('caseType').value;
             const content = document.getElementById('caseContent').value.trim();
+            const filesInput = document.getElementById('caseFiles');
             
             if (!title) {
                 alert('请输入案例标题');
@@ -2491,12 +3403,23 @@
             btn.disabled = true;
             btn.classList.add('btn-loading');
             
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('content', content);
+            formData.append('type', type);
+            
+            if (filesInput.files && filesInput.files.length > 0) {
+                for (let i = 0; i < filesInput.files.length; i++) {
+                    formData.append('files', filesInput.files[i]);
+                }
+            }
+            
             fetch('/api/submit-case', {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
                 },
-                body: new URLSearchParams({ title, content, type })
+                body: formData
             })
             .then(response => {
                 if (response.status === 401) {
@@ -2519,6 +3442,8 @@
                     
                     document.getElementById('caseTitle').value = '';
                     document.getElementById('caseContent').value = '';
+                    document.getElementById('caseFiles').value = '';
+                    document.getElementById('uploadedFilesList').innerHTML = '';
                     
                     setTimeout(() => {
                         status.classList.remove('show');
@@ -2530,6 +3455,69 @@
                 btn.classList.remove('btn-loading');
                 status.textContent = '提交失败，请稍后重试';
                 status.className = 'status status-error show';
+            });
+        }
+        
+        function loadApprovedCases() {
+            const list = document.getElementById('approvedCasesList');
+            list.innerHTML = '<div class="loading">加载中...</div>';
+            
+            fetch('/api/approved-cases', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || ''}` }
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    alert('登录已过期，请重新登录');
+                    window.location.href = '/static/login.html';
+                    throw new Error('Unauthorized');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data.cases || data.cases.length === 0) {
+                    list.innerHTML = '<div style="text-align: center; padding: 40px; color: #999999;">暂无已通过的案例</div>';
+                    return;
+                }
+                
+                let html = '';
+                data.cases.forEach(c => {
+                    let filesHtml = '';
+                    if (c.files && c.files.length > 0) {
+                        filesHtml = '<div style="margin-top: 12px;">';
+                        c.files.forEach(file => {
+                            const isImage = file.match(/\.(jpg|jpeg|png|gif)$/i);
+                            if (isImage) {
+                                filesHtml += `<img src="/media/${file}" style="max-width: 200px; max-height: 150px; margin-right: 12px; border-radius: 4px; border: 1px solid #e0e0e0;">`;
+                            } else {
+                                filesHtml += `<video src="/media/${file}" controls style="max-width: 300px; max-height: 200px; margin-right: 12px; border-radius: 4px; border: 1px solid #e0e0e0;"></video>`;
+                            }
+                        });
+                        filesHtml += '</div>';
+                    }
+                    
+                    html += `
+                    <div style="border-bottom: 1px solid #e0e0e0; padding: 20px 0; cursor: pointer;" onclick="showCaseDetail('${c.id}')">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <h3 style="font-size: 18px; font-weight: 600; color: #1a1a1a;">${c.title}</h3>
+                            <span style="padding: 4px 12px; background: #dcfce7; color: #16a34a; border-radius: 20px; font-size: 14px;">已通过</span>
+                        </div>
+                        <div style="font-size: 15px; color: #999999; margin-bottom: 12px;">
+                            <span>提交人: ${c.submitter}</span>
+                            <span style="margin: 0 16px;">${c.type || '经验'}</span>
+                            <span>${c.created_at?.slice(0,10)}</span>
+                        </div>
+                        <div style="font-size: 16px; color: #666666; line-height: 1.6;">${c.content}</div>
+                        ${filesHtml}
+                        <div style="margin-top: 12px; font-size: 14px; color: #1a1a1a;">点击查看详情</div>
+                    </div>`;
+                });
+                list.innerHTML = html;
+            })
+            .catch(error => {
+                list.innerHTML = '<div style="text-align: center; padding: 40px; color: #999999;">加载失败，请稍后重试</div>';
             });
         }
         
@@ -2547,6 +3535,18 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+        
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         }
         
         // 修正建议
@@ -2609,4 +3609,87 @@
         document.addEventListener('DOMContentLoaded', function() {
             initSession();
         });
+        
+        // 案例详情弹窗
+        function showCaseDetail(caseId) {
+            fetch('/api/case/' + caseId, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token') || ''}` }
+            })
+            .then(response => response.json())
+            .then(caseData => {
+                let filesHtml = '';
+                if (caseData.files && caseData.files.length > 0) {
+                    filesHtml = '<div style="margin-top: 20px;">';
+                    filesHtml += '<div style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">附件</div>';
+                    caseData.files.forEach(file => {
+                        const isImage = file.match(/\.(jpg|jpeg|png|gif)$/i);
+                        if (isImage) {
+                            filesHtml += `<img src="/media/${file}" style="max-width: 100%; max-height: 400px; margin-bottom: 12px; border-radius: 4px; border: 1px solid #e0e0e0;">`;
+                        } else {
+                            filesHtml += `<video src="/media/${file}" controls style="max-width: 100%; max-height: 400px; margin-bottom: 12px; border-radius: 4px; border: 1px solid #e0e0e0;"></video>`;
+                        }
+                    });
+                    filesHtml += '</div>';
+                }
+                
+                const title = caseData.title || '未知标题';
+                const status = caseData.status || 'pending';
+                const statusText = status === 'approved' ? '已通过' : status === 'rejected' ? '已拒绝' : '待审核';
+                const statusBg = status === 'approved' ? '#dcfce7' : status === 'rejected' ? '#fee2e2' : '#fef3c7';
+                const statusColor = status === 'approved' ? '#16a34a' : status === 'rejected' ? '#dc2626' : '#d97706';
+                const submitter = caseData.submitter || '未知';
+                const type = caseData.type || '经验';
+                const date = caseData.created_at ? caseData.created_at.slice(0,10) : '未知';
+                const content = caseData.content || '';
+                
+                const modalContent = `
+                    <div style="padding: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2 style="font-size: 22px; font-weight: 600; color: #1a1a1a;">${title}</h2>
+                            <button onclick="closeCaseModal()" style="width: 32px; height: 32px; border: none; background: #f5f5f5; border-radius: 6px; cursor: pointer; font-size: 18px;">×</button>
+                        </div>
+                        <div style="display: flex; gap: 24px; margin-bottom: 20px;">
+                            <span style="padding: 6px 14px; background: ${statusBg}; color: ${statusColor}; border-radius: 20px; font-size: 14px; font-weight: 500;">${statusText}</span>
+                            <span style="font-size: 15px; color: #999999;">提交人: ${submitter}</span>
+                            <span style="font-size: 15px; color: #999999;">${type}</span>
+                            <span style="font-size: 15px; color: #999999;">${date}</span>
+                        </div>
+                        <div style="font-size: 16px; color: #666666; line-height: 1.8;">${content}</div>
+                        ${filesHtml}
+                    </div>
+                `;
+                
+                const modal = document.getElementById('caseDetailModal');
+                const modalContentDiv = document.getElementById('caseDetailModalContent');
+                modalContentDiv.innerHTML = modalContent;
+                modal.style.display = 'flex';
+            })
+            .catch(error => {
+                alert('获取案例详情失败');
+            });
+        }
+        
+        function closeCaseModal() {
+            const modal = document.getElementById('caseDetailModal');
+            modal.style.display = 'none';
+        }
+        
+        document.getElementById('caseDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCaseModal();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeCaseModal();
+            }
+        });
     </script>
+    
+    <!-- 案例详情弹窗 -->
+    <div id="caseDetailModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 40px;">
+        <div style="background: white; border-radius: 8px; width: 100%; max-width: 800px; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div id="caseDetailModalContent"></div>
+        </div>
+    </div>
+</body>
+</html>

@@ -6,7 +6,7 @@ import threading
 from datetime import datetime
 from typing import Dict
 
-from fastapi import APIRouter, HTTPException, Depends, Query, Form
+from fastapi import APIRouter, HTTPException, Depends, Query, Form, File, UploadFile
 
 router = APIRouter()
 
@@ -246,21 +246,47 @@ def get_procedure_handler(device, level, username):
     except Exception as e:
         raise HTTPException(500, f"生成指引失败：{e}")
 
-def submit_case_logic(title, content, type, username):
+MEDIA_DIR = "media/cases"
+os.makedirs(MEDIA_DIR, exist_ok=True)
+
+def submit_case_logic(title, content, type, username, files=None):
+    case_id = str(uuid.uuid4())
+    uploaded_files = []
+    
+    if files:
+        for file in files:
+            try:
+                ext = os.path.splitext(file.filename)[1].lower()
+                if ext not in ['.jpg', '.jpeg', '.png', '.gif', '.mp4', '.mov', '.avi']:
+                    continue
+                file_path = os.path.join(MEDIA_DIR, f"{case_id}_{file.filename}")
+                with open(file_path, "wb") as f:
+                    f.write(file.file.read())
+                uploaded_files.append(f"cases/{case_id}_{file.filename}")
+            except Exception as e:
+                continue
+    
     cases = load_json(PENDING_CASES_FILE)
     cases.append({
-        "id": str(uuid.uuid4()),
+        "id": case_id,
         "title": title,
         "content": content,
         "type": type,
         "submitter": username,
         "status": "pending",
-        "created_at": datetime.now().isoformat()
+        "created_at": datetime.now().isoformat(),
+        "files": uploaded_files
     })
     save_json(PENDING_CASES_FILE, cases)
 
 def get_pending_cases_logic():
     return [c for c in load_json(PENDING_CASES_FILE) if c["status"] == "pending"]
+
+def get_approved_cases_logic():
+    return [c for c in load_json(PENDING_CASES_FILE) if c["status"] == "approved"]
+
+def get_all_cases_logic():
+    return load_json(PENDING_CASES_FILE)
 
 def review_case_logic(case_id, action):
     cases = load_json(PENDING_CASES_FILE)
@@ -345,13 +371,29 @@ def init_features(embed_model, get_user_collection, client, text_model, get_curr
         return get_procedure_handler(device, level, user["username"])
 
     @router.post("/submit-case")
-    async def submit_case(title: str = Form(...), content: str = Form(...), type: str = Form("经验"), user: Dict = Depends(_get_current_user)):
-        submit_case_logic(title, content, type, user["username"])
+    async def submit_case(title: str = Form(...), content: str = Form(...), type: str = Form("经验"), files: list[UploadFile] = File(None), user: Dict = Depends(_get_current_user)):
+        submit_case_logic(title, content, type, user["username"], files)
         return {"message": "案例已提交，等待审核"}
 
     @router.get("/pending-cases")
     async def pending_cases(admin: Dict = Depends(_require_admin)):
         return {"cases": get_pending_cases_logic()}
+
+    @router.get("/approved-cases")
+    async def approved_cases(user: Dict = Depends(_get_current_user)):
+        return {"cases": get_approved_cases_logic()}
+
+    @router.get("/all-cases")
+    async def all_cases(admin: Dict = Depends(_require_admin)):
+        return {"cases": get_all_cases_logic()}
+
+    @router.get("/case/{case_id}")
+    async def get_case(case_id: str, user: Dict = Depends(_get_current_user)):
+        cases = load_json(PENDING_CASES_FILE)
+        for case in cases:
+            if case["id"] == case_id:
+                return case
+        raise HTTPException(404, "案例不存在")
 
     @router.post("/review-case/{case_id}")
     async def review_case(case_id: str, action: str = Query(..., pattern="^(approve|reject)$"), admin: Dict = Depends(_require_admin)):

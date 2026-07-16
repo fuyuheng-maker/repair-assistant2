@@ -1,23 +1,16 @@
 [
   {
-    "file_id": "c69f211f-870e-41c8-abb9-7f3bee699481",
+    "file_id": "be6d9552-7a2e-40ed-8b58-85ca754826c1",
+    "filename": "实验二：数据录入与简单查询指导手册 .pdf",
+    "username": "傅昱衡",
+    "chunk_count": 1,
+    "uploaded_at": "2026-07-16T18:59:23.395714"
+  },
+  {
+    "file_id": "fd1a403e-80a9-49da-83b9-fdab5aa1284b",
     "filename": "摩托车发动机维修手册.pdf",
     "username": "傅昱衡",
     "chunk_count": 99,
-    "uploaded_at": "2026-05-09T17:12:26.344771"
-  },
-  {
-    "file_id": "7752db1d-803b-48f1-b32a-3e8f37d097e5",
-    "filename": "test.pdf",
-    "username": "admin",
-    "chunk_count": 1,
-    "uploaded_at": "2026-05-11T22:16:16.352904"
-  },
-  {
-    "file_id": "fffe86b0-b9c7-4918-bd2f-de2eee3dfcf6",
-    "filename": "摩托车发动机维修手册.pdf",
-    "username": "admin",
-    "chunk_count": 99,
-    "uploaded_at": "2026-07-12T19:22:58.287956"
+    "uploaded_at": "2026-07-16T18:59:44.338835"
   }
 ]

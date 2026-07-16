@@ -16,5 +16,38 @@
     "submitter": "傅昱衡",
     "status": "approved",
     "created_at": "2026-05-09T17:15:52.520232"
+  },
+  {
+    "id": "81963c12-65b6-4a15-b5ff-f3c6191d6b0e",
+    "title": "2",
+    "content": "22",
+    "type": "经验",
+    "submitter": "admin",
+    "status": "approved",
+    "created_at": "2026-07-16T15:24:45.510738"
+  },
+  {
+    "id": "f4ef3d8a-d2b2-4894-be81-7160d41435f7",
+    "title": "我",
+    "content": "去",
+    "type": "经验",
+    "submitter": "admin",
+    "status": "rejected",
+    "created_at": "2026-07-16T15:42:55.101263",
+    "files": [
+      "cases/f4ef3d8a-d2b2-4894-be81-7160d41435f7_实验视频.mp4"
+    ]
+  },
+  {
+    "id": "2f21b334-ddd2-403f-b94e-fa53c379b676",
+    "title": "1234",
+    "content": "的",
+    "type": "经验",
+    "submitter": "admin",
+    "status": "approved",
+    "created_at": "2026-07-16T16:39:18.744269",
+    "files": [
+      "cases/2f21b334-ddd2-403f-b94e-fa53c379b676_演示视频.mp4"
+    ]
   }
 ]

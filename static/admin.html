@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>审核管理 - 设备检修知识助手</title>
+    <title>审核管理 - 检修助手</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -11,77 +13,213 @@
         
         body { 
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f8fafc;
-            color: #1a1a2e;
-            min-height: 100vh;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 16px;
         }
         
-        /* 顶部导航栏 */
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 16px 32px;
+        .app-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
+            height: 100vh;
         }
         
-        .navbar-brand {
+        /* 左侧侧边栏 */
+        .sidebar {
+            width: 220px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            border-right: 1px solid #e0e0e0;
+        }
+        
+        .sidebar-header {
+            padding: 16px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        
+        .sidebar-brand-icon {
+            width: 28px;
+            height: 28px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
             color: white;
-        }
-        
-        .navbar-brand-icon {
-            font-size: 28px;
-        }
-        
-        .navbar-brand-text {
-            font-size: 18px;
             font-weight: 600;
         }
         
-        .navbar-actions {
+        .sidebar-brand-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .sidebar-menu {
+            flex: 1;
+            padding: 8px;
+            overflow-y: auto;
+        }
+        
+        .menu-section {
+            margin-bottom: 12px;
+        }
+        
+        .menu-title {
+            color: #666666;
+            font-size: 19px;
+            font-weight: 600;
+            padding: 16px 12px 8px;
+            margin-bottom: 4px;
+        }
+        
+        .menu-item {
             display: flex;
-            gap: 20px;
             align-items: center;
-        }
-        
-        .navbar-link {
-            color: rgba(255,255,255,0.9);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        
-        .navbar-link:hover {
-            color: white;
-            text-decoration: underline;
-        }
-        
-        .navbar-btn {
-            padding: 8px 20px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 13px 12px;
+            color: #666666;
+            font-size: 17px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            text-decoration: none;
+            margin: 0 4px;
+            border-radius: 6px;
         }
         
-        .navbar-btn:hover {
-            background: rgba(255,255,255,0.3);
+        .menu-item:hover {
+            background: #f0f0f0;
+            color: #333333;
+        }
+        
+        .menu-item.active {
+            background: #1a1a1a;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .sidebar-footer {
+            padding: 8px 4px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: auto;
+        }
+        
+        .menu-item.logout {
+            color: #999999;
+        }
+        
+        .menu-item.logout:hover {
+            background: #f0f0f0;
+            color: #333333;
         }
         
         /* 主内容区 */
-        .container {
-            max-width: 1000px;
-            margin: 32px auto;
-            padding: 0 20px;
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* 顶部栏 */
+        .topbar {
+            height: 56px;
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            flex-shrink: 0;
+        }
+        
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333333;
+        }
+        
+        .topbar-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .topbar-btn {
+            padding: 10px 16px;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            color: #666666;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .topbar-btn:hover {
+            background: #e8e8e8;
+            border-color: #cccccc;
+        }
+        
+        /* 内容区域 */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        
+        /* 页面内容 */
+        .page {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+        }
+        
+        .page.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a1a1a;
         }
         
         /* Tab 切换 */
@@ -89,47 +227,39 @@
             display: flex;
             gap: 8px;
             margin-bottom: 24px;
-            background: #f1f5f9;
             padding: 6px;
-            border-radius: 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
             width: fit-content;
         }
         
         .tab {
-            padding: 12px 24px;
+            padding: 10px 20px;
             background: transparent;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 500;
-            color: #64748b;
-            transition: all 0.2s;
+            color: #666666;
+            transition: all 0.15s;
         }
         
         .tab.active {
-            background: white;
-            color: #1a1a2e;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: #1a1a1a;
+            color: #ffffff;
         }
         
         .tab:hover:not(.active) {
-            color: #334155;
-        }
-        
-        /* 卡片 */
-        .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            overflow: hidden;
+            background: #e8e8e8;
+            color: #333333;
         }
         
         /* 列表项 */
         .item {
             padding: 20px;
-            border-bottom: 1px solid #f1f5f9;
-            transition: background 0.2s;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.15s;
         }
         
         .item:last-child {
@@ -148,15 +278,15 @@
         }
         
         .item-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
-            color: #1e293b;
+            color: #1a1a1a;
         }
         
         .status-badge {
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 500;
         }
         
@@ -176,16 +306,16 @@
         }
         
         .item-meta {
-            font-size: 13px;
-            color: #94a3b8;
+            font-size: 15px;
+            color: #999999;
             margin-bottom: 12px;
             display: flex;
-            gap: 16px;
+            gap: 20px;
         }
         
         .item-content {
-            font-size: 14px;
-            color: #475569;
+            font-size: 16px;
+            color: #666666;
             line-height: 1.6;
         }
         
@@ -198,79 +328,89 @@
         
         /* 按钮 */
         .btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
         
         .btn-approve {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: #1a1a1a;
             color: white;
         }
         
         .btn-approve:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            background: #333333;
         }
         
         .btn-reject {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
+            background: #f5f5f5;
+            color: #666666;
+            border: 1px solid #e0e0e0;
         }
         
         .btn-reject:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            background: #e8e8e8;
+            border-color: #cccccc;
         }
         
         /* 空状态 */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #94a3b8;
+            color: #999999;
         }
         
         .empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            width: 60px;
+            height: 60px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            color: #666666;
+            margin: 0 auto 16px;
         }
         
         .empty-title {
             font-size: 18px;
             font-weight: 600;
-            color: #64748b;
+            color: #666666;
             margin-bottom: 8px;
         }
         
         .empty-desc {
-            font-size: 14px;
+            font-size: 15px;
+            color: #999999;
         }
         
         /* 修正项特殊样式 */
         .correction-item {
             padding-left: 24px;
-            border-left: 3px solid #667eea;
+            border-left: 3px solid #1a1a1a;
         }
         
         .correction-original {
             background: #fef3c7;
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-bottom: 12px;
         }
         
         .correction-correct {
             background: #dcfce7;
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 6px;
         }
         
         .correction-label {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
             margin-bottom: 4px;
             opacity: 0.8;
@@ -282,39 +422,62 @@
             justify-content: center;
             align-items: center;
             padding: 40px;
-            color: #64748b;
+            color: #999999;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
-    <!-- 顶部导航栏 -->
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <span class="navbar-brand-icon">🔧</span>
-            <span class="navbar-brand-text">设备检修知识助手</span>
-        </div>
-        <div class="navbar-actions">
-            <a href="/" class="navbar-link">← 返回主界面</a>
-            <button class="navbar-btn" onclick="logout()">退出登录</button>
-        </div>
-    </nav>
-    
-    <!-- 主内容区 -->
-    <div class="container">
-        <!-- Tab 切换 -->
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('cases')">📝 待审核案例</button>
-            <button class="tab" onclick="switchTab('corrections')">✏️ 待审核修正</button>
+    <div class="app-container">
+        <!-- 左侧侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <span class="sidebar-brand-icon">RA</span>
+                    <span class="sidebar-brand-text">检修助手</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <div class="menu-title">审核管理</div>
+                    <div class="menu-item active" onclick="switchTab('cases')">C 待审核案例</div>
+                    <div class="menu-item" onclick="switchTab('approved')">A 已通过案例</div>
+                    <div class="menu-item" onclick="switchTab('corrections')">R 待审核修正</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="menu-item logout" onclick="logout()">退出登录</div>
+            </div>
         </div>
         
-        <!-- 内容卡片 -->
-        <div class="card">
-            <div id="content"></div>
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <div class="topbar">
+                <div class="page-title">审核管理</div>
+                <div class="topbar-actions">
+                    <button class="topbar-btn" onclick="window.location.href = '/'">返回主界面</button>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <!-- Tab 切换 -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('cases')">C 待审核案例</button>
+                    <button class="tab" onclick="switchTab('approved')">A 已通过案例</button>
+                    <button class="tab" onclick="switchTab('corrections')">R 待审核修正</button>
+                </div>
+                
+                <!-- 内容卡片 -->
+                <div class="card">
+                    <div id="content"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // ---------- 认证与角色校验 ----------
         const token = localStorage.getItem('token');
         const role = localStorage.getItem('role');
 
@@ -345,26 +508,51 @@
 
         async function switchTab(tab) {
             currentTab = tab;
+            
+            document.querySelectorAll('.menu-item').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
+            
+            const menuItems = document.querySelectorAll('.menu-item');
+            if (tab === 'cases') {
+                menuItems[0].classList.add('active');
+            } else if (tab === 'approved') {
+                menuItems[1].classList.add('active');
+            } else {
+                menuItems[2].classList.add('active');
+            }
+            
+            const tabs = document.querySelectorAll('.tab');
+            if (tab === 'cases') {
+                tabs[0].classList.add('active');
+            } else if (tab === 'approved') {
+                tabs[1].classList.add('active');
+            } else {
+                tabs[2].classList.add('active');
+            }
+            
             loadData();
         }
 
         async function loadData() {
             const contentDiv = document.getElementById('content');
-            contentDiv.innerHTML = '<div class="loading">⏳ 加载中...</div>';
+            contentDiv.innerHTML = '<div class="loading">加载中...</div>';
             try {
                 if (currentTab === 'cases') {
                     const res = await fetch('/api/pending-cases');
                     const data = await res.json();
                     renderCases(data.cases);
+                } else if (currentTab === 'approved') {
+                    const res = await fetch('/api/all-cases');
+                    const data = await res.json();
+                    const approvedCases = data.cases.filter(c => c.status === 'approved');
+                    renderApprovedCases(approvedCases);
                 } else {
                     const res = await fetch('/api/pending-corrections');
                     const data = await res.json();
                     renderCorrections(data.corrections);
                 }
             } catch (e) {
-                contentDiv.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><div class="empty-title">加载失败</div><div class="empty-desc">网络错误，请稍后重试</div></div>';
+                contentDiv.innerHTML = '<div class="empty-state"><div class="empty-icon">!</div><div class="empty-title">加载失败</div><div class="empty-desc">网络错误，请稍后重试</div></div>';
             }
         }
 
@@ -378,27 +566,82 @@
         function renderCases(cases) {
             const div = document.getElementById('content');
             if (!cases || cases.length === 0) {
-                div.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">暂无待审核案例</div><div class="empty-desc">目前没有需要审核的案例提交</div></div>';
+                div.innerHTML = '<div class="empty-state"><div class="empty-icon">C</div><div class="empty-title">暂无待审核案例</div><div class="empty-desc">目前没有需要审核的案例提交</div></div>';
                 return;
             }
             let html = '';
             cases.forEach(c => {
+                let filesHtml = '';
+                if (c.files && c.files.length > 0) {
+                    filesHtml = '<div style="margin-top: 12px;">';
+                    c.files.forEach(file => {
+                        const isImage = file.match(/\.(jpg|jpeg|png|gif)$/i);
+                        if (isImage) {
+                            filesHtml += `<img src="/media/${file}" style="max-width: 200px; max-height: 150px; margin-right: 12px; border-radius: 4px; border: 1px solid #e0e0e0;">`;
+                        } else {
+                            filesHtml += `<video src="/media/${file}" controls style="max-width: 300px; max-height: 200px; margin-right: 12px; border-radius: 4px; border: 1px solid #e0e0e0;"></video>`;
+                        }
+                    });
+                    filesHtml += '</div>';
+                }
                 html += `
-                <div class="item" id="case-${escapeHTML(c.id)}">
+                <div class="item" id="case-${escapeHTML(c.id)}" onclick="showCaseDetail('${c.id}')">
                     <div class="item-header">
                         <h3 class="item-title">${escapeHTML(c.title)}</h3>
                         <span class="status-badge status-pending">待审核</span>
                     </div>
                     <div class="item-meta">
-                        <span>👤 ${escapeHTML(c.submitter)}</span>
-                        <span>📅 ${escapeHTML(c.created_at?.slice(0,10))}</span>
-                        <span>🏷️ ${escapeHTML(c.type || '经验')}</span>
+                        <span>提交人: ${escapeHTML(c.submitter)}</span>
+                        <span>${escapeHTML(c.created_at?.slice(0,10))}</span>
+                        <span>${escapeHTML(c.type || '经验')}</span>
                     </div>
                     <div class="item-content">${escapeHTML(c.content)}</div>
-                    <div class="item-actions" id="actions-${escapeHTML(c.id)}">
-                        <button class="btn btn-approve" onclick="reviewCase('${escapeHTML(c.id)}', 'approve')">✅ 通过</button>
-                        <button class="btn btn-reject" onclick="reviewCase('${escapeHTML(c.id)}', 'reject')">❌ 拒绝</button>
+                    ${filesHtml}
+                    <div class="item-actions" id="actions-${escapeHTML(c.id)}" onclick="event.stopPropagation()">
+                        <button class="btn btn-approve" onclick="reviewCase('${c.id}', 'approve')">通过</button>
+                        <button class="btn btn-reject" onclick="reviewCase('${c.id}', 'reject')">拒绝</button>
                     </div>
+                    <div style="margin-top: 8px; font-size: 14px; color: #1a1a1a;">点击查看详情</div>
+                </div>`;
+            });
+            div.innerHTML = html;
+        }
+
+        function renderApprovedCases(cases) {
+            const div = document.getElementById('content');
+            if (!cases || cases.length === 0) {
+                div.innerHTML = '<div class="empty-state"><div class="empty-icon">A</div><div class="empty-title">暂无已通过案例</div><div class="empty-desc">目前没有已通过审核的案例</div></div>';
+                return;
+            }
+            let html = '';
+            cases.forEach(c => {
+                let filesHtml = '';
+                if (c.files && c.files.length > 0) {
+                    filesHtml = '<div style="margin-top: 12px;">';
+                    c.files.forEach(file => {
+                        const isImage = file.match(/\.(jpg|jpeg|png|gif)$/i);
+                        if (isImage) {
+                            filesHtml += `<img src="/media/${file}" style="max-width: 200px; max-height: 150px; margin-right: 12px; border-radius: 4px; border: 1px solid #e0e0e0;">`;
+                        } else {
+                            filesHtml += `<video src="/media/${file}" controls style="max-width: 300px; max-height: 200px; margin-right: 12px; border-radius: 4px; border: 1px solid #e0e0e0;"></video>`;
+                        }
+                    });
+                    filesHtml += '</div>';
+                }
+                html += `
+                <div class="item" id="case-${escapeHTML(c.id)}" onclick="showCaseDetail('${c.id}')">
+                    <div class="item-header">
+                        <h3 class="item-title">${escapeHTML(c.title)}</h3>
+                        <span class="status-badge status-approved">已通过</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>提交人: ${escapeHTML(c.submitter)}</span>
+                        <span>${escapeHTML(c.created_at?.slice(0,10))}</span>
+                        <span>${escapeHTML(c.type || '经验')}</span>
+                    </div>
+                    <div class="item-content">${escapeHTML(c.content)}</div>
+                    ${filesHtml}
+                    <div style="margin-top: 8px; font-size: 14px; color: #1a1a1a;">点击查看详情</div>
                 </div>`;
             });
             div.innerHTML = html;
@@ -407,7 +650,7 @@
         function renderCorrections(corrections) {
             const div = document.getElementById('content');
             if (!corrections || corrections.length === 0) {
-                div.innerHTML = '<div class="empty-state"><div class="empty-icon">✏️</div><div class="empty-title">暂无待审核修正</div><div class="empty-desc">目前没有需要审核的修正建议</div></div>';
+                div.innerHTML = '<div class="empty-state"><div class="empty-icon">R</div><div class="empty-title">暂无待审核修正</div><div class="empty-desc">目前没有需要审核的修正建议</div></div>';
                 return;
             }
             let html = '';
@@ -419,8 +662,8 @@
                         <span class="status-badge status-pending">待审核</span>
                     </div>
                     <div class="item-meta">
-                        <span>👤 ${escapeHTML(c.submitter)}</span>
-                        <span>📅 ${escapeHTML(c.created_at?.slice(0,10))}</span>
+                        <span>提交人: ${escapeHTML(c.submitter)}</span>
+                        <span>${escapeHTML(c.created_at?.slice(0,10))}</span>
                     </div>
                     <div class="correction-original">
                         <div class="correction-label">原答案</div>
@@ -431,8 +674,8 @@
                         <div>${escapeHTML(c.correct_answer)}</div>
                     </div>
                     <div class="item-actions" id="actions-${escapeHTML(c.id)}">
-                        <button class="btn btn-approve" onclick="reviewCorrection('${escapeHTML(c.id)}', 'approve')">✅ 通过</button>
-                        <button class="btn btn-reject" onclick="reviewCorrection('${escapeHTML(c.id)}', 'reject')">❌ 拒绝</button>
+                        <button class="btn btn-approve" onclick="reviewCorrection('${escapeHTML(c.id)}', 'approve')">通过</button>
+                        <button class="btn btn-reject" onclick="reviewCorrection('${escapeHTML(c.id)}', 'reject')">拒绝</button>
                     </div>
                 </div>`;
             });
@@ -470,8 +713,89 @@
         }
 
         loadData();
-        // 每 30 秒自动刷新待审核列表
         setInterval(loadData, 30000);
+        
+        function showCaseDetail(caseId) {
+            fetch('/api/case/' + caseId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                return response.json();
+            })
+            .then(caseData => {
+                console.log('Case data:', caseData);
+                let filesHtml = '';
+                if (caseData.files && caseData.files.length > 0) {
+                    filesHtml = '<div style="margin-top: 20px;">';
+                    filesHtml += '<div style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">附件</div>';
+                    caseData.files.forEach(file => {
+                        const isImage = file.match(/\.(jpg|jpeg|png|gif)$/i);
+                        if (isImage) {
+                            filesHtml += `<img src="/media/${file}" style="max-width: 100%; max-height: 400px; margin-bottom: 12px; border-radius: 4px; border: 1px solid #e0e0e0;">`;
+                        } else {
+                            filesHtml += `<video src="/media/${file}" controls style="max-width: 100%; max-height: 400px; margin-bottom: 12px; border-radius: 4px; border: 1px solid #e0e0e0;"></video>`;
+                        }
+                    });
+                    filesHtml += '</div>';
+                }
+                
+                const title = escapeHTML(caseData.title) || '未知标题';
+                const status = caseData.status || 'pending';
+                const statusText = status === 'approved' ? '已通过' : status === 'rejected' ? '已拒绝' : '待审核';
+                const statusBg = status === 'approved' ? '#dcfce7' : status === 'rejected' ? '#fee2e2' : '#fef3c7';
+                const statusColor = status === 'approved' ? '#16a34a' : status === 'rejected' ? '#dc2626' : '#d97706';
+                const submitter = escapeHTML(caseData.submitter) || '未知';
+                const type = escapeHTML(caseData.type) || '经验';
+                const date = caseData.created_at ? caseData.created_at.slice(0,10) : '未知';
+                const content = escapeHTML(caseData.content) || '';
+                
+                const modalContent = `
+                    <div style="padding: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2 style="font-size: 22px; font-weight: 600; color: #1a1a1a;">${title}</h2>
+                            <button onclick="closeCaseModal()" style="width: 32px; height: 32px; border: none; background: #f5f5f5; border-radius: 6px; cursor: pointer; font-size: 18px;">×</button>
+                        </div>
+                        <div style="display: flex; gap: 24px; margin-bottom: 20px;">
+                            <span style="padding: 6px 14px; background: ${statusBg}; color: ${statusColor}; border-radius: 20px; font-size: 14px; font-weight: 500;">${statusText}</span>
+                            <span style="font-size: 15px; color: #999999;">提交人: ${submitter}</span>
+                            <span style="font-size: 15px; color: #999999;">${type}</span>
+                            <span style="font-size: 15px; color: #999999;">${date}</span>
+                        </div>
+                        <div style="font-size: 16px; color: #666666; line-height: 1.8;">${content}</div>
+                        ${filesHtml}
+                    </div>
+                `;
+                
+                const modal = document.getElementById('caseDetailModal');
+                const modalContentDiv = document.getElementById('caseDetailModalContent');
+                modalContentDiv.innerHTML = modalContent;
+                modal.style.display = 'flex';
+            })
+            .catch(error => {
+                alert('获取案例详情失败');
+            });
+        }
+        
+        function closeCaseModal() {
+            const modal = document.getElementById('caseDetailModal');
+            modal.style.display = 'none';
+        }
+        
+        document.getElementById('caseDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCaseModal();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeCaseModal();
+        });
     </script>
+    
+    <!-- 案例详情弹窗 -->
+    <div id="caseDetailModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 40px;">
+        <div style="background: white; border-radius: 8px; width: 100%; max-width: 800px; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div id="caseDetailModalContent"></div>
+        </div>
+    </div>
 </body>
 </html>
