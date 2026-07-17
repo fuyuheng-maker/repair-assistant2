@@ -12,6 +12,18 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
+        :root {
+            --font-base: 16px;
+            --font-xs: calc(var(--font-base) * 0.875);
+            --font-sm: calc(var(--font-base) * 0.9375);
+            --font-md: var(--font-base);
+            --font-lg: calc(var(--font-base) * 1.125);
+            --font-xl: calc(var(--font-base) * 1.25);
+            --font-2xl: calc(var(--font-base) * 1.5);
+            --font-3xl: calc(var(--font-base) * 2);
+            --font-4xl: calc(var(--font-base) * 2.625);
+        }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
@@ -20,7 +32,7 @@
             color: #1a1a1a;
             height: 100vh;
             overflow: hidden;
-            font-size: 16px;
+            font-size: var(--font-md);
         }
         
         .app-container {
@@ -59,12 +71,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: var(--font-md);
             color: white;
         }
         
         .sidebar-brand-text {
-            font-size: 18px;
+            font-size: var(--font-lg);
             font-weight: 600;
             color: #1a1a1a;
         }
@@ -81,7 +93,7 @@
         
         .menu-title {
             color: #666666;
-            font-size: 19px;
+            font-size: var(--font-lg);
             font-weight: 600;
             padding: 16px 12px 8px;
             margin-bottom: 4px;
@@ -92,7 +104,7 @@
             align-items: center;
             padding: 13px 12px;
             color: #666666;
-            font-size: 17px;
+            font-size: var(--font-lg);
             cursor: pointer;
             transition: all 0.15s;
             text-decoration: none;
@@ -146,7 +158,7 @@
         
         .search-text {
             color: #999999;
-            font-size: 16px;
+            font-size: var(--font-md);
             font-weight: 400;
         }
         
@@ -162,7 +174,7 @@
             border-radius: 6px;
             cursor: pointer;
             transition: background 0.15s;
-            font-size: 17px;
+            font-size: var(--font-lg);
             color: #666666;
             position: relative;
         }
@@ -177,7 +189,7 @@
             border: none;
             background: transparent;
             color: #999999;
-            font-size: 18px;
+            font-size: var(--font-lg);
             cursor: pointer;
             opacity: 0;
             transition: opacity 0.15s;
@@ -225,9 +237,21 @@
         }
         
         .page-title {
-            font-size: 22px;
+            font-size: var(--font-xl);
             font-weight: 700;
             color: #333333;
+        }
+        
+        .section-title {
+            font-size: var(--font-2xl);
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        
+        .section-desc {
+            font-size: var(--font-md);
+            color: #666666;
         }
         
         .topbar-actions {
@@ -242,7 +266,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 6px;
             color: #666666;
-            font-size: 16px;
+            font-size: var(--font-md);
             cursor: pointer;
             transition: all 0.15s;
             display: flex;
@@ -341,7 +365,7 @@
         }
         
         .card-title {
-            font-size: 22px;
+            font-size: var(--font-xl);
             font-weight: 600;
             color: #1a1a1a;
         }
@@ -353,7 +377,7 @@
         
         .form-label {
             display: block;
-            font-size: 17px;
+            font-size: var(--font-lg);
             font-weight: 500;
             color: #666666;
             margin-bottom: 10px;
@@ -364,7 +388,7 @@
             padding: 14px 16px;
             border: 1px solid #e0e0e0;
             border-radius: 6px;
-            font-size: 17px;
+            font-size: var(--font-lg);
             background: #ffffff;
             color: #1a1a1a;
             transition: all 0.15s;
@@ -381,6 +405,153 @@
             min-height: 120px;
         }
         
+        .form-hint {
+            font-size: var(--font-xs);
+            color: #666666;
+            margin-top: 4px;
+        }
+        
+        .empty-state {
+            color: #666666;
+            text-align: center;
+            padding: 40px;
+            font-size: var(--font-md);
+        }
+        
+        .suggestion-item {
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: #f0f0f0;
+            border-radius: 6px;
+            font-size: var(--font-md);
+            color: #666666;
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
+            transition: all 0.15s;
+        }
+        
+        .suggestion-item:hover {
+            border-color: #1a1a1a;
+            color: #1a1a1a;
+        }
+        
+        .history-item {
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: background 0.15s;
+        }
+        
+        .history-item:hover {
+            background: #f5f5f5;
+        }
+        
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .history-item-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: var(--font-lg);
+        }
+        
+        .history-item-count {
+            font-size: var(--font-xs);
+            color: #999999;
+        }
+        
+        .history-item-time {
+            color: #999999;
+            font-size: var(--font-xs);
+            margin-bottom: 8px;
+        }
+        
+        .history-item-content {
+            color: #666666;
+            font-size: var(--font-sm);
+        }
+        
+        .project-empty-title {
+            font-size: var(--font-lg);
+            margin-bottom: 8px;
+        }
+        
+        .project-empty-desc {
+            font-size: var(--font-xs);
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: var(--font-xs);
+        }
+        
+        .log-time {
+            font-size: var(--font-xs);
+            color: #999999;
+        }
+        
+        .log-duration {
+            font-size: var(--font-xs);
+            color: #666666;
+            margin-bottom: 4px;
+        }
+        
+        .log-content {
+            font-size: var(--font-xs);
+            color: #333333;
+            background: #f8f8f8;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        
+        .file-item-name {
+            font-size: var(--font-md);
+            color: #1a1a1a;
+        }
+        
+        .file-item-meta {
+            font-size: var(--font-xs);
+            color: #666666;
+        }
+        
+        .case-title {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .case-badge {
+            padding: 4px 12px;
+            background: #dcfce7;
+            color: #16a34a;
+            border-radius: 20px;
+            font-size: var(--font-xs);
+        }
+        
+        .case-meta {
+            font-size: var(--font-sm);
+            color: #999999;
+            margin-bottom: 12px;
+        }
+        
+        .case-content {
+            font-size: var(--font-md);
+            color: #666666;
+            line-height: 1.6;
+        }
+        
+        .case-detail-title {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
         /* 按钮 */
         .btn-primary {
             padding: 14px 28px;
@@ -388,7 +559,7 @@
             color: white;
             border: 1px solid #1a1a1a;
             border-radius: 6px;
-            font-size: 17px;
+            font-size: var(--font-lg);
             font-weight: 500;
             cursor: pointer;
             transition: all 0.15s;
@@ -408,7 +579,7 @@
             color: #666666;
             border: 1px solid #e0e0e0;
             border-radius: 6px;
-            font-size: 17px;
+            font-size: var(--font-lg);
             font-weight: 500;
             cursor: pointer;
             transition: all 0.15s;
@@ -440,6 +611,72 @@
             margin: 20px;
         }
         
+        .chat-empty-icon {
+            font-size: var(--font-3xl);
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        
+        .chat-empty-title {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        
+        .chat-empty-desc {
+            margin-bottom: 20px;
+            color: #666666;
+            font-size: var(--font-md);
+        }
+        
+        .chat-empty-section {
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .chat-empty-subtitle {
+            padding: 10px 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: var(--font-md);
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        
+        .chat-empty-text {
+            padding: 6px 12px;
+            font-size: var(--font-md);
+            color: #666666;
+            margin-bottom: 16px;
+        }
+        
+        .chat-empty-file-info {
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .chat-empty-file-title {
+            padding: 10px 12px;
+            background: #e8f5e9;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: var(--font-md);
+            color: #2e7d32;
+            font-weight: 500;
+        }
+        
+        .chat-empty-file-list {
+            padding: 6px 12px;
+            font-size: var(--font-md);
+            color: #666666;
+        }
+        
         .msg {
             margin-bottom: 20px;
             display: flex;
@@ -458,7 +695,7 @@
             max-width: 85%;
             padding: 14px 18px;
             border-radius: 6px;
-            font-size: 17px;
+            font-size: var(--font-lg);
             line-height: 1.6;
             word-wrap: break-word;
         }
@@ -488,7 +725,7 @@
             align-items: center;
             gap: 6px;
             color: #1a1a1a;
-            font-size: 16px;
+            font-size: var(--font-md);
             font-weight: 600;
             cursor: pointer;
             margin-bottom: 10px;
@@ -499,7 +736,7 @@
             background: #ffffff;
             border-radius: 4px;
             margin: 6px 0;
-            font-size: 16px;
+            font-size: var(--font-md);
             color: #666666;
             border: 1px solid #e0e0e0;
         }
@@ -509,7 +746,7 @@
             margin-top: 14px;
             padding: 14px 16px;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: var(--font-md);
             display: none;
         }
         
@@ -552,14 +789,14 @@
         }
         
         .stat-value {
-            font-size: 42px;
+            font-size: var(--font-4xl);
             font-weight: 700;
             color: #1a1a1a;
             margin-bottom: 8px;
         }
         
         .stat-label {
-            font-size: 16px;
+            font-size: var(--font-md);
             color: #666666;
         }
         
@@ -588,7 +825,7 @@
         }
         
         .modal-title {
-            font-size: 20px;
+            font-size: var(--font-xl);
             font-weight: 600;
             color: #1a1a1a;
             margin-bottom: 16px;
@@ -602,6 +839,464 @@
         
         .modal-actions button {
             flex: 1;
+        }
+        
+        /* 新模态框样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-overlay .modal {
+            display: block;
+            background: #ffffff;
+            width: 90%;
+            max-width: 550px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+            margin: 0;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: var(--font-md);
+            color: #999999;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .modal-close:hover {
+            background: #f0f0f0;
+            color: #666666;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 20px;
+            border-top: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+        
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: var(--font-md);
+            font-weight: 500;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .notification-success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .notification-error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .notification-info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .notification.fade-out {
+            animation: slideOut 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        /* 插件工具栏 */
+        .plugin-toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .plugin-tool-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #ffffff;
+            border-radius: 6px;
+            font-size: var(--font-md);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .plugin-tool-btn:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        
+        /* 主题选项 */
+        .theme-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 90px;
+        }
+        
+        .theme-option:hover {
+            border-color: #1a1a1a;
+            background: #fafafa;
+        }
+        
+        .theme-option input[type="radio"] {
+            display: none;
+        }
+        
+        .theme-option:has(input[type="radio"]:checked) {
+            border-color: #1a1a1a;
+            background: #f0f0f0;
+        }
+        
+        .theme-preview {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .light-preview {
+            background: linear-gradient(135deg, #ffffff 50%, #f5f5f5 50%);
+        }
+        
+        .dark-preview {
+            background: linear-gradient(135deg, #1a1a1a 50%, #2d2d2d 50%);
+        }
+        
+        .auto-preview {
+            background: linear-gradient(135deg, #ffffff 50%, #1a1a1a 50%);
+        }
+        
+        .theme-option span {
+            font-size: var(--font-xs);
+            color: #666666;
+        }
+        
+        .theme-option:has(input[type="radio"]:checked) span {
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        
+        /* 切换开关 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #1a1a1a;
+        }
+        
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        
+        /* 黑夜模式 */
+        body.dark {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        body.dark .sidebar {
+            background: #2d2d2d;
+            border-right-color: #404040;
+        }
+        
+        body.dark .sidebar-header {
+            border-bottom-color: #404040;
+        }
+        
+        body.dark .sidebar-brand-icon {
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+        
+        body.dark .sidebar-brand-text {
+            color: #ffffff;
+        }
+        
+        body.dark .menu-title {
+            color: #888888;
+        }
+        
+        body.dark .menu-item {
+            color: #888888;
+        }
+        
+        body.dark .menu-item:hover {
+            background: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark .menu-item.active {
+            background: #404040;
+            color: #4ade80;
+        }
+        
+        body.dark .main-content {
+            background: #1a1a1a;
+        }
+        
+        body.dark .topbar {
+            background: #2d2d2d;
+            border-bottom-color: #404040;
+        }
+        
+        body.dark .page-title {
+            color: #ffffff;
+        }
+        
+        body.dark .content-area {
+            background: #1a1a1a;
+        }
+        
+        body.dark .card {
+            background: #2d2d2d;
+            border-color: #404040;
+        }
+        
+        body.dark .card-header {
+            border-bottom-color: #404040;
+            background: #333333;
+        }
+        
+        body.dark .card-title {
+            color: #ffffff;
+        }
+        
+        body.dark .form-label {
+            color: #888888;
+        }
+        
+        body.dark .form-input,
+        body.dark .form-select {
+            background: #333333;
+            border-color: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark .form-input:focus,
+        body.dark .form-select:focus {
+            border-color: #ffffff;
+        }
+        
+        body.dark .btn-primary {
+            background: #333333;
+            color: #ffffff;
+            border-color: #404040;
+        }
+        
+        body.dark .btn-secondary {
+            background: #404040;
+            color: #ffffff;
+            border-color: #505050;
+        }
+        
+        body.dark .btn-primary:hover {
+            background: #404040;
+        }
+        
+        body.dark .btn-secondary:hover {
+            background: #505050;
+        }
+        
+        body.dark .data-table th {
+            background: #333333;
+            color: #888888;
+            border-bottom-color: #404040;
+        }
+        
+        body.dark .data-table td {
+            border-bottom-color: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark .data-table tr:hover {
+            background: #333333;
+        }
+        
+        body.dark .chat-empty {
+            background: #2d2d2d;
+        }
+        
+        body.dark .chat-empty-icon {
+            color: #ffffff;
+        }
+        
+        body.dark .chat-input-area {
+            background: #2d2d2d;
+            border-top-color: #404040;
+        }
+        
+        body.dark .chat-input {
+            background: #333333;
+            border-color: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark .chat-input:focus {
+            border-color: #ffffff;
+        }
+        
+        body.dark .modal-overlay {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        body.dark .modal-overlay .modal {
+            background: #2d2d2d;
+            border-color: #404040;
+        }
+        
+        body.dark .modal-header {
+            background: #333333;
+            border-bottom-color: #404040;
+        }
+        
+        body.dark .modal-header h3 {
+            color: #ffffff;
+        }
+        
+        body.dark .modal-close {
+            color: #888888;
+        }
+        
+        body.dark .modal-footer {
+            background: #333333;
+            border-top-color: #404040;
+        }
+        
+        body.dark .theme-option {
+            border-color: #404040;
+        }
+        
+        body.dark .theme-option:hover {
+            border-color: #ffffff;
+            background: #333333;
+        }
+        
+        body.dark .theme-option:has(input[type="radio"]:checked) {
+            border-color: #ffffff;
+            background: #333333;
+        }
+        
+        body.dark .theme-option span {
+            color: #888888;
+        }
+        
+        body.dark .theme-option:has(input[type="radio"]:checked) span {
+            color: #ffffff;
+        }
+        
+        body.dark .theme-preview {
+            border-color: #404040;
+        }
+        
+        body.dark .toggle-slider {
+            background-color: #505050;
+        }
+        
+        body.dark .toggle-switch input:checked + .toggle-slider {
+            background-color: #ffffff;
         }
         
         /* 加载动画 */
@@ -671,7 +1366,7 @@
         
         .upload-progress-name {
             flex: 1;
-            font-size: 14px;
+            font-size: var(--font-xs);
             color: #333;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -680,7 +1375,7 @@
         
         .upload-progress-status {
             margin-left: 12px;
-            font-size: 14px;
+            font-size: var(--font-xs);
         }
         
         .upload-progress-status.processing {
@@ -744,7 +1439,7 @@
         }
         
         .right-sidebar-title {
-            font-size: 15px;
+            font-size: var(--font-sm);
             font-weight: 600;
             color: #333333;
         }
@@ -753,7 +1448,7 @@
             background: none;
             border: none;
             color: #999999;
-            font-size: 16px;
+            font-size: var(--font-md);
             cursor: pointer;
             padding: 4px;
             border-radius: 4px;
@@ -796,7 +1491,7 @@
         }
         
         .terminal-title {
-            font-size: 14px;
+            font-size: var(--font-xs);
             font-weight: 500;
             color: #666666;
         }
@@ -805,7 +1500,7 @@
             flex: 1;
             padding: 12px;
             font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
+            font-size: var(--font-xs);
             color: #333333;
             overflow-y: auto;
             white-space: pre-wrap;
@@ -822,7 +1517,7 @@
             color: #666666;
             margin-right: 8px;
             font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
+            font-size: var(--font-xs);
         }
         
         .terminal-input {
@@ -831,7 +1526,7 @@
             border: none;
             color: #333333;
             font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
+            font-size: var(--font-xs);
             outline: none;
         }
         
@@ -863,7 +1558,7 @@
             border-bottom: 1px solid #e0e0e0;
             border-radius: 8px 8px 0 0;
             color: #1a1a1a;
-            font-size: 16px;
+            font-size: var(--font-md);
             outline: none;
         }
         
@@ -897,17 +1592,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: var(--font-xs);
             font-weight: 600;
         }
         
         .command-text {
             flex: 1;
-            font-size: 15px;
+            font-size: var(--font-sm);
         }
         
         .command-shortcut {
-            font-size: 14px;
+            font-size: var(--font-xs);
             color: #999999;
         }
         
@@ -947,18 +1642,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: var(--font-lg);
             color: white;
         }
         
         .skill-name {
-            font-size: 19px;
+            font-size: var(--font-lg);
             font-weight: 600;
             color: #1a1a1a;
         }
         
         .skill-desc {
-            font-size: 16px;
+            font-size: var(--font-md);
             color: #666666;
             margin-bottom: 18px;
             line-height: 1.5;
@@ -971,7 +1666,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 6px;
             color: #666666;
-            font-size: 16px;
+            font-size: var(--font-md);
             font-weight: 500;
             cursor: pointer;
             transition: all 0.15s;
@@ -1037,21 +1732,21 @@
         }
         
         .project-title {
-            font-size: 19px;
+            font-size: var(--font-lg);
             font-weight: 600;
             color: #1a1a1a;
             margin-bottom: 12px;
         }
         
         .project-desc {
-            font-size: 16px;
+            font-size: var(--font-md);
             color: #666666;
             margin-bottom: 12px;
             line-height: 1.5;
         }
         
         .project-meta {
-            font-size: 16px;
+            font-size: var(--font-md);
             color: #666666;
             margin-bottom: 6px;
         }
@@ -1069,7 +1764,7 @@
         }
         
         .data-table th {
-            font-size: 13px;
+            font-size: calc(var(--font-base) * 0.8125);
             font-weight: 600;
             color: #999999;
             text-transform: uppercase;
@@ -1078,7 +1773,7 @@
         }
         
         .data-table td {
-            font-size: 16px;
+            font-size: var(--font-md);
             color: #333333;
         }
         
@@ -1101,7 +1796,7 @@
             border: none;
             border-bottom: 2px solid transparent;
             color: #666666;
-            font-size: 15px;
+            font-size: var(--font-sm);
             font-weight: 500;
             cursor: pointer;
             transition: all 0.15s;
@@ -1130,7 +1825,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 6px;
             color: #666666;
-            font-size: 15px;
+            font-size: var(--font-sm);
             cursor: pointer;
             transition: all 0.15s;
         }
@@ -1153,7 +1848,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 6px;
             color: #1a1a1a;
-            font-size: 15px;
+            font-size: var(--font-sm);
             width: 250px;
         }
         
@@ -1208,7 +1903,7 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-brand" onclick="switchPage('chat', null)">
-                    <div class="sidebar-brand-icon" style="font-size: 20px; font-weight: 700;">RA</div>
+                    <div class="sidebar-brand-icon" style="font-weight: 700;">RA</div>
                     <div class="sidebar-brand-text">检修助手</div>
                 </div>
             </div>
@@ -1295,31 +1990,25 @@
                 <!-- 页面1: 知识问答 -->
                 <div id="page-chat" class="page active">
                     <div class="chat-container-wrapper">
+                        <div id="pluginToolbar" class="plugin-toolbar" style="display: none;"></div>
                         <div id="chat-box" class="chat-container">
                             <div class="chat-empty" id="chatWelcome">
-                                <div class="chat-empty-icon" style="font-size: 48px; font-weight: 700; color: #1a1a1a;">RA</div>
-                                <div style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">设备检修知识助手</div>
-                                <div style="margin-bottom: 20px; color: #666666; font-size: 16px;">我是您的检修知识助手，请先上传检修手册，然后向我提问。</div>
-                                <div id="uploadedFilesInfo" style="text-align: left; max-width: 400px; margin: 0 auto; margin-bottom: 20px; display: none;">
-                                    <div style="padding: 10px 12px; background: #e8f5e9; border-radius: 6px; margin-bottom: 10px; font-size: 16px; color: #2e7d32; font-weight: 500;">
-                                        已上传的检修手册：
-                                    </div>
-                                    <div id="uploadedFilesList" style="padding: 6px 12px; font-size: 16px; color: #666666;">
-                                    </div>
+                                <div class="chat-empty-icon">RA</div>
+                                <div class="chat-empty-title">设备检修知识助手</div>
+                                <div class="chat-empty-desc">我是您的检修知识助手，请先上传检修手册，然后向我提问。</div>
+                                <div id="uploadedFilesInfo" class="chat-empty-file-info">
+                                    <div class="chat-empty-file-title">已上传的检修手册：</div>
+                                    <div id="uploadedFilesList" class="chat-empty-file-list"></div>
                                 </div>
-                                <div style="text-align: left; max-width: 400px; margin: 0 auto;">
-                                    <div style="padding: 10px 12px; background: #e0e0e0; border-radius: 6px; margin-bottom: 10px; font-size: 16px; color: #1a1a1a; font-weight: 500;">
-                                        使用步骤：
-                                    </div>
-                                    <div style="padding: 6px 12px; font-size: 16px; color: #666666; margin-bottom: 16px;">
+                                <div class="chat-empty-section">
+                                    <div class="chat-empty-subtitle">使用步骤：</div>
+                                    <div class="chat-empty-text">
                                         1. 点击左侧「上传手册」上传 PDF 检修手册<br>
                                         2. 系统自动解析并建立知识库<br>
                                         3. 在此输入检修相关问题<br>
                                         4. 支持上传故障图片辅助分析
                                     </div>
-                                    <div style="padding: 10px 12px; background: #e0e0e0; border-radius: 6px; margin-bottom: 10px; font-size: 16px; color: #1a1a1a; font-weight: 500;">
-                                        试试这样问：
-                                    </div>
+                                    <div class="chat-empty-subtitle">试试这样问：</div>
                                     <div id="suggestions"></div>
                                 </div>
                             </div>
@@ -1327,7 +2016,7 @@
                         
                         <div class="chat-input-area">
                             <div class="form-group" style="margin-bottom: 12px;">
-                                <textarea id="question" class="form-textarea" rows="3" placeholder="输入检修相关问题，支持粘贴截图..." style="font-size: 17px;" onkeydown="handleQuestionKeydown(event)" onpaste="handlePaste(event)"></textarea>
+                                <textarea id="question" class="form-textarea" rows="3" placeholder="输入检修相关问题，支持粘贴截图..." onkeydown="handleQuestionKeydown(event)" onpaste="handlePaste(event)"></textarea>
                             </div>
                             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                                 <div style="position: relative;">
@@ -1353,8 +2042,8 @@
                 <div id="page-projects" class="page">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                         <div>
-                            <h2 style="font-size: 24px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">运维项目管理</h2>
-                            <p style="font-size: 16px; color: #666666;">管理和追踪设备检修项目</p>
+                            <h2 class="section-title">运维项目管理</h2>
+                            <p class="section-desc">管理和追踪设备检修项目</p>
                         </div>
                         <button class="btn-primary" onclick="createProject()">新建项目</button>
                     </div>
@@ -1386,10 +2075,10 @@
                 <div id="page-schedule" class="page">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                         <div>
-                            <h2 style="font-size: 24px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">定时任务</h2>
-                            <p style="font-size: 16px; color: #666666;">设置周期性运维任务</p>
+                            <h2 class="section-title">定时任务</h2>
+                            <p class="section-desc">设置周期性运维任务</p>
                         </div>
-                        <button class="btn-primary" onclick="createSchedule()">新建任务</button>
+                        <button class="btn-primary" onclick="openScheduleModal()">新建任务</button>
                     </div>
                     
                     <div class="card">
@@ -1397,8 +2086,11 @@
                             <thead>
                                 <tr>
                                     <th>任务名称</th>
+                                    <th>任务类型</th>
                                     <th>执行时间</th>
                                     <th>状态</th>
+                                    <th>上次执行</th>
+                                    <th>执行次数</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -1408,11 +2100,162 @@
                     </div>
                 </div>
                 
+                <div class="modal-overlay" id="scheduleModal" style="display: none;" onclick="closeScheduleModal()">
+                    <div class="modal" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h3 id="scheduleModalTitle">新建定时任务</h3>
+                            <button class="modal-close" onclick="closeScheduleModal()">✕</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="scheduleTaskId">
+                            <div class="form-group">
+                                <label>任务名称 *</label>
+                                <input type="text" id="scheduleName" class="form-input" placeholder="输入任务名称">
+                            </div>
+                            <div class="form-group">
+                                <label>任务类型 *</label>
+                                <select id="scheduleTaskType" class="form-input">
+                                    <option value="check_knowledge">知识库更新检查</option>
+                                    <option value="generate_report">生成运维报告</option>
+                                    <option value="cleanup_logs">清理过期文件</option>
+                                    <option value="health_check">系统健康检查</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>执行频率 *</label>
+                                <select id="scheduleFrequency" class="form-input" onchange="updateFrequencyOptions()">
+                                    <option value="minute">每分钟</option>
+                                    <option value="hour">每小时</option>
+                                    <option value="day">每天</option>
+                                    <option value="week">每周</option>
+                                    <option value="month">每月</option>
+                                    <option value="custom">自定义</option>
+                                </select>
+                            </div>
+                            
+                            <div id="scheduleMinuteOptions" style="display: none;" class="form-group">
+                                <label>每隔几分钟执行</label>
+                                <select id="scheduleMinuteInterval" class="form-input">
+                                    <option value="1">1分钟</option>
+                                    <option value="5">5分钟</option>
+                                    <option value="10">10分钟</option>
+                                    <option value="15">15分钟</option>
+                                    <option value="30">30分钟</option>
+                                </select>
+                            </div>
+                            
+                            <div id="scheduleHourOptions" style="display: none;" class="form-group">
+                                <label>每隔几小时执行</label>
+                                <select id="scheduleHourInterval" class="form-input">
+                                    <option value="1">1小时</option>
+                                    <option value="2">2小时</option>
+                                    <option value="4">4小时</option>
+                                    <option value="6">6小时</option>
+                                    <option value="8">8小时</option>
+                                    <option value="12">12小时</option>
+                                </select>
+                            </div>
+                            
+                            <div id="scheduleDayOptions" style="display: none;" class="form-group">
+                                <label>执行时间</label>
+                                <input type="time" id="scheduleDayTime" class="form-input" value="02:00">
+                            </div>
+                            
+                            <div id="scheduleWeekOptions" style="display: none;" class="form-group">
+                                <label>执行时间</label>
+                                <input type="time" id="scheduleWeekTime" class="form-input" value="09:00">
+                                <div style="margin-top: 8px;">
+                                    <label>选择星期（可多选）</label>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;">
+                                        <label style="cursor: pointer;">
+                                            <input type="checkbox" name="scheduleWeekDay" value="1" checked> 周一
+                                        </label>
+                                        <label style="cursor: pointer;">
+                                            <input type="checkbox" name="scheduleWeekDay" value="2" checked> 周二
+                                        </label>
+                                        <label style="cursor: pointer;">
+                                            <input type="checkbox" name="scheduleWeekDay" value="3" checked> 周三
+                                        </label>
+                                        <label style="cursor: pointer;">
+                                            <input type="checkbox" name="scheduleWeekDay" value="4" checked> 周四
+                                        </label>
+                                        <label style="cursor: pointer;">
+                                            <input type="checkbox" name="scheduleWeekDay" value="5" checked> 周五
+                                        </label>
+                                        <label style="cursor: pointer;">
+                                            <input type="checkbox" name="scheduleWeekDay" value="6"> 周六
+                                        </label>
+                                        <label style="cursor: pointer;">
+                                            <input type="checkbox" name="scheduleWeekDay" value="0"> 周日
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="scheduleMonthOptions" style="display: none;" class="form-group">
+                                <label>执行时间</label>
+                                <input type="time" id="scheduleMonthTime" class="form-input" value="00:00">
+                                <div style="margin-top: 8px;">
+                                    <label>选择日期</label>
+                                    <select id="scheduleMonthDay" class="form-input">
+                                        <option value="1">每月1日</option>
+                                        <option value="5">每月5日</option>
+                                        <option value="10">每月10日</option>
+                                        <option value="15">每月15日</option>
+                                        <option value="20">每月20日</option>
+                                        <option value="25">每月25日</option>
+                                        <option value="L">每月最后一天</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div id="scheduleCustomOptions" style="display: none;" class="form-group">
+                                <label>Cron表达式</label>
+                                <input type="text" id="scheduleCron" class="form-input" placeholder="例如: 0 2 * * *">
+                                <div class="form-hint">
+                                    格式: 分钟 小时 日期 月份 星期<br>
+                                    示例: 0 2 * * * (每天凌晨2点) | */5 * * * * (每5分钟)
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" id="scheduleCronExpression">
+                            <div class="form-group">
+                                <label>过期清理天数</label>
+                                <input type="number" id="scheduleCleanupDays" class="form-input" value="7" min="1" max="365">
+                                <div class="form-hint">仅对"清理过期文件"任务有效</div>
+                            </div>
+                            <div class="form-group">
+                                <label>描述</label>
+                                <textarea id="scheduleDescription" class="form-textarea" rows="3" placeholder="输入任务描述"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-secondary" onclick="closeScheduleModal()">取消</button>
+                            <button class="btn-primary" onclick="saveSchedule()">保存</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-overlay" id="scheduleLogsModal" style="display: none;" onclick="closeScheduleLogsModal()">
+                    <div class="modal" style="width: 700px;" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h3 id="scheduleLogsTitle">任务执行日志</h3>
+                            <button class="modal-close" onclick="closeScheduleLogsModal()">✕</button>
+                        </div>
+                        <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+                            <div id="scheduleLogsContent"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-primary" onclick="closeScheduleLogsModal()">关闭</button>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- 页面4: 插件市场 -->
                 <div id="page-plugins" class="page">
                     <div style="margin-bottom: 16px;">
-                        <h2 style="font-size: 24px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">插件市场</h2>
-                        <p style="font-size: 16px; color: #666666;">安装和管理技能，扩展检修助手的能力</p>
+                        <h2 class="section-title">插件市场</h2>
+                        <p class="section-desc">安装和管理技能，扩展检修助手的能力</p>
                     </div>
                     
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
@@ -1433,8 +2276,8 @@
                 <!-- 页面5: 已安装插件 -->
                 <div id="page-installed" class="page">
                     <div style="margin-bottom: 16px;">
-                        <h2 style="font-size: 24px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">已安装插件</h2>
-                        <p style="font-size: 16px; color: #666666;">管理已安装的技能和工具</p>
+                        <h2 class="section-title">已安装插件</h2>
+                        <p class="section-desc">管理已安装的技能和工具</p>
                     </div>
                     
                     <div class="skill-grid" id="installedPlugins">
@@ -1447,7 +2290,7 @@
                         <div class="card-header">
                             <div class="card-title">上传检修手册</div>
                         </div>
-                        <p style="color: #666666; margin-bottom: 16px; font-size: 16px;">支持 PDF 格式，可同时选择多个文件上传，系统将自动解析并建立知识库</p>
+                        <p class="section-desc" style="margin-bottom: 16px;">支持 PDF 格式，可同时选择多个文件上传，系统将自动解析并建立知识库</p>
                         
                         <div class="form-group">
                             <label class="form-label">选择 PDF 文件（可多选）</label>
@@ -1464,7 +2307,7 @@
                             <button class="btn-secondary" onclick="loadFileList()" style="margin-left:auto;">刷新</button>
                         </div>
                         <div id="fileListContainer" style="max-height:500px; overflow-y:auto;">
-                            <p style="color:#666666; text-align:center; padding:40px; font-size:16px;">加载中...</p>
+                            <p class="empty-state">加载中...</p>
                         </div>
                     </div>
                 </div>
@@ -1477,8 +2320,8 @@
                             <button class="btn-secondary" onclick="clearChatHistory()" style="margin-left:auto;">清空历史</button>
                         </div>
                         <div id="historyList" style="max-height: 600px; overflow-y: auto;">
-                            <p style="color: #666666; text-align: center; padding: 40px; font-size:16px;">暂无查询记录</p>
-                        </div>
+                        <p class="empty-state">暂无查询记录</p>
+                    </div>
                     </div>
                 </div>
                 
@@ -1487,7 +2330,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">提交特殊情况</div>
-                            <div style="font-size: 14px; color: #666666;">提交检修中的特殊情况或经验，等待审核通过后将加入知识库</div>
+                            <div class="form-hint" style="margin-top: 0;">提交检修中的特殊情况或经验，等待审核通过后将加入知识库</div>
                         </div>
                         
                         <div class="form-group">
@@ -1519,7 +2362,7 @@
                         <div class="form-group">
                             <label class="form-label">附件（照片/视频）</label>
                             <input type="file" id="caseFiles" class="form-input" accept="image/*,video/*" multiple>
-                            <div style="font-size: 14px; color: #999999; margin-top: 8px;">支持 JPG、PNG、GIF、MP4、MOV、AVI 格式，可多选</div>
+                            <div class="form-hint" style="color: #999999;">支持 JPG、PNG、GIF、MP4、MOV、AVI 格式，可多选</div>
                             <div id="uploadedFilesList" style="margin-top: 12px;"></div>
                         </div>
                         
@@ -1533,7 +2376,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">已通过案例</div>
-                            <div style="font-size: 14px; color: #666666;">查看审核通过的案例，这些案例已加入知识库供检索</div>
+                            <div class="form-hint" style="margin-top: 0;">查看审核通过的案例，这些案例已加入知识库供检索</div>
                         </div>
                         
                         <div id="approvedCasesList"></div>
@@ -1543,8 +2386,8 @@
                 <!-- 页面9: 设置 -->
                 <div id="page-settings" class="page">
                     <div style="margin-bottom: 16px;">
-                        <h2 style="font-size: 24px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">设置</h2>
-                        <p style="font-size: 16px; color: #666666;">配置检修助手的各项参数</p>
+                        <h2 class="section-title">设置</h2>
+                        <p class="section-desc">配置检修助手的各项参数</p>
                     </div>
                     
                     <div class="card">
@@ -1563,6 +2406,41 @@
                     
                     <div class="card">
                         <div class="card-header">
+                            <div class="card-title">外观设置</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">主题模式</label>
+                            <div style="display: flex; gap: 12px;">
+                                <label class="theme-option" onclick="setTheme('light')" id="themeLight">
+                                    <input type="radio" name="theme" value="light" checked>
+                                    <div class="theme-preview light-preview"></div>
+                                    <span>白天模式</span>
+                                </label>
+                                <label class="theme-option" onclick="setTheme('dark')" id="themeDark">
+                                    <input type="radio" name="theme" value="dark">
+                                    <div class="theme-preview dark-preview"></div>
+                                    <span>黑夜模式</span>
+                                </label>
+                                <label class="theme-option" onclick="setTheme('auto')" id="themeAuto">
+                                    <input type="radio" name="theme" value="auto">
+                                    <div class="theme-preview auto-preview"></div>
+                                    <span>跟随系统</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">字体大小</label>
+                            <select id="settingFontSize" class="form-select" onchange="applyFontSize(this.value)">
+                                <option value="small">小 (12px)</option>
+                                <option value="normal" selected>默认 (16px)</option>
+                                <option value="large">大 (20px)</option>
+                                <option value="extra-large">特大 (24px)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
                             <div class="card-title">系统配置</div>
                         </div>
                         <div class="form-group">
@@ -1572,13 +2450,45 @@
                                 <option value="qwen-turbo">通义千问 Turbo</option>
                             </select>
                         </div>
+                        
                         <div class="form-group">
-                            <label class="form-label">温度参数</label>
-                            <input type="range" id="settingTemperature" class="form-input" min="0" max="1" step="0.1" value="0.1">
-                            <span style="font-size: 13px; color: #8b949e;">0.1 - 精确模式</span>
+                            <label class="form-label">回答语言</label>
+                            <select id="settingLanguage" class="form-select">
+                                <option value="zh" selected>中文</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">自动保存对话</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="settingAutoSave" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="form-hint" style="margin-left: 8px;">自动保存聊天记录到本地</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">自动滚动到最新消息</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="settingAutoScroll" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="form-hint" style="margin-left: 8px;">发送消息后自动滚动到底部</span>
                         </div>
                         <button class="btn-primary" onclick="saveSettings()">保存设置</button>
                         <div id="settingsStatus" class="status"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">数据管理</div>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn-secondary" onclick="clearChatHistory()">清除聊天记录</button>
+                            <button class="btn-secondary" onclick="clearCache()">清除缓存</button>
+                        </div>
+                        <div class="form-hint" style="margin-top: 12px;">
+                            注意：清除聊天记录将删除所有本地对话数据，此操作不可恢复。
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1599,7 +2509,7 @@
         <div id="pdfPreviewContent" class="modal-content" style="max-width: 90%; width: 1200px; max-height: 90vh; padding: 0; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0;">
             <div id="pdfPreviewHeader" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid #e0e0e0; cursor: move;">
                 <div class="modal-title" style="margin: 0;">PDF预览</div>
-                <button class="btn-secondary" onclick="closePdfPreview(); event.stopPropagation();" style="padding: 6px 12px; font-size: 14px; cursor: pointer;">关闭</button>
+                <button class="btn-secondary" onclick="closePdfPreview(); event.stopPropagation();" style="padding: 6px 12px; cursor: pointer;">关闭</button>
             </div>
             <div style="height: calc(90vh - 80px); overflow: auto; padding: 16px;">
                 <embed id="pdfPreviewEmbed" type="application/pdf" style="width: 100%; height: 100%; border: none;" />
@@ -1653,11 +2563,11 @@
             <div class="modal-title">提交修正建议</div>
             <div class="form-group">
                 <label class="form-label">问题</label>
-                <div id="corrQuestion" style="padding: 10px; background: #f5f5f5; border-radius: 6px; font-size: 16px; color: #1a1a1a;"></div>
+                <div id="corrQuestion" class="form-hint" style="padding: 10px; background: #f5f5f5; border-radius: 6px; color: #1a1a1a; margin-top: 0;"></div>
             </div>
             <div class="form-group">
                 <label class="form-label">原答案</label>
-                <div id="corrOriginal" style="padding: 10px; background: #f5f5f5; border-radius: 6px; font-size: 16px; color: #1a1a1a; max-height: 100px; overflow-y: auto;"></div>
+                <div id="corrOriginal" class="form-hint" style="padding: 10px; background: #f5f5f5; border-radius: 6px; color: #1a1a1a; max-height: 100px; overflow-y: auto; margin-top: 0;"></div>
             </div>
             <div class="form-group">
                 <label class="form-label">您的修正</label>
@@ -1673,6 +2583,108 @@
     <script>
         let isAsking = false;
         let isUploading = false;
+        
+        function handleFilePreview(fileId) {
+            const token = localStorage.getItem('token');
+            const url = `/api/files/${fileId}/download?preview=true`;
+            
+            fetch(url, {
+                headers: { 'Authorization': `Bearer ${token || ''}` }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('预览失败');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const blobUrl = URL.createObjectURL(blob);
+                const embed = document.getElementById('pdfPreviewEmbed');
+                embed.src = blobUrl;
+                document.getElementById('pdfPreviewModal').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('预览失败:', error);
+                alert('预览失败：' + error.message);
+            });
+        }
+        
+        function handleFileDownload(fileId, filename) {
+            const token = localStorage.getItem('token');
+            const url = `/api/files/${fileId}/download`;
+            
+            fetch(url, {
+                headers: { 'Authorization': `Bearer ${token || ''}` }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('下载失败');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(blobUrl);
+            })
+            .catch(error => {
+                console.error('下载失败:', error);
+                alert('下载失败：' + error.message);
+            });
+        }
+        
+        function handleFileDelete(fileId) {
+            if (!confirm('确定要删除该文件吗？')) return;
+            
+            console.log('开始删除文件，fileId:', fileId);
+            console.log('token:', localStorage.getItem('token') ? '存在' : '不存在');
+            
+            fetch(`/api/files/${fileId}`, {
+                method: 'DELETE',
+                headers: { 
+                    'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+                }
+            })
+            .then(response => {
+                console.log('删除请求响应状态:', response.status);
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    alert('登录已过期，请重新登录');
+                    window.location.href = '/static/login.html';
+                    throw new Error('Unauthorized');
+                }
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        console.error('删除失败:', err);
+                        throw new Error(err.detail || '删除失败');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('删除成功:', data);
+                if (data.message) {
+                    alert(data.message);
+                    loadFileList();
+                    loadUploadedFilesInfo();
+                } else {
+                    alert('删除失败');
+                }
+            })
+            .catch(error => {
+                if (error.message !== 'Unauthorized') {
+                    console.error('删除文件失败:', error);
+                    alert('删除失败：' + error.message);
+                }
+            });
+        }
         
         const pageTitles = {
             'chat': '新对话',
@@ -1699,12 +2711,7 @@
             const container = document.getElementById('suggestions');
             if (!container) return;
             container.innerHTML = suggestions.map(s => 
-                '<div onclick="useSuggestion(\'' + s.replace(/'/g, "\\'") + '\')" ' +
-                'style="padding: 8px 12px; margin: 4px 0; background: #f0f0f0; border-radius: 6px; ' +
-                'font-size: 16px; color: #666666; cursor: pointer; border: 1px solid #e0e0e0; ' +
-                'transition: all 0.15s;" ' +
-                'onmouseover="this.style.borderColor=\'#1a1a1a\'; this.style.color=\'#1a1a1a\'" ' +
-                'onmouseout="this.style.borderColor=\'#e0e0e0\'; this.style.color=\'#666666\'">' +
+                '<div class="suggestion-item" onclick="useSuggestion(\'' + s.replace(/'/g, "\\'") + '\')">' +
                 s + '</div>'
             ).join('');
         }
@@ -1854,13 +2861,29 @@
             }
         }
         
-        function initSession() {
+        async function initSession() {
             const token = localStorage.getItem('token');
             const username = localStorage.getItem('username');
             
             if (!token || !username) {
                 window.location.href = '/static/login.html';
                 return;
+            }
+            
+            try {
+                const response = await fetch('/api/files', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    window.location.href = '/static/login.html';
+                    return;
+                }
+            } catch (error) {
+                console.error('Token验证失败:', error);
             }
             
             const sessions = getSessions();
@@ -1948,34 +2971,25 @@
                     chatBox.appendChild(welcome);
                     renderSuggestions();
                 } else {
-                    const suggestionsHtml = suggestions.map(s => 
-                        '<div onclick="useSuggestion(\'' + s.replace(/'/g, "\\'") + '\')" ' +
-                        'style="padding: 8px 12px; margin: 4px 0; background: #f0f0f0; border-radius: 6px; ' +
-                        'font-size: 16px; color: #666666; cursor: pointer; border: 1px solid #e0e0e0; ' +
-                        'transition: all 0.15s;" ' +
-                        'onmouseover="this.style.borderColor=\'#1a1a1a\'; this.style.color=\'#1a1a1a\'" ' +
-                        'onmouseout="this.style.borderColor=\'#e0e0e0\'; this.style.color=\'#666666\'">' +
-                        s + '</div>'
-                    ).join('');
-                    
                     chatBox.innerHTML = `
                         <div class="chat-empty">
-                            <div class="chat-empty-icon" style="font-size: 48px; font-weight: 700; color: #1a1a1a;">RA</div>
-                            <div style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">设备检修知识助手</div>
-                            <div style="margin-bottom: 20px; color: #666666; font-size: 16px;">我是您的检修知识助手，请先上传检修手册，然后向我提问。</div>
-                            <div style="text-align: left; max-width: 400px; margin: 0 auto;">
-                                <div style="padding: 10px 12px; background: #e0e0e0; border-radius: 6px; margin-bottom: 10px; font-size: 16px; color: #1a1a1a; font-weight: 500;">使用步骤：</div>
-                                <div style="padding: 6px 12px; font-size: 16px; color: #666666; margin-bottom: 16px;">
+                            <div class="chat-empty-icon">RA</div>
+                            <div class="chat-empty-title">设备检修知识助手</div>
+                            <div class="chat-empty-desc">我是您的检修知识助手，请先上传检修手册，然后向我提问。</div>
+                            <div class="chat-empty-section">
+                                <div class="chat-empty-subtitle">使用步骤：</div>
+                                <div class="chat-empty-text">
                                     1. 点击左侧「上传手册」上传 PDF 检修手册<br>
                                     2. 系统自动解析并建立知识库<br>
                                     3. 在此输入检修相关问题<br>
                                     4. 支持上传故障图片辅助分析
                                 </div>
-                                <div style="padding: 10px 12px; background: #e0e0e0; border-radius: 6px; margin-bottom: 10px; font-size: 16px; color: #1a1a1a; font-weight: 500;">试试这样问：</div>
-                                <div id="suggestions">${suggestionsHtml}</div>
+                                <div class="chat-empty-subtitle">试试这样问：</div>
+                                <div id="suggestions"></div>
                             </div>
                         </div>
                     `;
+                    renderSuggestions();
                 }
                 return;
             }
@@ -2016,7 +3030,7 @@
             const sessionList = Object.values(sessions).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
             
             if (sessionList.length === 0) {
-                historyList.innerHTML = '<p style="color: #666666; text-align: center; padding: 40px; font-size:16px;">暂无查询记录</p>';
+                historyList.innerHTML = '<p class="empty-state">暂无查询记录</p>';
                 return;
             }
             
@@ -2027,25 +3041,22 @@
                 const time = new Date(session.updatedAt).toLocaleString('zh-CN');
                 const messageCount = session.messages.length;
                 
-                html += '<div style="padding: 16px; border-bottom: 1px solid #e0e0e0; cursor: pointer; border-radius: 8px; margin-bottom: 8px;" ' +
-                        'onclick="switchToSession(\'' + session.id + '\')" ' +
-                        'onmouseover="this.style.background=\'#f5f5f5\'" ' +
-                        'onmouseout="this.style.background=\'transparent\'">';
-                html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">';
-                html += '<div style="font-weight: 600; color: #1a1a1a; font-size: 17px;">' + escapeHTML(session.title) + '</div>';
-                html += '<div style="font-size: 14px; color: #999999;">' + messageCount + ' 条消息</div>';
+                html += '<div class="history-item" onclick="switchToSession(\'' + session.id + '\')">';
+                html += '<div class="history-item-header">';
+                html += '<div class="history-item-title">' + escapeHTML(session.title) + '</div>';
+                html += '<div class="history-item-count">' + messageCount + ' 条消息</div>';
                 html += '</div>';
-                html += '<div style="color: #999999; font-size: 14px; margin-bottom: 8px;">' + time + '</div>';
+                html += '<div class="history-item-time">' + time + '</div>';
                 
                 const userMessages = session.messages.filter(m => m.role === 'user');
                 if (userMessages.length > 0) {
-                    html += '<div style="color: #666666; font-size: 15px;">';
+                    html += '<div class="history-item-content">';
                     userMessages.slice(0, 3).forEach((msg, idx) => {
                         if (idx > 0) html += '<br>';
                         html += escapeHTML(msg.content.substring(0, 50) + (msg.content.length > 50 ? '...' : ''));
                     });
                     if (userMessages.length > 3) {
-                        html += '<br><span style="color: #999999;">...还有 ' + (userMessages.length - 3) + ' 条问题</span>';
+                        html += '<br><span class="history-item-count">...还有 ' + (userMessages.length - 3) + ' 条问题</span>';
                     }
                     html += '</div>';
                 }
@@ -2097,6 +3108,9 @@
             if (pageId === 'installed') {
                 renderInstalledPlugins();
             }
+            if (pageId === 'settings') {
+                loadSettings();
+            }
         }
         
         function toggleSidebar() {
@@ -2139,8 +3153,8 @@
                 if (projects.length === 0) {
                     container.innerHTML = `
                         <div style="text-align: center; padding: 60px 20px; color: #999999;">
-                            <div style="font-size: 18px; margin-bottom: 8px;">暂无项目</div>
-                            <div style="font-size: 14px;">点击"新建项目"按钮创建第一个运维项目</div>
+                            <div class="project-empty-title">暂无项目</div>
+                            <div class="project-empty-desc">点击"新建项目"按钮创建第一个运维项目</div>
                         </div>
                     `;
                     return;
@@ -2158,9 +3172,9 @@
                             <div class="project-meta">创建时间: ${formatDate(p.created_at)}</div>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <button class="btn-secondary" style="padding: 6px 12px; font-size: 14px;" onclick="editProject('${p.id}')">编辑</button>
-                            ${p.status !== 'completed' ? `<button class="btn-secondary" style="padding: 6px 12px; font-size: 14px; color: #166534; border-color: #166534;" onclick="completeProject('${p.id}', '${escapeHTML(p.name)}')">完成</button>` : ''}
-                            <button class="btn-secondary" style="padding: 6px 12px; font-size: 14px; color: #d9534f;" onclick="deleteProject('${p.id}', '${escapeHTML(p.name)}')">删除</button>
+                            <button class="btn-secondary btn-sm" onclick="editProject('${p.id}')">编辑</button>
+                            ${p.status !== 'completed' ? `<button class="btn-secondary btn-sm" style="color: #166534; border-color: #166534;" onclick="completeProject('${p.id}', '${escapeHTML(p.name)}')">完成</button>` : ''}
+                            <button class="btn-secondary btn-sm" style="color: #d9534f;" onclick="deleteProject('${p.id}', '${escapeHTML(p.name)}')">删除</button>
                         </div>
                     </div>
                 `).join('');
@@ -2170,8 +3184,8 @@
                     console.error('加载项目列表失败:', error);
                     document.getElementById('projectList').innerHTML = `
                         <div style="text-align: center; padding: 60px 20px; color: #d9534f;">
-                            <div style="font-size: 18px; margin-bottom: 8px;">加载项目列表失败</div>
-                            <div style="font-size: 14px;">${error.message}</div>
+                            <div class="project-empty-title">加载项目列表失败</div>
+                            <div class="project-empty-desc">${error.message}</div>
                         </div>
                     `;
                 }
@@ -2497,32 +3511,443 @@
             document.removeEventListener('mouseup', onDragEnd);
         }
         
-        // 定时任务
-        function renderSchedule() {
-            const schedules = [
-                { id: 1, name: '每日设备巡检', cron: '0 8 * * *', status: '启用' },
-                { id: 2, name: '每周保养提醒', cron: '0 9 * * 1', status: '启用' },
-                { id: 3, name: '月度报告生成', cron: '0 0 1 * *', status: '禁用' },
-                { id: 4, name: '季度性能检测', cron: '0 0 1 1,4,7,10 *', status: '启用' },
-                { id: 5, name: '日志清理', cron: '0 3 * * *', status: '启用' }
-            ];
-            
-            const container = document.getElementById('scheduleTable');
-            container.innerHTML = schedules.map(s => `
-                <tr>
-                    <td>${s.name}</td>
-                    <td style="color: #999999;">${s.cron}</td>
-                    <td><span style="color: ${s.status === '启用' ? '#166534' : '#999999'};">${s.status}</span></td>
-                    <td>
-                        <button class="topbar-btn" style="padding: 6px 12px; font-size: 14px;">编辑</button>
-                        <button class="topbar-btn" style="padding: 6px 12px; font-size: 14px;">${s.status === '启用' ? '禁用' : '启用'}</button>
-                    </td>
-                </tr>
-            `).join('');
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
         
-        function createSchedule() {
-            alert('新建定时任务功能开发中...');
+        function formatDateTime(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            } catch {
+                return dateStr;
+            }
+        }
+        
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                background: #1a1a1a;
+                color: white;
+                border-radius: 6px;
+                font-size: var(--font-md);
+                z-index: 10000;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        function cronToChinese(cron) {
+            if (!cron) return '-';
+            const parts = cron.trim().split(' ');
+            if (parts.length !== 5) return cron;
+            
+            const [minute, hour, day, month, weekday] = parts;
+            let result = '';
+            
+            if (minute.startsWith('*/') && hour === '*') {
+                const interval = minute.replace('*/', '');
+                result = `每隔${interval}分钟执行`;
+            } else if (minute === '0' && hour.startsWith('*/')) {
+                const interval = hour.replace('*/', '');
+                result = `每隔${interval}小时执行`;
+            } else if (day === '*' && weekday === '*') {
+                result = `每天 ${hour}:${minute}`;
+            } else if (day === '*' && weekday !== '*') {
+                const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+                const days = weekday.split(',').map(d => weekDays[parseInt(d)]).join('、');
+                result = `每周${days} ${hour}:${minute}`;
+            } else if (month === '*') {
+                result = `每月${day}日 ${hour}:${minute}`;
+            } else {
+                result = cron;
+            }
+            
+            return result;
+        }
+        
+        // 定时任务
+        async function renderSchedule() {
+            try {
+                const response = await fetch('/api/schedule', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('role');
+                    window.location.href = '/static/login.html';
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error('获取任务列表失败');
+                }
+                const data = await response.json();
+                const tasks = data.tasks || [];
+                
+                const container = document.getElementById('scheduleTable');
+                if (tasks.length === 0) {
+                    container.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 24px; color: #999999;">暂无定时任务，点击右上角"新建任务"创建</td></tr>';
+                    return;
+                }
+                
+                container.innerHTML = tasks.map(t => {
+                    const statusColor = t.active ? '#166534' : '#999999';
+                    const statusText = t.active ? '运行中' : '已停用';
+                    const lastRun = t.last_run ? formatDateTime(t.last_run) : '-';
+                    const runCount = t.run_count || 0;
+                    
+                    return `
+                        <tr>
+                            <td style="font-weight: 500;">${escapeHtml(t.name)}</td>
+                            <td style="color: #666666;">${escapeHtml(t.task_type_label || t.task_type)}</td>
+                            <td style="color: #999999;">${cronToChinese(t.cron_expression)}</td>
+                            <td><span style="color: ${statusColor};">${statusText}</span></td>
+                            <td style="color: #666666;">${lastRun}</td>
+                            <td style="color: #666666;">${runCount}</td>
+                            <td>
+                                <button class="topbar-btn btn-sm" onclick="editSchedule('${t.id}')">编辑</button>
+                                <button class="topbar-btn btn-sm" onclick="toggleSchedule('${t.id}', ${t.active})">${t.active ? '停用' : '启用'}</button>
+                                <button class="topbar-btn btn-sm" onclick="triggerSchedule('${t.id}')">立即执行</button>
+                                <button class="topbar-btn btn-sm" onclick="viewScheduleLogs('${t.id}', '${escapeHtml(t.name)}')">日志</button>
+                                <button class="topbar-btn btn-sm" style="color: #dc2626;" onclick="deleteSchedule('${t.id}')">删除</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('加载定时任务失败:', error);
+                document.getElementById('scheduleTable').innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 24px; color: #dc2626;">加载失败，请刷新重试</td></tr>';
+            }
+        }
+        
+        function updateFrequencyOptions() {
+            const frequency = document.getElementById('scheduleFrequency').value;
+            
+            document.getElementById('scheduleMinuteOptions').style.display = 'none';
+            document.getElementById('scheduleHourOptions').style.display = 'none';
+            document.getElementById('scheduleDayOptions').style.display = 'none';
+            document.getElementById('scheduleWeekOptions').style.display = 'none';
+            document.getElementById('scheduleMonthOptions').style.display = 'none';
+            document.getElementById('scheduleCustomOptions').style.display = 'none';
+            
+            if (frequency === 'minute') {
+                document.getElementById('scheduleMinuteOptions').style.display = 'block';
+            } else if (frequency === 'hour') {
+                document.getElementById('scheduleHourOptions').style.display = 'block';
+            } else if (frequency === 'day') {
+                document.getElementById('scheduleDayOptions').style.display = 'block';
+            } else if (frequency === 'week') {
+                document.getElementById('scheduleWeekOptions').style.display = 'block';
+            } else if (frequency === 'month') {
+                document.getElementById('scheduleMonthOptions').style.display = 'block';
+            } else if (frequency === 'custom') {
+                document.getElementById('scheduleCustomOptions').style.display = 'block';
+            }
+        }
+        
+        function buildCronExpression() {
+            const frequency = document.getElementById('scheduleFrequency').value;
+            
+            if (frequency === 'minute') {
+                const interval = document.getElementById('scheduleMinuteInterval').value;
+                return `*/${interval} * * * *`;
+            } else if (frequency === 'hour') {
+                const interval = document.getElementById('scheduleHourInterval').value;
+                return `0 */${interval} * * *`;
+            } else if (frequency === 'day') {
+                const time = document.getElementById('scheduleDayTime').value.split(':');
+                return `${time[1]} ${time[0]} * * *`;
+            } else if (frequency === 'week') {
+                const time = document.getElementById('scheduleWeekTime').value.split(':');
+                const days = Array.from(document.querySelectorAll('input[name="scheduleWeekDay"]:checked'))
+                    .map(cb => cb.value)
+                    .join(',');
+                return `${time[1]} ${time[0]} * * ${days}`;
+            } else if (frequency === 'month') {
+                const time = document.getElementById('scheduleMonthTime').value.split(':');
+                const day = document.getElementById('scheduleMonthDay').value;
+                return `${time[1]} ${time[0]} ${day} * *`;
+            } else if (frequency === 'custom') {
+                return document.getElementById('scheduleCron').value.trim();
+            }
+            return '';
+        }
+        
+        function parseCronToOptions(cron) {
+            if (!cron) {
+                document.getElementById('scheduleFrequency').value = 'day';
+                updateFrequencyOptions();
+                return;
+            }
+            
+            const parts = cron.trim().split(' ');
+            if (parts.length !== 5) {
+                document.getElementById('scheduleFrequency').value = 'custom';
+                document.getElementById('scheduleCron').value = cron;
+                updateFrequencyOptions();
+                return;
+            }
+            
+            const [minute, hour, day, month, weekday] = parts;
+            
+            if (minute.startsWith('*/') && hour === '*') {
+                document.getElementById('scheduleFrequency').value = 'minute';
+                document.getElementById('scheduleMinuteInterval').value = minute.replace('*/', '');
+            } else if (minute === '0' && hour.startsWith('*/')) {
+                document.getElementById('scheduleFrequency').value = 'hour';
+                document.getElementById('scheduleHourInterval').value = hour.replace('*/', '');
+            } else if (day === '*' && weekday === '*') {
+                document.getElementById('scheduleFrequency').value = 'day';
+                document.getElementById('scheduleDayTime').value = `${hour}:${minute}`;
+            } else if (day === '*' && weekday !== '*') {
+                document.getElementById('scheduleFrequency').value = 'week';
+                document.getElementById('scheduleWeekTime').value = `${hour}:${minute}`;
+                const days = weekday.split(',');
+                document.querySelectorAll('input[name="scheduleWeekDay"]').forEach(cb => {
+                    cb.checked = days.includes(cb.value);
+                });
+            } else if (month === '*') {
+                document.getElementById('scheduleFrequency').value = 'month';
+                document.getElementById('scheduleMonthTime').value = `${hour}:${minute}`;
+                document.getElementById('scheduleMonthDay').value = day;
+            } else {
+                document.getElementById('scheduleFrequency').value = 'custom';
+                document.getElementById('scheduleCron').value = cron;
+            }
+            
+            updateFrequencyOptions();
+        }
+        
+        function openScheduleModal(taskId = null) {
+            document.getElementById('scheduleTaskId').value = taskId || '';
+            
+            if (taskId) {
+                document.getElementById('scheduleModalTitle').textContent = '编辑定时任务';
+            } else {
+                document.getElementById('scheduleModalTitle').textContent = '新建定时任务';
+                document.getElementById('scheduleName').value = '';
+                document.getElementById('scheduleTaskType').value = 'check_knowledge';
+                document.getElementById('scheduleFrequency').value = 'day';
+                document.getElementById('scheduleCleanupDays').value = '7';
+                document.getElementById('scheduleDescription').value = '';
+                document.getElementById('scheduleDayTime').value = '02:00';
+                document.querySelectorAll('input[name="scheduleWeekDay"]').forEach(cb => cb.checked = false);
+                document.querySelectorAll('input[name="scheduleWeekDay"][value="1"],input[name="scheduleWeekDay"][value="2"],input[name="scheduleWeekDay"][value="3"],input[name="scheduleWeekDay"][value="4"],input[name="scheduleWeekDay"][value="5"]').forEach(cb => cb.checked = true);
+            }
+            
+            updateFrequencyOptions();
+            document.getElementById('scheduleModal').style.display = 'flex';
+        }
+        
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').style.display = 'none';
+        }
+        
+        async function saveSchedule() {
+            const taskId = document.getElementById('scheduleTaskId').value;
+            const name = document.getElementById('scheduleName').value.trim();
+            const taskType = document.getElementById('scheduleTaskType').value;
+            const cronExpression = buildCronExpression();
+            const cleanupDays = parseInt(document.getElementById('scheduleCleanupDays').value);
+            const description = document.getElementById('scheduleDescription').value.trim();
+            
+            if (!name) {
+                alert('请输入任务名称');
+                return;
+            }
+            if (!cronExpression) {
+                alert('请设置执行时间');
+                return;
+            }
+            
+            try {
+                const url = taskId ? `/api/schedule/${taskId}` : '/api/schedule';
+                const method = taskId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({
+                        name,
+                        task_type: taskType,
+                        cron_expression: cronExpression,
+                        cleanup_days: cleanupDays,
+                        description
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || '保存失败');
+                }
+                
+                closeScheduleModal();
+                renderSchedule();
+                showNotification(taskId ? '任务更新成功' : '任务创建成功');
+            } catch (error) {
+                alert('保存失败: ' + error.message);
+            }
+        }
+        
+        async function editSchedule(taskId) {
+            try {
+                const response = await fetch('/api/schedule', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                if (!response.ok) throw new Error('获取任务失败');
+                
+                const data = await response.json();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) {
+                    alert('任务不存在');
+                    return;
+                }
+                
+                document.getElementById('scheduleTaskId').value = task.id;
+                document.getElementById('scheduleName').value = task.name;
+                document.getElementById('scheduleTaskType').value = task.task_type || 'check_knowledge';
+                document.getElementById('scheduleCleanupDays').value = task.cleanup_days || 7;
+                document.getElementById('scheduleDescription').value = task.description || '';
+                
+                parseCronToOptions(task.cron_expression);
+                
+                document.getElementById('scheduleModalTitle').textContent = '编辑定时任务';
+                document.getElementById('scheduleModal').style.display = 'flex';
+            } catch (error) {
+                alert('加载任务失败: ' + error.message);
+            }
+        }
+        
+        async function toggleSchedule(taskId, currentActive) {
+            try {
+                const response = await fetch(`/api/schedule/${taskId}/toggle`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || '操作失败');
+                }
+                
+                renderSchedule();
+                showNotification(currentActive ? '任务已停用' : '任务已启用');
+            } catch (error) {
+                alert('操作失败: ' + error.message);
+            }
+        }
+        
+        async function triggerSchedule(taskId) {
+            if (!confirm('确定要立即执行此任务吗？')) return;
+            
+            try {
+                const response = await fetch(`/api/schedule/${taskId}/trigger`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || '触发失败');
+                }
+                
+                showNotification('任务已触发，正在后台执行');
+            } catch (error) {
+                alert('触发失败: ' + error.message);
+            }
+        }
+        
+        async function deleteSchedule(taskId) {
+            if (!confirm('确定要删除此任务吗？')) return;
+            
+            try {
+                const response = await fetch(`/api/schedule/${taskId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || '删除失败');
+                }
+                
+                renderSchedule();
+                showNotification('任务已删除');
+            } catch (error) {
+                alert('删除失败: ' + error.message);
+            }
+        }
+        
+        async function viewScheduleLogs(taskId, taskName) {
+            try {
+                const response = await fetch(`/api/schedule/${taskId}/logs`, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || '获取日志失败');
+                }
+                
+                const data = await response.json();
+                const logs = data.logs || [];
+                
+                document.getElementById('scheduleLogsTitle').textContent = `任务执行日志 - ${taskName}`;
+                
+                if (logs.length === 0) {
+                    document.getElementById('scheduleLogsContent').innerHTML = '<div style="text-align: center; padding: 24px; color: #999999;">暂无执行日志</div>';
+                } else {
+                    document.getElementById('scheduleLogsContent').innerHTML = logs.map(log => `
+                        <div style="border-bottom: 1px solid #e0e0e0; padding: 12px 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <span style="font-weight: 500; color: ${log.status === 'success' ? '#166534' : '#dc2626'};">
+                                    ${log.status === 'success' ? '✓ 成功' : '✗ 失败'}
+                                </span>
+                                <span class="log-time">${formatDateTime(log.start_time)}</span>
+                            </div>
+                            <div class="log-duration">耗时: ${log.duration_ms}ms</div>
+                            <div class="log-content">${escapeHtml(log.result)}</div>
+                        </div>
+                    `).join('');
+                }
+                
+                document.getElementById('scheduleLogsModal').style.display = 'flex';
+            } catch (error) {
+                alert('获取日志失败: ' + error.message);
+            }
+        }
+        
+        function closeScheduleLogsModal() {
+            document.getElementById('scheduleLogsModal').style.display = 'none';
         }
         
         // 插件管理
@@ -2590,24 +4015,72 @@
             return icons[id] || 'P';
         }
         
-        function installPlugin(pluginId) {
+        async function installPlugin(pluginId) {
             const btn = event.target;
             btn.classList.add('installing');
             btn.textContent = '安装中...';
             
-            setTimeout(() => {
-                installedPlugins.push(pluginId);
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/plugins/${pluginId}/install`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token || ''}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    installedPlugins.push(pluginId);
+                    btn.classList.remove('installing');
+                    btn.classList.add('installed');
+                    btn.textContent = '已安装';
+                    showNotification(data.message, 'success');
+                    renderInstalledPlugins();
+                    updatePluginToolbar();
+                } else {
+                    btn.classList.remove('installing');
+                    btn.textContent = '安装';
+                    showNotification(data.detail || '安装失败', 'error');
+                }
+            } catch (error) {
                 btn.classList.remove('installing');
-                btn.classList.add('installed');
-                btn.textContent = '已安装';
-            }, 1500);
+                btn.textContent = '安装';
+                showNotification('网络错误', 'error');
+            }
         }
         
-        function uninstallPlugin(pluginId) {
+        async function uninstallPlugin(pluginId) {
             const btn = event.target;
-            installedPlugins = installedPlugins.filter(p => p !== pluginId);
-            btn.classList.remove('installed');
-            btn.textContent = '安装';
+            btn.textContent = '卸载中...';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/plugins/${pluginId}/uninstall`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token || ''}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    installedPlugins = installedPlugins.filter(p => p !== pluginId);
+                    btn.classList.remove('installed');
+                    btn.textContent = '安装';
+                    showNotification(data.message, 'success');
+                    renderInstalledPlugins();
+                    updatePluginToolbar();
+                } else {
+                    btn.textContent = '卸载';
+                    showNotification(data.detail || '卸载失败', 'error');
+                }
+            } catch (error) {
+                btn.textContent = '卸载';
+                showNotification('网络错误', 'error');
+            }
         }
         
         function renderInstalledPlugins() {
@@ -2620,13 +4093,16 @@
             }
             
             container.innerHTML = installed.map(p => `
-                <div class="skill-card">
+                <div class="skill-card" style="height: auto;">
                     <div class="skill-card-header">
                         <div class="skill-icon">${getPluginIcon(p.id)}</div>
                         <div class="skill-name">${p.name}</div>
                     </div>
                     <div class="skill-desc">${p.desc}</div>
-                    <button class="skill-install-btn" onclick="uninstallPlugin('${p.id}')">卸载</button>
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button class="skill-install-btn installed" onclick="openPluginAction('${p.id}')" style="flex: 1; background: #1a1a1a; color: white;">打开</button>
+                        <button class="skill-install-btn" onclick="uninstallPlugin('${p.id}')">卸载</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -2737,7 +4213,7 @@
                             <div class="command-item" onclick="navigateToProject('${p.id}');">
                                 <span class="command-icon" style="color: #166534;">P</span>
                                 <span class="command-text" style="flex: 1;">${escapeHTML(p.name)}</span>
-                                <span style="font-size: 14px; color: #666666; margin-right: 8px;">${escapeHTML(statusText)}</span>
+                                <span class="form-hint" style="color: #666666; margin-right: 8px;">${escapeHTML(statusText)}</span>
                                 <span class="command-shortcut" style="color: #999999;">项目</span>
                             </div>
                         `
@@ -2807,15 +4283,109 @@
         }
         
         // 设置功能
-        function saveSettings() {
-            const model = document.getElementById('settingModel').value;
-            const temperature = document.getElementById('settingTemperature').value;
+        function setTheme(theme) {
+            const radios = document.querySelectorAll('input[name="theme"]');
+            radios.forEach(r => r.checked = r.value === theme);
             
+            localStorage.setItem('theme', theme);
+            
+            document.body.classList.remove('dark');
+            
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+            } else if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    document.body.classList.add('dark');
+                }
+            }
+        }
+        
+        function loadSettings() {
+            const theme = localStorage.getItem('theme') || 'light';
+            const fontSize = localStorage.getItem('fontSize') || 'normal';
+            const model = localStorage.getItem('ai_model') || 'qwen-plus';
+            const language = localStorage.getItem('language') || 'zh';
+            const autoSave = localStorage.getItem('autoSave') !== 'false';
+            const autoScroll = localStorage.getItem('autoScroll') !== 'false';
+            
+            const username = localStorage.getItem('username') || '操作员';
+            const role = localStorage.getItem('role') || 'Worker';
+            
+            document.querySelectorAll('input[name="theme"]').forEach(r => r.checked = r.value === theme);
+            
+            document.getElementById('settingFontSize').value = fontSize;
+            document.getElementById('settingModel').value = model;
+            document.getElementById('settingLanguage').value = language;
+            document.getElementById('settingAutoSave').checked = autoSave;
+            document.getElementById('settingAutoScroll').checked = autoScroll;
+            
+            document.getElementById('settingUsername').value = username;
+            document.getElementById('settingRole').value = role === 'admin' ? '管理员' : (role === 'reviewer' ? '审核员' : '操作员');
+            
+            setTheme(theme);
+            
+            applyFontSize(fontSize);
+        }
+        
+        function applyFontSize(size) {
+            const sizes = {
+                'small': '12px',
+                'normal': '16px',
+                'large': '20px',
+                'extra-large': '24px'
+            };
+            document.documentElement.style.setProperty('--font-base', sizes[size] || '16px');
+            localStorage.setItem('fontSize', size);
+        }
+        
+        function saveSettings() {
+            const theme = document.querySelector('input[name="theme"]:checked').value;
+            const fontSize = document.getElementById('settingFontSize').value;
+            const model = document.getElementById('settingModel').value;
+            const language = document.getElementById('settingLanguage').value;
+            const autoSave = document.getElementById('settingAutoSave').checked;
+            const autoScroll = document.getElementById('settingAutoScroll').checked;
+            
+            localStorage.setItem('theme', theme);
+            localStorage.setItem('fontSize', fontSize);
             localStorage.setItem('ai_model', model);
-            localStorage.setItem('temperature', temperature);
+            localStorage.setItem('language', language);
+            localStorage.setItem('autoSave', autoSave);
+            localStorage.setItem('autoScroll', autoScroll);
+            
+            setTheme(theme);
+            applyFontSize(fontSize);
             
             const status = document.getElementById('settingsStatus');
             status.textContent = '设置已保存';
+            status.className = 'status status-success show';
+            
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 3000);
+        }
+        
+        function clearChatHistory() {
+            if (!confirm('确定要清除所有聊天记录吗？此操作不可恢复。')) return;
+            
+            localStorage.removeItem('sessions');
+            localStorage.removeItem('currentSession');
+            
+            const status = document.getElementById('settingsStatus');
+            status.textContent = '聊天记录已清除';
+            status.className = 'status status-success show';
+            
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 3000);
+        }
+        
+        function clearCache() {
+            if (!confirm('确定要清除缓存吗？这将清除本地存储的临时数据。')) return;
+            
+            const status = document.getElementById('settingsStatus');
+            status.textContent = '缓存已清除';
             status.className = 'status status-success show';
             
             setTimeout(() => {
@@ -2981,9 +4551,20 @@
             
             chatBox.scrollTop = chatBox.scrollHeight;
             
+            const session = getCurrentSession();
+            let context = '';
+            if (session && session.messages && session.messages.length > 0) {
+                const recentMessages = session.messages.slice(-4);
+                context = recentMessages.map(msg => {
+                    const role = msg.role === 'user' ? '用户' : '助手';
+                    return `${role}: ${msg.content}`;
+                }).join('\n');
+            }
+
             const formData = new FormData();
             formData.append('question', question);
             formData.append('username', localStorage.getItem('username') || 'default');
+            formData.append('context', context);
             
             if (imageInput.files && imageInput.files[0]) {
                 formData.append('image', imageInput.files[0]);
@@ -3000,7 +4581,7 @@
             
             const hasVideo = videoInput.files && videoInput.files[0];
             if (hasVideo) {
-                assistantMsg.innerHTML = `<div class="msg-content"><div class="loading-dots"><span></span><span></span><span></span></div><div style="font-size: 14px; color: #999; margin-top: 8px;">正在分析视频画面，请稍候...</div></div>`;
+                assistantMsg.innerHTML = `<div class="msg-content"><div class="loading-dots"><span></span><span></span><span></span></div><div class="form-hint" style="margin-top: 8px; color: #999;">正在分析视频画面，请稍候...</div></div>`;
             }
             
             fetch('/ask', {
@@ -3031,17 +4612,6 @@
                 let mediaHtml = renderMediaFiles(data.media_files);
                 
                 assistantMsg.innerHTML = `<div class="msg-content">${marked.parse(escapeHTML(answer))}${mediaHtml}</div>`;
-                
-                if (data.references && data.references.length > 0) {
-                    let refsHtml = '<div class="references">参考来源：';
-                    data.references.forEach(ref => {
-                        const page = ref.page || '';
-                        const content = ref.content || '';
-                        refsHtml += `<div class="reference-item">【第${page}页】${escapeHTML(content)}</div>`;
-                    });
-                    refsHtml += '</div>';
-                    assistantMsg.querySelector('.msg-content').innerHTML += refsHtml;
-                }
                 
                 saveChatMessage('assistant', answer, data.media_files || []);
                 clearMedia();
@@ -3092,7 +4662,7 @@
                     </div>
                 `;
             }
-            progressDiv.innerHTML = `<div style="font-size: 14px; color: #666; margin-bottom: 8px;">正在上传并建立知识库...</div>${progressHtml}`;
+            progressDiv.innerHTML = `<div class="form-hint" style="color: #666; margin-bottom: 8px;">正在上传并建立知识库...</div>${progressHtml}`;
             
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
@@ -3196,15 +4766,15 @@
                 }
                 
                 container.innerHTML = files.map(file => `
-                    <div style="padding: 12px; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
+                    <div class="file-item" data-file-id="${file.file_id}" data-filename="${file.filename}" style="padding: 12px; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <div style="font-size: 16px; color: #1a1a1a;">${file.filename}</div>
-                            <div style="font-size: 14px; color: #666666;">${file.chunk_count} 段落 | ${file.uploaded_at}</div>
+                            <div class="file-item-name">${file.filename}</div>
+                            <div class="file-item-meta">${file.chunk_count} 段落 | ${file.uploaded_at}</div>
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <button class="btn-secondary" style="padding: 6px 12px; font-size: 14px;" onclick="previewFile('${file.file_id}')">预览</button>
-                            <button class="btn-secondary" style="padding: 6px 12px; font-size: 14px;" onclick="downloadFile('${file.file_id}', '${file.filename}')">下载</button>
-                            <button class="btn-secondary" style="padding: 6px 12px; font-size: 14px; color: #d9534f;" onclick="deleteFile('${file.file_id}')">删除</button>
+                            <button class="btn-secondary btn-sm file-operation-btn" data-action="preview" data-file-id="${file.file_id}">预览</button>
+                            <button class="btn-secondary btn-sm file-operation-btn" data-action="download" data-file-id="${file.file_id}" data-filename="${file.filename}">下载</button>
+                            <button class="btn-secondary btn-sm file-operation-btn" data-action="delete" data-file-id="${file.file_id}" style="color: #d9534f;">删除</button>
                         </div>
                     </div>
                 `).join('');
@@ -3214,7 +4784,7 @@
             });
         }
         
-        function previewFile(fileId) {
+        window.previewFile = function(fileId) {
             const token = localStorage.getItem('token');
             const url = `/api/files/${fileId}/download?preview=true`;
             
@@ -3304,7 +4874,7 @@
         
         document.addEventListener('DOMContentLoaded', initPdfDrag);
         
-        function downloadFile(fileId, filename) {
+        window.downloadFile = function(fileId, filename) {
             const token = localStorage.getItem('token');
             const url = `/api/files/${fileId}/download`;
             
@@ -3333,8 +4903,11 @@
             });
         }
         
-        function deleteFile(fileId) {
+        window.deleteFile = function(fileId) {
             if (!confirm('确定要删除该文件吗？')) return;
+            
+            console.log('开始删除文件，fileId:', fileId);
+            console.log('token:', localStorage.getItem('token') ? '存在' : '不存在');
             
             fetch(`/api/files/${fileId}`, {
                 method: 'DELETE',
@@ -3343,6 +4916,7 @@
                 }
             })
             .then(response => {
+                console.log('删除请求响应状态:', response.status);
                 if (response.status === 401) {
                     localStorage.removeItem('token');
                     localStorage.removeItem('username');
@@ -3353,12 +4927,14 @@
                 }
                 if (!response.ok) {
                     return response.json().then(err => {
+                        console.error('删除失败:', err);
                         throw new Error(err.detail || '删除失败');
                     });
                 }
                 return response.json();
             })
             .then(data => {
+                console.log('删除成功:', data);
                 if (data.message) {
                     alert(data.message);
                     loadFileList();
@@ -3494,17 +5070,17 @@
                     html += `
                     <div style="border-bottom: 1px solid #e0e0e0; padding: 20px 0; cursor: pointer;" onclick="showCaseDetail('${c.id}')">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                            <h3 style="font-size: 18px; font-weight: 600; color: #1a1a1a;">${c.title}</h3>
-                            <span style="padding: 4px 12px; background: #dcfce7; color: #16a34a; border-radius: 20px; font-size: 14px;">已通过</span>
+                            <h3 class="case-title">${c.title}</h3>
+                            <span class="case-badge">已通过</span>
                         </div>
-                        <div style="font-size: 15px; color: #999999; margin-bottom: 12px;">
+                        <div class="case-meta">
                             <span>提交人: ${c.submitter}</span>
                             <span style="margin: 0 16px;">${c.type || '经验'}</span>
                             <span>${c.created_at?.slice(0,10)}</span>
                         </div>
-                        <div style="font-size: 16px; color: #666666; line-height: 1.6;">${c.content}</div>
+                        <div class="case-content">${c.content}</div>
                         ${filesHtml}
-                        <div style="margin-top: 12px; font-size: 14px; color: #1a1a1a;">点击查看详情</div>
+                        <div style="margin-top: 12px; color: #1a1a1a; font-size: var(--font-xs);">点击查看详情</div>
                     </div>`;
                 });
                 list.innerHTML = html;
@@ -3592,16 +5168,980 @@
         
         // 点击命令面板外部关闭
         document.addEventListener('click', function(e) {
+            console.log('全局点击事件触发，目标元素:', e.target.tagName, e.target.className);
+            
             const palette = document.getElementById('commandPalette');
             if (palette.classList.contains('active') && !palette.contains(e.target)) {
                 closeCommandPalette();
+            }
+            
+            const fileBtn = e.target.closest('.file-operation-btn');
+            if (fileBtn) {
+                const action = fileBtn.dataset.action;
+                const fileId = fileBtn.dataset.fileId;
+                const filename = fileBtn.dataset.filename;
+                
+                console.log('文件操作按钮点击:', action, fileId, filename);
+                
+                if (action === 'preview') {
+                    alert('预览按钮点击，fileId: ' + fileId);
+                    handleFilePreview(fileId);
+                } else if (action === 'download') {
+                    alert('下载按钮点击，fileId: ' + fileId);
+                    handleFileDownload(fileId, filename);
+                } else if (action === 'delete') {
+                    alert('删除按钮点击，fileId: ' + fileId);
+                    handleFileDelete(fileId);
+                }
             }
         });
         
         // 页面加载时初始化会话系统
         document.addEventListener('DOMContentLoaded', function() {
             initSession();
+            loadInstalledPlugins();
+            
+            const theme = localStorage.getItem('theme') || 'light';
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+            } else if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    document.body.classList.add('dark');
+                }
+            }
+            
+            const fontSize = localStorage.getItem('fontSize') || 'normal';
+            const sizes = {
+                'small': '14px',
+                'normal': '16px',
+                'large': '18px',
+                'extra-large': '22px'
+            };
+            document.documentElement.style.setProperty('--font-base', sizes[fontSize] || '16px');
+            
+            window.previewFile = previewFile;
+            window.downloadFile = downloadFile;
+            window.deleteFile = deleteFile;
+            window.loadFileList = loadFileList;
         });
+        
+        async function loadInstalledPlugins() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugins', {
+                    headers: { 'Authorization': `Bearer ${token || ''}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    installedPlugins = data.plugins.filter(p => p.installed).map(p => p.id);
+                    renderPluginMarket();
+                    renderInstalledPlugins();
+                    updatePluginToolbar();
+                }
+            } catch (error) {
+                console.log('加载插件列表失败:', error);
+            }
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+        
+        function updatePluginToolbar() {
+            const toolbar = document.getElementById('pluginToolbar');
+            if (!toolbar) return;
+            
+            const actionPlugins = installedPlugins.filter(p => 
+                ['analysis', 'diag', 'doc', 'code', 'monitor', 'log', 'backup'].includes(p)
+            );
+            
+            if (actionPlugins.length === 0) {
+                toolbar.style.display = 'none';
+                return;
+            }
+            
+            toolbar.style.display = 'flex';
+            toolbar.innerHTML = actionPlugins.map(p => {
+                const icon = getPluginIcon(p);
+                const name = pluginList.find(item => item.id === p)?.name || p;
+                return `<button class="plugin-tool-btn" onclick="openPluginAction('${p}')" title="${name}">${icon}</button>`;
+            }).join('');
+        }
+        
+        async function openPluginAction(pluginId) {
+            const plugin = pluginList.find(p => p.id === pluginId);
+            if (!plugin) return;
+            
+            switch(pluginId) {
+                case 'analysis':
+                    openFaultAnalysis();
+                    break;
+                case 'diag':
+                    openSmartDiagnosis();
+                    break;
+                case 'doc':
+                    openDocumentGenerator();
+                    break;
+                case 'code':
+                    openCodeGenerator();
+                    break;
+                case 'monitor':
+                    openSystemMonitor();
+                    break;
+                case 'log':
+                    openLogAnalyzer();
+                    break;
+                case 'backup':
+                    executeBackup();
+                    break;
+                case 'report':
+                    openReportGenerator();
+                    break;
+                case 'schedule':
+                    openTaskManager();
+                    break;
+                case 'alert':
+                    openAlertManager();
+                    break;
+                case 'chart':
+                    openDataVisualization();
+                    break;
+                case 'sync':
+                    openDataSync();
+                    break;
+                default:
+                    showNotification('该插件功能开发中', 'info');
+            }
+        }
+        
+        function openFaultAnalysis() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">故障分析</h3>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px;">故障现象</label>
+                        <textarea id="faultSymptom" rows="4" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: var(--font-md);" placeholder="请描述故障现象..."></textarea>
+                    </div>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 8px;">设备类型</label>
+                        <input type="text" id="faultDevice" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: var(--font-md);" placeholder="例如：发动机、变速箱">
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="executeFaultAnalysis()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">开始分析</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                    <div id="faultAnalysisResult" style="margin-top: 24px; display: none;">
+                        <div style="padding: 16px; background: #f8f8f8; border-radius: 6px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; line-height: 1.6;"></div>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+        }
+        
+        async function executeFaultAnalysis() {
+            const symptom = document.getElementById('faultSymptom').value.trim();
+            const device = document.getElementById('faultDevice').value.trim();
+            
+            if (!symptom) {
+                showNotification('请输入故障现象', 'error');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/analyze_fault', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token || ''}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ symptom, device })
+                });
+                
+                const data = await response.json();
+                const resultDiv = document.getElementById('faultAnalysisResult');
+                
+                if (data.success) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.querySelector('div').textContent = data.result;
+                } else {
+                    showNotification(data.error || '分析失败', 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        function openSmartDiagnosis() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">智能诊断</h3>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 8px;">诊断问题</label>
+                        <textarea id="diagQuestion" rows="4" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: var(--font-md);" placeholder="请描述您的问题..."></textarea>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="executeSmartDiagnosis()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">开始诊断</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                    <div id="diagResult" style="margin-top: 24px; display: none;">
+                        <div style="padding: 16px; background: #f8f8f8; border-radius: 6px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; line-height: 1.6;"></div>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+        }
+        
+        async function executeSmartDiagnosis() {
+            const question = document.getElementById('diagQuestion').value.trim();
+            
+            if (!question) {
+                showNotification('请输入诊断问题', 'error');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/smart_diagnosis', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token || ''}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question })
+                });
+                
+                const data = await response.json();
+                const resultDiv = document.getElementById('diagResult');
+                
+                if (data.success) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.querySelector('div').textContent = data.diagnosis;
+                } else {
+                    showNotification(data.error || '诊断失败', 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        function openDocumentGenerator() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">文档生成</h3>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px;">设备名称</label>
+                        <input type="text" id="docDevice" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: var(--font-md);" placeholder="例如：发动机、液压系统">
+                    </div>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 8px;">文档类型</label>
+                        <select id="docType" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: var(--font-md);">
+                            <option value="repair">检修方案</option>
+                            <option value="maintenance">保养计划</option>
+                            <option value="inspection">巡检报告</option>
+                            <option value="accident">事故分析</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="executeDocumentGenerator()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">生成文档</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                    <div id="docResult" style="margin-top: 24px; display: none;">
+                        <div style="padding: 16px; background: #f8f8f8; border-radius: 6px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; line-height: 1.6;"></div>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+        }
+        
+        async function executeDocumentGenerator() {
+            const device = document.getElementById('docDevice').value.trim();
+            const type = document.getElementById('docType').value;
+            
+            if (!device) {
+                showNotification('请输入设备名称', 'error');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/generate_document', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token || ''}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ device, type })
+                });
+                
+                const data = await response.json();
+                const resultDiv = document.getElementById('docResult');
+                
+                if (data.success) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.querySelector('div').textContent = data.content;
+                    showNotification('文档已保存', 'success');
+                } else {
+                    showNotification(data.error || '文档生成失败', 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        function openCodeGenerator() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">代码助手</h3>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 8px;">脚本用途</label>
+                        <textarea id="codePurpose" rows="4" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: var(--font-md);" placeholder="请描述脚本用途..."></textarea>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="executeCodeGenerator()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">生成脚本</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                    <div id="codeResult" style="margin-top: 24px; display: none;">
+                        <pre style="padding: 16px; background: #1a1a1a; color: #f0f0f0; border-radius: 6px; max-height: 400px; overflow-y: auto; font-size: var(--font-sm);"></pre>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+        }
+        
+        async function executeCodeGenerator() {
+            const purpose = document.getElementById('codePurpose').value.trim();
+            
+            if (!purpose) {
+                showNotification('请输入脚本用途', 'error');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/generate_script', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token || ''}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ purpose })
+                });
+                
+                const data = await response.json();
+                const resultDiv = document.getElementById('codeResult');
+                
+                if (data.success) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.querySelector('pre').textContent = data.script;
+                    showNotification('脚本已保存', 'success');
+                } else {
+                    showNotification(data.error || '脚本生成失败', 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        async function openSystemMonitor() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">系统监控</h3>
+                    <div id="monitorResult" style="display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div style="padding: 16px; background: #f8f8f8; border-radius: 6px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">磁盘空间</div>
+                                <div id="monitorDisk"></div>
+                            </div>
+                            <div style="padding: 16px; background: #f8f8f8; border-radius: 6px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">内存使用</div>
+                                <div id="monitorMemory"></div>
+                            </div>
+                            <div style="padding: 16px; background: #f8f8f8; border-radius: 6px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">CPU使用率</div>
+                                <div id="monitorCpu"></div>
+                            </div>
+                            <div style="padding: 16px; background: #f8f8f8; border-radius: 6px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">网络流量</div>
+                                <div id="monitorNetwork"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="monitorLoading" style="text-align: center; padding: 40px;">
+                        <div>加载中...</div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button onclick="executeSystemMonitor()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">刷新</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+            executeSystemMonitor();
+        }
+        
+        async function executeSystemMonitor() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/system_monitor', {
+                    headers: { 'Authorization': `Bearer ${token || ''}` }
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('monitorLoading').style.display = 'none';
+                document.getElementById('monitorResult').style.display = 'block';
+                
+                if (data.success) {
+                    const d = data.data;
+                    document.getElementById('monitorDisk').textContent = d.disk 
+                        ? `${d.disk.used}/${d.disk.total}GB (${d.disk.percent}%) - ${d.disk.status === 'warning' ? '警告' : '正常'}` 
+                        : '获取失败';
+                    document.getElementById('monitorMemory').textContent = d.memory 
+                        ? `${d.memory.used}/${d.memory.total}GB (${d.memory.percent}%) - ${d.memory.status === 'warning' ? '警告' : '正常'}` 
+                        : '获取失败';
+                    document.getElementById('monitorCpu').textContent = d.cpu 
+                        ? `${d.cpu.percent}% - ${d.cpu.status === 'warning' ? '警告' : '正常'}` 
+                        : '获取失败';
+                    document.getElementById('monitorNetwork').textContent = d.network 
+                        ? `发送: ${d.network.bytes_sent}MB, 接收: ${d.network.bytes_recv}MB` 
+                        : '获取失败';
+                } else {
+                    showNotification('获取监控数据失败', 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        async function openLogAnalyzer() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">日志分析</h3>
+                    <div id="logResult" style="display: none;">
+                        <div style="margin-bottom: 20px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">统计概览</div>
+                            <div style="display: flex; gap: 24px;">
+                                <span>总执行次数: <strong id="logTotal"></strong></span>
+                                <span>成功率: <strong id="logSuccessRate"></strong></span>
+                                <span>失败次数: <strong id="logFail"></strong></span>
+                            </div>
+                        </div>
+                        <div id="logErrors"></div>
+                    </div>
+                    <div id="logLoading" style="text-align: center; padding: 40px;">
+                        <div>加载中...</div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button onclick="executeLogAnalyzer()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">刷新</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+            executeLogAnalyzer();
+        }
+        
+        async function executeLogAnalyzer() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/analyze_logs', {
+                    headers: { 'Authorization': `Bearer ${token || ''}` }
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('logLoading').style.display = 'none';
+                document.getElementById('logResult').style.display = 'block';
+                
+                if (data.success) {
+                    const d = data.data;
+                    document.getElementById('logTotal').textContent = d.total_runs;
+                    document.getElementById('logSuccessRate').textContent = d.success_rate + '%';
+                    document.getElementById('logFail').textContent = d.fail_count;
+                    
+                    const errorsDiv = document.getElementById('logErrors');
+                    if (d.recent_errors && d.recent_errors.length > 0) {
+                        errorsDiv.innerHTML = `<div style="font-weight: 600; margin-bottom: 8px;">最近错误</div>` +
+                            d.recent_errors.map(err => `
+                                <div style="padding: 12px; background: #fef2f2; border-radius: 6px; margin-bottom: 8px;">
+                                    <div style="font-weight: 500;">${err.task_name}</div>
+                                    <div style="font-size: var(--font-sm); color: #666;">${err.error}</div>
+                                    <div style="font-size: var(--font-xs); color: #999;">${err.time}</div>
+                                </div>
+                            `).join('');
+                    } else {
+                        errorsDiv.innerHTML = '<div style="color: #666;">暂无错误记录</div>';
+                    }
+                } else {
+                    showNotification('获取日志数据失败', 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        async function executeBackup() {
+            if (!confirm('确定要执行数据备份吗？')) return;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/backup_data', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token || ''}` }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification('备份失败', 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        function showPluginModal(content) {
+            let modal = document.getElementById('pluginModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'pluginModal';
+                modal.className = 'modal-overlay';
+                document.body.appendChild(modal);
+            }
+            modal.innerHTML = `<div class="modal" style="width: 600px; max-height: 80vh; overflow-y: auto;">${content}</div>`;
+            modal.style.display = 'flex';
+        }
+        
+        function closePluginModal() {
+            const modal = document.getElementById('pluginModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        function openReportGenerator() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">运维报表</h3>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 8px;">报表类型</label>
+                        <select id="reportType" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: var(--font-md);">
+                            <option value="daily">日报</option>
+                            <option value="weekly">周报</option>
+                            <option value="monthly">月报</option>
+                        </select>
+                    </div>
+                    <div id="reportResult" style="display: none; margin-bottom: 20px;">
+                        <div style="padding: 16px; background: #dcfce7; border-radius: 6px;">
+                            <div id="reportMessage"></div>
+                        </div>
+                    </div>
+                    <div id="reportLoading" style="text-align: center; padding: 20px;">
+                        <div>加载中...</div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="generateReport()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">生成报表</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+            document.getElementById('reportLoading').style.display = 'none';
+        }
+        
+        async function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            const loading = document.getElementById('reportLoading');
+            const result = document.getElementById('reportResult');
+            
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/generate_report', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token || ''}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ report_type: reportType })
+                });
+                
+                const data = await response.json();
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    result.style.display = 'block';
+                    document.getElementById('reportMessage').innerHTML = 
+                        `<div style="font-weight: 600; margin-bottom: 8px;">${data.message}</div>
+                        <div>文件路径: ${data.file_path}</div>`;
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification(data.error || '生成失败', 'error');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        function openTaskManager() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">任务调度管理</h3>
+                    <div id="taskResult" style="display: none;">
+                        <div style="margin-bottom: 16px;">
+                            <div style="display: flex; gap: 16px;">
+                                <div style="padding: 12px; background: #f5f5f5; border-radius: 6px;">
+                                    <div style="font-size: 24px; font-weight: 600;">${''}</div>
+                                    <div style="font-size: 12px; color: #666;">任务总数</div>
+                                </div>
+                                <div style="padding: 12px; background: #f5f5f5; border-radius: 6px;">
+                                    <div style="font-size: 24px; font-weight: 600;">${''}</div>
+                                    <div style="font-size: 12px; color: #666;">日志数量</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="taskList"></div>
+                        <div id="taskLogs"></div>
+                    </div>
+                    <div id="taskLoading" style="text-align: center; padding: 40px;">
+                        <div>加载中...</div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button onclick="loadTaskManager()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">刷新</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+            loadTaskManager();
+        }
+        
+        async function loadTaskManager() {
+            const loading = document.getElementById('taskLoading');
+            const result = document.getElementById('taskResult');
+            
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/manage_tasks', {
+                    headers: { 'Authorization': `Bearer ${token || ''}` }
+                });
+                
+                const data = await response.json();
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    result.style.display = 'block';
+                    result.querySelector('div div:nth-child(1) div').textContent = data.task_count;
+                    result.querySelector('div div:nth-child(2) div').textContent = data.log_count;
+                    
+                    const taskList = document.getElementById('taskList');
+                    taskList.innerHTML = data.tasks.length > 0 ? `
+                        <div style="margin-bottom: 16px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">任务列表</div>
+                            <div style="border: 1px solid #ddd; border-radius: 6px;">
+                                ${data.tasks.map(t => `
+                                    <div style="padding: 12px; border-bottom: 1px solid #eee;">
+                                        <div style="font-weight: 500;">${t.name}</div>
+                                        <div style="font-size: 12px; color: #666;">${t.cron} - ${t.action}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '<div style="margin-bottom: 16px; color: #999;">暂无任务</div>';
+                    
+                    const taskLogs = document.getElementById('taskLogs');
+                    taskLogs.innerHTML = data.recent_logs.length > 0 ? `
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 8px;">最近日志</div>
+                            <div style="border: 1px solid #ddd; border-radius: 6px; max-height: 200px; overflow-y: auto;">
+                                ${data.recent_logs.map(l => `
+                                    <div style="padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 12px;">
+                                        <span style="color: ${l.status === 'success' ? '#16a34a' : '#dc2626'}">${l.status}</span>
+                                        &nbsp;${l.time} - ${l.task || 'Unknown'}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '<div style="color: #999;">暂无日志</div>';
+                } else {
+                    showNotification(data.error || '加载失败', 'error');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        function openAlertManager() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">告警管理</h3>
+                    <div id="alertResult" style="display: none;">
+                        <div id="alertSummary" style="margin-bottom: 20px;"></div>
+                        <div id="alertList"></div>
+                        <div id="alertErrors"></div>
+                    </div>
+                    <div id="alertLoading" style="text-align: center; padding: 40px;">
+                        <div>加载中...</div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button onclick="loadAlerts()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">刷新</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+            loadAlerts();
+        }
+        
+        async function loadAlerts() {
+            const loading = document.getElementById('alertLoading');
+            const result = document.getElementById('alertResult');
+            
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/manage_alerts', {
+                    headers: { 'Authorization': `Bearer ${token || ''}` }
+                });
+                
+                const data = await response.json();
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    result.style.display = 'block';
+                    
+                    const sys = data.system_status;
+                    document.getElementById('alertSummary').innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                            <div style="padding: 12px; background: ${sys.disk.usage > 80 ? '#fee2e2' : '#dcfce7'}; border-radius: 6px; text-align: center;">
+                                <div style="font-size: 20px; font-weight: 600;">${sys.disk.usage}%</div>
+                                <div style="font-size: 12px;">磁盘</div>
+                                <div style="font-size: 11px; color: #666;">剩余 ${sys.disk.free}</div>
+                            </div>
+                            <div style="padding: 12px; background: ${sys.memory.usage > 85 ? '#fee2e2' : '#dcfce7'}; border-radius: 6px; text-align: center;">
+                                <div style="font-size: 20px; font-weight: 600;">${sys.memory.usage}%</div>
+                                <div style="font-size: 12px;">内存</div>
+                                <div style="font-size: 11px; color: #666;">可用 ${sys.memory.available}</div>
+                            </div>
+                            <div style="padding: 12px; background: ${sys.cpu.usage > 90 ? '#fee2e2' : '#dcfce7'}; border-radius: 6px; text-align: center;">
+                                <div style="font-size: 20px; font-weight: 600;">${sys.cpu.usage}%</div>
+                                <div style="font-size: 12px;">CPU</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const alertList = document.getElementById('alertList');
+                    alertList.innerHTML = data.alerts.length > 0 ? `
+                        <div style="margin-bottom: 16px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">当前告警 (${data.alert_count})</div>
+                            <div>
+                                ${data.alerts.map(a => `
+                                    <div style="padding: 12px; margin-bottom: 8px; background: ${a.level === 'critical' ? '#fee2e2' : '#fef3c7'}; border-left: 4px solid ${a.level === 'critical' ? '#dc2626' : '#d97706'}; border-radius: 4px;">
+                                        <div style="font-weight: 500;">${a.message}</div>
+                                        <div style="font-size: 12px; color: #666;">阈值: ${a.threshold}%</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '<div style="margin-bottom: 16px; color: #16a34a; padding: 12px; background: #dcfce7; border-radius: 6px;">✓ 系统运行正常，暂无告警</div>';
+                    
+                    const alertErrors = document.getElementById('alertErrors');
+                    alertErrors.innerHTML = data.recent_errors.length > 0 ? `
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 8px;">最近错误</div>
+                            <div style="border: 1px solid #fee2e2; border-radius: 6px; max-height: 150px; overflow-y: auto;">
+                                ${data.recent_errors.map(e => `
+                                    <div style="padding: 8px 12px; border-bottom: 1px solid #fecaca; font-size: 12px; color: #dc2626;">
+                                        ${e.time} - ${e.message || 'Unknown error'}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '';
+                } else {
+                    showNotification(data.error || '加载失败', 'error');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        function openDataVisualization() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">数据可视化</h3>
+                    <div id="chartResult" style="display: none;">
+                        <div id="chartStats"></div>
+                    </div>
+                    <div id="chartLoading" style="text-align: center; padding: 40px;">
+                        <div>加载中...</div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button onclick="loadCharts()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">刷新</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+            loadCharts();
+        }
+        
+        async function loadCharts() {
+            const loading = document.getElementById('chartLoading');
+            const result = document.getElementById('chartResult');
+            
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/generate_chart', {
+                    headers: { 'Authorization': `Bearer ${token || ''}` }
+                });
+                
+                const data = await response.json();
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    result.style.display = 'block';
+                    const stats = data.statistics;
+                    document.getElementById('chartStats').innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                            <div style="padding: 16px; background: #f5f5f5; border-radius: 8px;">
+                                <div style="font-size: 28px; font-weight: 600; margin-bottom: 8px;">${stats.total_files || 0}</div>
+                                <div style="font-size: 14px; color: #666;">上传文件总数</div>
+                            </div>
+                            <div style="padding: 16px; background: #f5f5f5; border-radius: 8px;">
+                                <div style="font-size: 28px; font-weight: 600; margin-bottom: 8px;">${stats.total_projects || 0}</div>
+                                <div style="font-size: 14px; color: #666;">运维项目数</div>
+                            </div>
+                            <div style="padding: 16px; background: #f5f5f5; border-radius: 8px;">
+                                <div style="font-size: 28px; font-weight: 600; margin-bottom: 8px;">${stats.total_schedules || 0}</div>
+                                <div style="font-size: 14px; color: #666;">定时任务数</div>
+                            </div>
+                            <div style="padding: 16px; background: #f5f5f5; border-radius: 8px;">
+                                <div style="font-size: 28px; font-weight: 600; margin-bottom: 8px;">${stats.total_chunks || 0}</div>
+                                <div style="font-size: 14px; color: #666;">文档片段数</div>
+                            </div>
+                        </div>
+                        <div style="padding: 16px; background: #fffbeb; border-radius: 8px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">数据概览</div>
+                            <div style="font-size: 13px; color: #666;">
+                                ${stats.total_files > 0 ? `- 文件类型分布: ${stats.file_types.join(', ')}<br>` : ''}
+                                ${stats.total_projects > 0 ? `- 项目进度: ${stats.project_progress || '暂无'}<br>` : ''}
+                                ${stats.total_schedules > 0 ? `- 任务成功率: ${stats.schedule_success_rate || '暂无'}<br>` : ''}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    showNotification(data.error || '加载失败', 'error');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showNotification('网络错误', 'error');
+            }
+        }
+        
+        function openDataSync() {
+            const modalContent = `
+                <div style="padding: 24px;">
+                    <h3 style="margin-bottom: 20px;">数据同步</h3>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; margin-bottom: 8px;">同步类型</label>
+                        <select id="syncType" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: var(--font-md);">
+                            <option value="full">全量同步</option>
+                            <option value="users">用户数据</option>
+                            <option value="files">文件数据</option>
+                            <option value="projects">项目数据</option>
+                            <option value="plugins">插件数据</option>
+                        </select>
+                    </div>
+                    <div id="syncResult" style="display: none; margin-bottom: 20px;">
+                        <div id="syncMessage"></div>
+                    </div>
+                    <div id="syncLoading" style="text-align: center; padding: 20px; display: none;">
+                        <div>同步中...</div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="executeDataSync()" style="flex: 1; padding: 12px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">执行同步</button>
+                        <button onclick="closePluginModal()" style="padding: 12px 24px; background: #f0f0f0; border: none; border-radius: 6px; cursor: pointer; font-size: var(--font-md);">关闭</button>
+                    </div>
+                </div>
+            `;
+            showPluginModal(modalContent);
+        }
+        
+        async function executeDataSync() {
+            const syncType = document.getElementById('syncType').value;
+            const loading = document.getElementById('syncLoading');
+            const result = document.getElementById('syncResult');
+            
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/plugin/sync_data', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token || ''}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ sync_type: syncType })
+                });
+                
+                const data = await response.json();
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    result.style.display = 'block';
+                    let html = `<div style="font-weight: 600; margin-bottom: 8px;">${data.message}</div>`;
+                    html += `<div style="font-size: 12px; margin-bottom: 8px;">时间: ${data.timestamp}</div>`;
+                    html += `<div style="border: 1px solid #ddd; border-radius: 6px;">`;
+                    data.results.forEach(r => {
+                        const color = r.status === 'success' ? '#16a34a' : '#dc2626';
+                        html += `<div style="padding: 8px 12px; border-bottom: 1px solid #eee;">
+                            <span style="color: ${color};">${r.status === 'success' ? '✓' : '✗'}</span>
+                            &nbsp;${r.type} - ${r.status === 'success' ? `同步 ${r.count} 条记录` : r.message}
+                        </div>`;
+                    });
+                    html += `</div>`;
+                    document.getElementById('syncMessage').innerHTML = html;
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification(data.error || '同步失败', 'error');
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showNotification('网络错误', 'error');
+            }
+        }
         
         // 案例详情弹窗
         function showCaseDetail(caseId) {
@@ -3613,7 +6153,7 @@
                 let filesHtml = '';
                 if (caseData.files && caseData.files.length > 0) {
                     filesHtml = '<div style="margin-top: 20px;">';
-                    filesHtml += '<div style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">附件</div>';
+                    filesHtml += '<div class="case-title" style="margin-bottom: 12px;">附件</div>';
                     caseData.files.forEach(file => {
                         const isImage = file.match(/\.(jpg|jpeg|png|gif)$/i);
                         if (isImage) {
@@ -3638,16 +6178,16 @@
                 const modalContent = `
                     <div style="padding: 24px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h2 style="font-size: 22px; font-weight: 600; color: #1a1a1a;">${title}</h2>
-                            <button onclick="closeCaseModal()" style="width: 32px; height: 32px; border: none; background: #f5f5f5; border-radius: 6px; cursor: pointer; font-size: 18px;">×</button>
+                            <h2 class="case-detail-title">${title}</h2>
+                            <button onclick="closeCaseModal()" style="width: 32px; height: 32px; border: none; background: #f5f5f5; border-radius: 6px; cursor: pointer; font-size: var(--font-lg);">×</button>
                         </div>
                         <div style="display: flex; gap: 24px; margin-bottom: 20px;">
-                            <span style="padding: 6px 14px; background: ${statusBg}; color: ${statusColor}; border-radius: 20px; font-size: 14px; font-weight: 500;">${statusText}</span>
-                            <span style="font-size: 15px; color: #999999;">提交人: ${submitter}</span>
-                            <span style="font-size: 15px; color: #999999;">${type}</span>
-                            <span style="font-size: 15px; color: #999999;">${date}</span>
+                            <span style="padding: 6px 14px; background: ${statusBg}; color: ${statusColor}; border-radius: 20px; font-weight: 500; font-size: var(--font-xs);">${statusText}</span>
+                            <span class="case-meta">提交人: ${submitter}</span>
+                            <span class="case-meta">${type}</span>
+                            <span class="case-meta">${date}</span>
                         </div>
-                        <div style="font-size: 16px; color: #666666; line-height: 1.8;">${content}</div>
+                        <div class="case-content" style="line-height: 1.8;">${content}</div>
                         ${filesHtml}
                     </div>
                 `;
